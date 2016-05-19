@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<annotation-spec>
+  <head>
+    <valuetype-def>
+      <valueset name="behaviouralElement_InternalValueType_0">
+        <value-el color="yellow" key="a">antenna grooming</value-el>
+        <value-el color="green" key="w">walking</value-el>
+        <value-el color="blue" key="q">standing</value-el>
+        <value-el color="red" key="f">front leg rub</value-el>
+        <value-el color="magenta" key="b">rear grooming</value-el>
+        <value-el color="#00CCCC" key="y">eye grooming</value-el>
+        <value-el color="#CCCCCC" key="r">brush right leg</value-el>
+        <value-el color="black" key="l">brush left leg</value-el>
+      </valueset>
+    </valuetype-def>
+  </head>
+  <body>
+    <font color="#000000" face="SansSerif.plain" size="12" style="plain"/>
+    <track-spec color-attr="behaviouralElement" name="behaviour" type="primary">
+      <attribute name="behaviouralElement" valuetype="behaviouralElement_InternalValueType_0"/>
+    </track-spec>
+  </body>
+</annotation-spec>

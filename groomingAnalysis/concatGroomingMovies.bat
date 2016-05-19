@@ -1,0 +1,1 @@
+"C:\Program Files (x86)\mmpeg\ffmpeg-20160517-git-af3e944-win64-static\ffmpeg-20160517-git-af3e944-win64-static\bin\ffmpeg" -f concat -safe 0 -i "C:\Users\Alex\Documents\Data\flyGroomingVideos\RO1data\mylist.txt" -c copy "C:\Users\Alex\Documents\Data\flyGroomingVideos\RO1data\outputVids\output.avi"
