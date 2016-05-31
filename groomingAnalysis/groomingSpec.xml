@@ -2,6 +2,9 @@
 <annotation-spec>
   <head>
     <valuetype-def>
+      <valueset name="windTiming_InternalValueType_0">
+        <value-el color="#3333FF" key="o">wind on </value-el>
+      </valueset>
       <valueset name="behaviouralElement_InternalValueType_0">
         <value-el color="yellow" key="a">antenna grooming</value-el>
         <value-el color="green" key="w">walking</value-el>
@@ -11,6 +14,9 @@
         <value-el color="#00CCCC" key="y">eye grooming</value-el>
         <value-el color="#CCCCCC" key="r">brush right leg</value-el>
         <value-el color="black" key="l">brush left leg</value-el>
+        <value-el key="p">proboscis extension</value-el>
+        <value-el color="#666600" key="c">flailing</value-el>
+        <value-el color="#FFCCCC" key="i">still</value-el>
       </valueset>
     </valuetype-def>
   </head>
@@ -18,6 +24,9 @@
     <font color="#000000" face="SansSerif.plain" size="12" style="plain"/>
     <track-spec color-attr="behaviouralElement" name="behaviour" type="primary">
       <attribute name="behaviouralElement" valuetype="behaviouralElement_InternalValueType_0"/>
+    </track-spec>
+    <track-spec name="wind" type="primary">
+      <attribute name="windTiming" valuetype="windTiming_InternalValueType_0"/>
     </track-spec>
   </body>
 </annotation-spec>

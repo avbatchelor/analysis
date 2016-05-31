@@ -1,4 +1,4 @@
-function chunkGroomingMovies
+function chunkGroomingMovies(movieFilenames,moviePathname,varargin)
 % This function converts movies to a form that can be used by the annotation program ANVIL.
 % The function will ask you to select the movies you want to annotate.
 % Make sure that these movies are of a section of continuous time.
@@ -12,18 +12,37 @@ delete(listFilename)
 delete('C:\Users\Alex\Documents\Data\flyGroomingVideos\RO1data\convertedVids\*.mov')
 
 %% choose movie files to append and copy them to the convertedVids folder
-[movieFilenames,moviePathname] = uigetfile('.avi','Select movies for annotation','MultiSelect','on');
+if ~exist('movieFilenames','var')
+    [movieFilenames,moviePathname] = uigetfile('.avi','Select movies for annotation','MultiSelect','on');
+end 
 
-for n = 1:length(movieFilenames)
-    copyfile([moviePathname,movieFilenames{1,n}],'C:\Users\Alex\Documents\Data\flyGroomingVideos\RO1data\convertedVids')
+if iscell(movieFilenames)
+    numMovies = length(movieFilenames);
+else 
+    numMovies = 1; 
+end 
+
+tempFolder = 'C:\Users\Alex\Documents\Data\flyGroomingVideos\RO1data\temp\';
+for n = 1:numMovies
+    if numMovies == 1 
+        copyfile([moviePathname,movieFilenames],tempFolder)
+    else 
+        copyfile([moviePathname,movieFilenames{1,n}],tempFolder)
+    end
 end
+
+%% Convert movie codec 
+cd(tempFolder)
+system('C:\Users\Alex\Documents\Data\flyGroomingVideos\RO1data\temp\batch.bat')
+
+% clear the temp folder 
+delete([tempFolder,'*.avi'])
+
 
 %% Make movie list file
 dirname = 'C:\Users\Alex\Documents\Data\flyGroomingVideos\RO1data\convertedVids';
-dirdeets = dir(fullfile(dirname,'/*.avi'));
+dirdeets = dir(fullfile(dirname,'/*.mov'));
 filelist = {dirdeets.name};
-
-numMovies = length(filelist);
 
 fid = fopen(listFilename, 'w');
 for i = 1:numMovies
@@ -53,6 +72,19 @@ system('C:\Users\Alex\Documents\GitHub\analysis\groomingAnalysis\concatGroomingM
 
 delete(listFilename)
 
+%% Move output file 
+if numMovies == 1
+    filenameStem = movieFilenames;
+else
+    filenameStem = movieFilenames{1,1};
+end
+fileStem = char(regexp(filenameStem,'.*(?=.avi)','match'));
+finalFolder = 'C:\Users\Alex\Documents\Data\flyGroomingVideos\RO1data\vidsReadyForAnalysis\';
+finalFileName = [finalFolder,fileStem,'converted.avi'];
+
+copyfile('C:\Users\Alex\Documents\Data\flyGroomingVideos\RO1data\outputVids\output.avi',finalFileName)
+
+delete('C:\Users\Alex\Documents\Data\flyGroomingVideos\RO1data\outputVids\output.avi')
 
 % clear the converted vids folder
 delete('C:\Users\Alex\Documents\Data\flyGroomingVideos\RO1data\convertedVids\*.mov')
