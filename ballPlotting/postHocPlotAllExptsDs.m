@@ -13,7 +13,7 @@ for i = 1:length(expNumList)
     if expNum <= 9
         plotBallDataPostHocDs(prefixCode,expNum,flyNum,flyExpNum)
     else
-        plotBallDataDiffStim(prefixCode,expNum,flyNum,flyExpNum)
+        plotBallDataDiffStimSameFig(prefixCode,expNum,flyNum,flyExpNum)
     end
 end
 
