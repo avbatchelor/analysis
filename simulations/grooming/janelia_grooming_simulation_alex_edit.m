@@ -70,7 +70,8 @@ ect_drive_module = 0;
  
  
 %%%%%%%%%%%%%%%% END OF USER PARAMETER SETTING %%%%%%%%%%%%%%%%%%%%%
- 
+
+%% 
 for i=1:numb_of_segments;
   dust_amount_record(i,1)=dust_amount-((dust_amount*rand)/dust_homo);
 end
