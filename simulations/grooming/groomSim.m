@@ -24,13 +24,12 @@ numb_of_segments=4; % how many cleaning modules? Current model uses 4
 
 threshold_range = [0.0 0.0]; % sensory threshold difference not used in the current model
 
-dust_amount=1; % this is the initial dust that is on the fly. Default = 1, meaning fully dusty fly. Use 0 to simulate constitutive cleaning without dust.
+dust_amount=1; % initial dust on fly. 1 = fully dusty fly. Use 0 to simulate constitutive cleaning without dust.
 dust_homo=10; % how homogeneous is the dust? 1 means random amount of dust; 10 means that the dust varies randomly within the upper 10% while 90% of the body is fully covered
 
 clean_incr=0.08; %how much dust is taken off of a body part in each "cleaning iteration" or "wipe"
 
 numIterations = 2000; 
-num_front_segments = 2;
 
 switch modelType
     case 'SGM'
@@ -48,7 +47,7 @@ switch modelType
 end
 
 %%%%%%%%%%%%% INCLUDE LEG RUBBING %%%%%%%%%%%%%%%%%%%%%%%%%
-numb_of_leg_pairs =2; % how many pairs of legs; current model uses 2 pairs of legs involved in grooming
+num_leg_mods =2; % how many pairs of legs; current model uses 2 pairs of legs involved in grooming
 
 leg_gain=30; % set sensitivity of legs to dust (sensory gain of legs); in the current model it is set at 30
 dust_removed_leg_rub=0.08; % the fraction of dust removed from legs with every leg rub;
@@ -72,7 +71,7 @@ for i=1:numb_of_segments;
     dust_mat(i,1)=10.*(dust_amount-((dust_amount*rand)/dust_homo)); % Not sure what the multiplication by 10 is for
 end
 
-for i=1:numb_of_leg_pairs;
+for i=1:num_leg_mods;
     threshold_record_leg(i,1)=threshold_leg; % currently 0
     dust_amount_record_leg(i,1)=0;
     activity_record_leg(i,1)=dust_amount_record_leg(i,1)-threshold_record_leg(i,1); % currently 0
@@ -134,7 +133,7 @@ while i<2000 % runs for 2000 iterations
     
     %% Leg rubbing
     % Select which legs are used
-    if winner_ind <  num_front_segments; 
+    if winner_ind <  num_leg_mods; 
         m=1; % if the anterior modules are active set m = 1 for front legs;
     else
         m=2; % if posterior modules are active set m = 2;
