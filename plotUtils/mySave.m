@@ -22,7 +22,7 @@ print(gcf,'-depsc',imageFilename,'-r50','-painters','-cmyk')
 
 fileStem = char(regexp(filename,'.*(?=.pdf)','match'));
 imageFilename = [fileStem,'_meta_image.emf'];
-print(gcf,'-dmeta',imageFilename,'-r300','-painters','-cmyk')
+print(gcf,'-dmeta',imageFilename,'-r50','-painters','-cmyk')
 
 figFileStem = char(regexp(filename,'.*(?=.pdf)','match'));
 figFilename = [figFileStem,'_matFig.fig'];

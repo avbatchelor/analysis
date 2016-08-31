@@ -35,10 +35,15 @@ end
 saveFileName = [saveFolder,'flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'.pdf'];
 flyDataPreamble = char(regexp(fileNamePreamble,'.*(?=flyExpNum)','match'));
 flyDataFileName = [fileStem,flyDataPreamble,'flyData'];
-load(flyDataFileName);
-if ~isfield(FlyData,'aim')
+try
+    load(flyDataFileName);
+    if ~isfield(FlyData,'aim')
+        FlyData.aim = '';
+    end
+catch
     FlyData.aim = '';
 end
+
 if ~isfield(exptInfo,'flyExpNotes')
     exptInfo.flyExpNotes = '';
 end
@@ -88,10 +93,10 @@ for i = 1:length(uniqueStim)
 
     %% Find the mean and std of these trials
     startPadEndIdx = (Stim.startPadDur*Stim.sampleRate)-1;
-%     meanPVnp = mean(cell2mat(groupedData.KEraw(stimNumInd))');
+    meanPVnp = mean(cell2mat(groupedData.KEraw(stimNumInd))');
     %meanPV = cumtrapz(groupedData.stimTimeVect{i},(meanPVnp-mean(meanPVnp(1:startPadEndIdx)))./settings.preamp_gain)./settings.KE_sf;
-    meanPVnp = cell2mat(groupedData.KEraw(stimNumInd))';
-    meanPV = meanPVnp(1,:);
+%     meanPVnp = cell2mat(groupedData.KEraw(stimNumInd))';
+    meanPV = meanPVnp;
     stdPV = std(cell2mat(groupedData.KEraw(stimNumInd))');
     meanAcqStim1 = mean(cell2mat(groupedData.acqStim1(stimNumInd))');
     stdAcqStim1 = std(cell2mat(groupedData.acqStim1(stimNumInd))');
