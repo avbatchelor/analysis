@@ -3,6 +3,9 @@ function groupPdfs(folder,varargin)
 if nargin == 0 
     folder = uigetdir; 
 end
+if ~isdir(folder) 
+    mkdir(folder) 
+end
 cd(folder) 
 fileNames = dir('*.pdf'); 
 
