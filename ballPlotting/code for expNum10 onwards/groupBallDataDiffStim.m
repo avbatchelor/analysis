@@ -38,6 +38,7 @@ for i = 1:length(dirCont)
     Vxy = sqrt((groupedData.xVel{trialNum}.^2)+(groupedData.yVel{trialNum}.^2));
     avgResultantVelocity = mean(Vxy);
     groupedData.trialsToInclude(trialNum) = 3<avgResultantVelocity && avgResultantVelocity<50;
+    groupedData.trialSpeed(trialNum) = avgResultantVelocity;
     clear procData temp
 end
 

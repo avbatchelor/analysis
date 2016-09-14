@@ -198,12 +198,16 @@ for i = 1:length(uniqueStim)
     
     sph(7) = subtightplot (7, 2, 13, [0.1 0.05], [0.1 0.01], [0.1 0.01]);
     hold on
-    bins = -10:0.5:40;
-    lvTemp = [lvTemp;rotXVel(:)];
-    hist(lvTemp,bins);
-    xlim([-10 40])
-    xlabel('Lateral velocity (mm/s)')
-    ylabel('Counts')
+%     bins = -10:0.5:40;
+%     lvTemp = [lvTemp;rotXVel(:)];
+%     hist(lvTemp,bins);
+%     xlim([-10 40])
+%     xlabel('Lateral velocity (mm/s)')
+%     ylabel('Counts')
+    bar(trialsToIncludeNums,groupedData.trialSpeed(groupedData.trialsToInclude),'r')
+    notIncInd = trialNums(~groupedData.trialsToInclude);
+    bar(notIncInd,groupedData.trialSpeed(~groupedData.trialsToInclude),'b')
+    plot(stimNumInd,max(groupedData.trialSpeed)+1,'k*')
     set(get(gca,'YLabel'),'Rotation',0,'HorizontalAlignment','right')
     box off;
     set(gca,'TickDir','out')
