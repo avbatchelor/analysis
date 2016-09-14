@@ -111,6 +111,13 @@ for i = 1:length(uniqueStim)
     rotXVel = squeeze(rotVel(:,1,:));
     rotYVel = squeeze(rotVel(:,2,:));
     
+    if length(stimNumInd) == 1
+        rotXDisp = rotXDisp';
+        rotYDisp = rotYDisp';
+        rotXVel = rotXVel';
+        rotYVel = rotYVel';
+    end
+    
     %% Find the mean and std of these trials
     meanXDisp = mean(rotXDisp);
     meanYDisp = mean(rotYDisp);
@@ -204,14 +211,19 @@ for i = 1:length(uniqueStim)
 %     xlim([-10 40])
 %     xlabel('Lateral velocity (mm/s)')
 %     ylabel('Counts')
-    bar(trialsToIncludeNums,groupedData.trialSpeed(groupedData.trialsToInclude),'r')
-    notIncInd = trialNums(~groupedData.trialsToInclude);
-    bar(notIncInd,groupedData.trialSpeed(~groupedData.trialsToInclude),'b')
-    plot(stimNumInd,max(groupedData.trialSpeed)+1,'k*')
+    bh1 = bar(trialNums,groupedData.trialSpeed,'EdgeColor','b','FaceColor','b');
+    line([0,trialNums(end)],[3,3],'Color','k')
+    bar(stimNumIndNotSelected,groupedData.trialSpeed(stimNumIndNotSelected),'EdgeColor','r','FaceColor','r','BarWidth',bh1.BarWidth/min(diff(sort(stimNumIndNotSelected))));
+%     notIncInd = trialNums(~groupedData.trialsToInclude);
+%     bar(notIncInd,groupedData.trialSpeed(~groupedData.trialsToInclude),'FaceColor','b')
+    plot(stimNumIndNotSelected,max(groupedData.trialSpeed)+1,'k*')
+    ylabel({'Trial avg speed';'(mm/s)'})
+    xlabel('Trial number')
     set(get(gca,'YLabel'),'Rotation',0,'HorizontalAlignment','right')
     box off;
     set(gca,'TickDir','out')
     axis tight
+    title(['Num selected trials for this stim = ',num2str(length(stimNumInd)),', Total num trials for this stim = ',num2str(length(stimNumIndNotSelected))])
     
     sph(8) = subplot(7,2,2:2:6);
     hold on
