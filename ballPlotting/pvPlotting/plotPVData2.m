@@ -28,7 +28,7 @@ lvTemp = [];
 dateNumber = datenum(exptInfo.dNum,'yymmdd');
 dateAsString = datestr(dateNumber,'mm-dd-yy');
 fileStem = char(regexp(path,'.*(?=flyExpNum)','match'));
-saveFolder = [fileStem,'Figures2\'];
+saveFolder = [fileStem,'Figures\'];
 if ~isdir(saveFolder)
     mkdir(saveFolder)
 end
@@ -87,12 +87,15 @@ for i = 1:length(uniqueStim)
 
     %% Find the mean and std of these trials
     startInd = groupedData.stimStartInd{i};
-    endInd = startInd+40000;
+    endInd = startInd+5000;
     startPadEndIdx = (Stim.startPadDur*Stim.sampleRate)-1;
     meanPVnp = mean(cell2mat(groupedData.KEraw(stimNumInd))');
     meanPVnp = cumtrapz(groupedData.stimTimeVect{i},(meanPVnp-mean(meanPVnp(1:startPadEndIdx)))./settings.preamp_gain)./settings.KE_sf;
+    %% high pass filter the signal 
+    rate = 2*(10/Stim.sampleRate);
+    [kb, ka] = butter(2,rate,'high');
+    meanPV = filtfilt(kb, ka, meanPVnp);
 %     meanPVnp = cell2mat(groupedData.KEraw(stimNumInd))';
-    meanPV = meanPVnp;
     stdPV = std(cell2mat(groupedData.KEraw(stimNumInd))');
     meanAcqStim1 = mean(cell2mat(groupedData.acqStim1(stimNumInd))');
     stdAcqStim1 = std(cell2mat(groupedData.acqStim1(stimNumInd))');
@@ -130,11 +133,14 @@ for i = 1:length(uniqueStim)
     ylabel('PV (V)')
     set(get(gca,'YLabel'),'Rotation',0,'HorizontalAlignment','right')
     symAxisY
+    ylim([-0.02 0.02])
 
-    linkaxes(sph(:),'x')
-    suptitle(sumTitle)
-    saveFileName = [saveFolder,'flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'_stim',num2str(i-1,'%03d'),'_to_',num2str(i,'%03d'),'.pdf'];
-    export_fig(saveFileName,'-pdf','-q50')
+    if ~mod(i,2)
+        linkaxes(sph(:),'x')
+        suptitle(sumTitle)
+        saveFileName = [saveFolder,'flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'_stim',num2str(i-1,'%03d'),'_to_',num2str(i,'%03d'),'.pdf'];
+        export_fig(saveFileName,'-pdf','-q50')
+    end
 
 
 
