@@ -96,9 +96,14 @@ for i = 1:length(uniqueStim)
     %% Rotate each of these trials
     count = 0;
     for j = stimNumInd
-        count = count+1;
-        rotVel(count,:,:) = R*[groupedData.xVel{j}';groupedData.yVel{j}'];
-        rotDisp(count,:,:) = R*[groupedData.xDisp{j}';groupedData.yDisp{j}'];
+            count = count+1;
+            rotVel(count,:,:) = R*[groupedData.xVel{j}';groupedData.yVel{j}'];
+            rotDisp(count,:,:) = R*[groupedData.xDisp{j}';groupedData.yDisp{j}'];
+    end
+    
+    if isempty(stimNumInd)
+        disp('no trials fast enough for this stim')
+        continue
     end
     
     rotXDisp = squeeze(rotDisp(:,1,:));
