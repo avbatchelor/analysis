@@ -23,6 +23,11 @@ for i = 1:length(dirCont)
     groupedData.stim{trialMeta.stimNum} = Stim.stimulus;
     groupedData.stimTimeVect{trialMeta.stimNum} = Stim.timeVec; 
     groupedData.stimNum(trialNum) = trialMeta.stimNum;
+    if isfield(Stim,'carrierFreqHz')
+        groupedData.stimFreq(trialMeta.stimNum) = Stim.carrierFreqHz;
+    else 
+        groupedData.stimFreq(trialMeta.stimNum) = 0;
+    end
     groupedData.stimStartPadDur{trialMeta.stimNum} = Stim.startPadDur; 
     groupedData.stimDur{trialMeta.stimNum} = Stim.stimDur;
     % Take the middle chunk of the trial 

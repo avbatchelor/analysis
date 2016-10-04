@@ -140,6 +140,8 @@ for i = 1:length(uniqueStim)
     sph(2) = subplot(7,2,3);
     hold on
     mySimplePlot(groupedData.dsTime{i},meanXVel,'Color',currColor,'Linewidth',2)
+    mySimplePlot(groupedData.dsTime{i},rotXVel,'Color',currColor,'Linewidth',0.5)
+
     %     mySimplePlot(groupedData.dsTime,meanXVel+stdXVel,'Color',colorSet(i,:),'Linewidth',0.5)
     %     mySimplePlot(groupedData.dsTime,meanXVel-stdXVel,'Color',colorSet(i,:),'Linewidth',0.5)
     set(gca,'XTick',[])
@@ -152,7 +154,7 @@ for i = 1:length(uniqueStim)
     sph(3) = subplot(7,2,5);
     hold on
     mySimplePlot(groupedData.dsTime{i},meanYVel,'Color',currColor,'Linewidth',2)
-    %mySimplePlot(groupedData.dsTime{i},rotYVel,'Color',currColor,'Linewidth',0.5)
+    mySimplePlot(groupedData.dsTime{i},rotYVel,'Color',currColor,'Linewidth',0.5)
     %     mySimplePlot(groupedData.dsTime,meanYVel+stdYVel,'Color',colorSet(i,:),'Linewidth',0.5)
     %     mySimplePlot(groupedData.dsTime,meanYVel-stdYVel,'Color',colorSet(i,:),'Linewidth',0.5)
     set(gca,'XTick',[])
@@ -165,6 +167,7 @@ for i = 1:length(uniqueStim)
     sph(4) = subplot(7,2,7);
     hold on
     mySimplePlot(groupedData.dsTime{i},meanXDisp,'Color',currColor,'Linewidth',2)
+    mySimplePlot(groupedData.dsTime{i},rotXDisp,'Color',currColor,'Linewidth',0.5)
     %     mySimplePlot(groupedData.dsTime,meanXDisp+stdXDisp,'Color',colorSet(i,:),'Linewidth',0.5)
     %     mySimplePlot(groupedData.dsTime,meanXDisp-stdXDisp,'Color',colorSet(i,:),'Linewidth',0.5)
     %
@@ -179,6 +182,7 @@ for i = 1:length(uniqueStim)
     sph(5) = subplot(7,2,9);
     hold on
     mySimplePlot(groupedData.dsTime{i},meanYDisp,'Color',currColor,'Linewidth',2)
+    mySimplePlot(groupedData.dsTime{i},rotYDisp,'Color',currColor,'Linewidth',0.5)
     %     mySimplePlot(groupedData.dsTime,meanYDisp+stdYDisp,'Color',colorSet(i,:),'Linewidth',0.5)
     %     mySimplePlot(groupedData.dsTime,meanYDisp-stdYDisp,'Color',colorSet(i,:),'Linewidth',0.5)
     ylabel({'Y Disp';'(mm)'})
@@ -213,7 +217,8 @@ for i = 1:length(uniqueStim)
 %     ylabel('Counts')
     bh1 = bar(trialNums,groupedData.trialSpeed,'EdgeColor','b','FaceColor','b');
     line([0,trialNums(end)],[3,3],'Color','k')
-    bar(stimNumIndNotSelected,groupedData.trialSpeed(stimNumIndNotSelected),'EdgeColor','r','FaceColor','r','BarWidth',bh1.BarWidth/min(diff(sort(stimNumIndNotSelected))));
+    bw = get(bh1,'BarWidth');
+    bar(stimNumIndNotSelected,groupedData.trialSpeed(stimNumIndNotSelected),'EdgeColor','r','FaceColor','r','BarWidth',bw/min(diff(sort(stimNumIndNotSelected))));
 %     notIncInd = trialNums(~groupedData.trialsToInclude);
 %     bar(notIncInd,groupedData.trialSpeed(~groupedData.trialsToInclude),'FaceColor','b')
     plot(stimNumIndNotSelected,max(groupedData.trialSpeed)+1,'k*')
@@ -237,6 +242,7 @@ for i = 1:length(uniqueStim)
     sph(9) = subtightplot (7, 2, 8:2:14, [0.1 0.05], [0.1 0.01], [0.1 0.01]);
     hold on
     plot(meanXDisp,meanYDisp,'Color',currColor,'Linewidth',2)
+    plot(rotXDisp',rotYDisp','Color',currColor,'Linewidth',0.5)
     %     plot(meanXDisp+stdXDisp,meanYDisp,'Color',colorSet(i,:),'Linewidth',0.5)
     %     plot(meanXDisp-stdXDisp,meanYDisp,'Color',colorSet(i,:),'Linewidth',0.5)
     axis tight
