@@ -25,6 +25,7 @@ if ~isdir(saveFolder)
 end
 
 %% Load fly details 
+ephysSettings;
 microCzarSettings;   % Loads settings
 filename = [dataDirectory,exptInfo.prefixCode,'\expNum',num2str(exptInfo.expNum,'%03d'),...
         '\flyNum',num2str(exptInfo.flyNum,'%03d'),'\flyData'];

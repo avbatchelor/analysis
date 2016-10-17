@@ -51,10 +51,10 @@ pipStartInd = Stim.startPadDur*Stim.sampleRate/dsFactor + 1;
 indBefore = pipStartInd - timeBefore*Stim.sampleRate/dsFactor;
 indAfter = pipStartInd + timeBefore*Stim.sampleRate/dsFactor;
 
-%% Plot stimulus
+%% Set colors
 uniqueStim = unique(groupedData.stimNum);
 colorSet = distinguishable_colors(length(uniqueStim),'w');
-
+gray = [192 192 192]./255;
 
 
 %% Rotate all trials
@@ -215,20 +215,27 @@ for i = 1:length(uniqueStim)
 %     xlim([-10 40])
 %     xlabel('Lateral velocity (mm/s)')
 %     ylabel('Counts')
-    bh1 = bar(trialNums,groupedData.trialSpeed,'EdgeColor','b','FaceColor','b');
+    if mod(i,2)
+        bh1 = bar(trialNums,groupedData.trialSpeed,'EdgeColor',gray,'FaceColor',gray);
+    end
     line([0,trialNums(end)],[3,3],'Color','k')
     bw = get(bh1,'BarWidth');
-    bar(stimNumIndNotSelected,groupedData.trialSpeed(stimNumIndNotSelected),'EdgeColor','r','FaceColor','r','BarWidth',bw/min(diff(sort(stimNumIndNotSelected))));
+    bar(stimNumIndNotSelected,groupedData.trialSpeed(stimNumIndNotSelected),'EdgeColor',currColor,'FaceColor',currColor,'BarWidth',bw/min(diff(sort(stimNumIndNotSelected))));
 %     notIncInd = trialNums(~groupedData.trialsToInclude);
 %     bar(notIncInd,groupedData.trialSpeed(~groupedData.trialsToInclude),'FaceColor','b')
-    plot(stimNumIndNotSelected,max(groupedData.trialSpeed)+1,'k*')
+    plot(stimNumIndNotSelected,max(groupedData.trialSpeed)+1,'*','Color',currColor)
     ylabel({'Trial avg speed';'(mm/s)'})
     xlabel('Trial number')
     set(get(gca,'YLabel'),'Rotation',0,'HorizontalAlignment','right')
     box off;
     set(gca,'TickDir','out')
     axis tight
-    title(['Num selected trials for this stim = ',num2str(length(stimNumInd)),', Total num trials for this stim = ',num2str(length(stimNumIndNotSelected))])
+    if mod(i,2)
+        t1s = ['Successful left trials = ',num2str(length(stimNumInd)),'/',num2str(length(stimNumIndNotSelected))];
+    else 
+        t2s = ['Successful right trials = ',num2str(length(stimNumInd)),'/',num2str(length(stimNumIndNotSelected))];
+        title([t1s,'   ',t2s])
+    end
     
     sph(8) = subplot(7,2,2:2:6);
     hold on
