@@ -53,10 +53,13 @@ for n = 1:numStim
 
     
     h(1) = subplot(4,1,1);
-    plot(GroupData(n).sampTime,GroupData(n).speakerCommand,'Color',purple)
-
+    if regexp(GroupData(n).description,'chirp')>=1
+        plotChirp(StimStruct(n).stimObj)
+    else
+        plot(GroupData(n).sampTime,GroupData(n).speakerCommand,'Color',purple)
+        ylabel('Voltage (V)')
+    end
     hold on
-    ylabel('Voltage (V)')
     set(gca,'Box','off','TickDir','out','XTickLabel','')
 %     ylim([-1.1 1.1])
     set(gca,'xtick',[])
