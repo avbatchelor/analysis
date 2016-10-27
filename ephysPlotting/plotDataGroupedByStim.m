@@ -9,7 +9,7 @@ set(0,'DefaultAxesBox','off')
 
 gray = [192 192 192]./255;
 
-ColorSet = distinguishable_colors(5,'w');
+ColorSet = distinguishable_colors(30,'w');
 purple = [97 69 168]./255;
 
 
@@ -55,6 +55,10 @@ for n = 1:numStim
         exptInfo.stimType = 'n';
     end
     
+    titleText = {[dateAsString,', ',exptInfo.prefixCode,', ','ExpNum ',num2str(exptInfo.expNum),', FlyNum ',num2str(exptInfo.flyNum),', CellNum ',num2str(exptInfo.cellNum),', CellExpNum ',num2str(exptInfo.cellExpNum)];...
+        [GroupData(n).description,', StimNum = ',num2str(n)];...
+        ['probe on ',StimStruct(n).stimObj.probe,', volume = ',num2str(StimStruct(n).stimObj.maxVoltage)]};    
+    
     if strcmpi(exptInfo.stimType,'p')
         numSubPlot = 3;
         h(1) = subplot(numSubPlot,1,2);
@@ -69,7 +73,7 @@ for n = 1:numStim
         %     ylim([-0.1 10.1])
         set(gca,'xtick',[])
         set(gca,'XColor','white')
-        t = title(h(1),{[dateAsString,', ',exptInfo.prefixCode,', ','ExpNum ',num2str(exptInfo.expNum),', FlyNum ',num2str(exptInfo.flyNum),', CellNum ',num2str(exptInfo.cellNum),', CellExpNum ',num2str(exptInfo.cellExpNum)];[GroupData(n).description,', StimNum = ',num2str(n)]});
+        t = title(h(1),titleText);
         set(t,'Fontsize',20);
     elseif strcmpi(exptInfo.stimType,'s')
         numSubPlot = 3;
@@ -85,7 +89,7 @@ for n = 1:numStim
         %     ylim([-1.1 1.1])
         set(gca,'xtick',[])
         set(gca,'XColor','white')
-        t = title(h(1),{[dateAsString,', ',exptInfo.prefixCode,', ','ExpNum ',num2str(exptInfo.expNum),', FlyNum ',num2str(exptInfo.flyNum),', CellNum ',num2str(exptInfo.cellNum),', CellExpNum ',num2str(exptInfo.cellExpNum)];[GroupData(n).description,', StimNum = ',num2str(n)]});
+        t = title(h(1),titleText);
         set(t,'Fontsize',20);
     elseif strcmpi(exptInfo.stimType,'n')
         numSubPlot = 4;
@@ -101,7 +105,7 @@ for n = 1:numStim
         %     ylim([-1.1 1.1])
         set(gca,'xtick',[])
         set(gca,'XColor','white')
-        t = title(h(1),{[dateAsString,', ',exptInfo.prefixCode,', ','ExpNum ',num2str(exptInfo.expNum),', FlyNum ',num2str(exptInfo.flyNum),', CellNum ',num2str(exptInfo.cellNum),', CellExpNum ',num2str(exptInfo.cellExpNum)];[GroupData(n).description,', StimNum = ',num2str(n)]});
+        t = title(h(1),titleText);
         set(t,'Fontsize',20);
         
         h(2) = subplot(numSubPlot,1,2);
@@ -134,7 +138,8 @@ for n = 1:numStim
     axis tight
     set(gca,'xtick',[])
     set(gca,'XColor','white')
-    
+    trialNums = 1:size(GroupData(n).voltage,1);
+    legend(num2str(trialNums'))
     
     h(4) = subplot(numSubPlot,1,numSubPlot);
     plot(GroupData(n).sampTime,GroupData(n).current,'Color',gray)

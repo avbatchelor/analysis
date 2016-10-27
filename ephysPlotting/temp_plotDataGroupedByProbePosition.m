@@ -9,6 +9,7 @@ set(0,'DefaultAxesBox','off')
 
 gray = [192 192 192]./255;
 
+ColorSet = distinguishable_colors(6,'w');
 
 %% Load groupedData file
 exptInfo.prefixCode     = prefixCode;
@@ -28,6 +29,7 @@ end
 
 %% Load fly details
 microCzarSettings;   % Loads settings
+ephysSettings;
 filename = [dataDirectory,prefixCode,'\expNum',num2str(expNum,'%03d'),...
     '\flyNum',num2str(flyNum,'%03d'),'\flyData'];
 load(filename);
@@ -47,13 +49,15 @@ numStim = length(GroupData);
 n = 1; 
 fig = figure(n);
 setCurrentFigurePosition(2)
+colormap(ColorSet);
 
 h(1) = subplot(3,1,1);
 plot(GroupStim(n).stimTime,GroupStim(n).stimulus,'k')
 hold on
 ylabel('Voltage (V)')
 set(gca,'Box','off','TickDir','out','XTickLabel','')
-ylim([-1.1 1.1])
+maxStim = max(GroupStim(n).stimulus);
+ylim([-maxStim-0.1 maxStim+.1])
 set(gca,'xtick',[])
 set(gca,'XColor','white')
 if n == 1
@@ -66,27 +70,25 @@ if n == 1
 end
 
 h(3) = subplot(3,1,2);
+legendText = cell(6,1);
+for m = 1:size(GroupData,2)
+    plot(GroupData(m).sampTime,mean(GroupData(m).voltage),'Color',ColorSet(m,:))
+    hold on
+    legendText(m,1) = {['probe on ',StimStruct(m).stimObj.probe,', volume = ',num2str(StimStruct(m).stimObj.maxVoltage)]};
+end
 % plot(GroupData(1).sampTime,mean(GroupData(1).voltage)-mean(GroupData(1).voltage(1:5000)),'r')
 % hold on
 % plot(GroupData(2).sampTime,mean(GroupData(2).voltage)-mean(GroupData(2).voltage(1:5000)),'k')
 % hold on
 % plot(GroupData(3).sampTime,mean(GroupData(3).voltage)-mean(GroupData(3).voltage(1:5000)),'b')
 
-plot(GroupData(1).sampTime,mean(GroupData(1).voltage),'r')
-hold on
-plot(GroupData(2).sampTime,mean(GroupData(2).voltage),'k')
-hold on
-plot(GroupData(3).sampTime,mean(GroupData(3).voltage),'b')
-
-
-
 ylabel('Voltage (mV)')
 set(gca,'Box','off','TickDir','out','XTickLabel','')
 axis tight
 set(gca,'xtick',[])
 set(gca,'XColor','white')
-legend({'probe on left','probe off','probe on right'})
-legend('Location','SouthEast')
+legend(legendText)
+legend('Location','NorthWest')
 legend boxoff;
 
 h(2) = subplot(3,1,3);
@@ -100,7 +102,7 @@ set(gca,'Box','off','TickDir','out')
 axis tight
 
 linkaxes(h,'x')
-xlim([2.5 4])
+%xlim([2.5 4])
 
 if n == 1
     spaceplots(fig,[0 0 0.025 0])
