@@ -24,18 +24,18 @@ if ~isdir(saveFolder)
     mkdir(saveFolder);
 end
 
-%% Load fly details 
+%% Load fly details
 ephysSettings;
 microCzarSettings;   % Loads settings
 filename = [dataDirectory,exptInfo.prefixCode,'\expNum',num2str(exptInfo.expNum,'%03d'),...
-        '\flyNum',num2str(exptInfo.flyNum,'%03d'),'\flyData'];
+    '\flyNum',num2str(exptInfo.flyNum,'%03d'),'\flyData'];
 load(filename);
 
-%% Load experiment details 
+%% Load experiment details
 settingsFileName = [path,idString,'exptData.mat'];
 load(settingsFileName);
 
-% Convert date into text 
+% Convert date into text
 dateNumber = datenum(exptInfo.dNum,'yymmdd');
 dateAsString = datestr(dateNumber,'mm-dd-yy');
 
@@ -50,44 +50,83 @@ for n = 1:numStim
     fig = figure(n);
     setCurrentFigurePosition(2)
     colormap(ColorSet);
-
     
-    h(1) = subplot(4,1,1);
-    if regexp(GroupData(n).description,'chirp')>=1
-        plotChirp(StimStruct(n).stimObj)
-    else
-        plot(GroupData(n).sampTime,GroupData(n).speakerCommand,'Color',purple)
+    if ~isfield(exptInfo,'stimType')
+        exptInfo.stimType = 'n';
+    end
+    
+    if strcmpi(exptInfo.stimType,'p')
+        numSubPlot = 3;
+        h(1) = subplot(numSubPlot,1,2);
+        hold on
+        plot(GroupStim(n).stimTime,GroupData(n).piezoCommand,'Color',gray)
+        plot(GroupData(n).sampTime,GroupData(n).piezoSG,'Color',purple)
+        if size(GroupData(n).piezoSG,1)>1
+            plot(GroupData(n).sampTime,mean(GroupData(n).piezoSG),'k')
+        end
         ylabel('Voltage (V)')
+        set(gca,'Box','off','TickDir','out','XTickLabel','')
+        %     ylim([-0.1 10.1])
+        set(gca,'xtick',[])
+        set(gca,'XColor','white')
+        t = title(h(1),{[dateAsString,', ',exptInfo.prefixCode,', ','ExpNum ',num2str(exptInfo.expNum),', FlyNum ',num2str(exptInfo.flyNum),', CellNum ',num2str(exptInfo.cellNum),', CellExpNum ',num2str(exptInfo.cellExpNum)];[GroupData(n).description,', StimNum = ',num2str(n)]});
+        set(t,'Fontsize',20);
+    elseif strcmpi(exptInfo.stimType,'s')
+        numSubPlot = 3;
+        h(1) = subplot(numSubPlot,1,1);
+        if regexp(GroupData(n).description,'chirp')>=1
+            plotChirp(StimStruct(n).stimObj)
+        else
+            plot(GroupData(n).sampTime,GroupData(n).speakerCommand,'Color',purple)
+            ylabel('Voltage (V)')
+        end
+        hold on
+        set(gca,'Box','off','TickDir','out','XTickLabel','')
+        %     ylim([-1.1 1.1])
+        set(gca,'xtick',[])
+        set(gca,'XColor','white')
+        t = title(h(1),{[dateAsString,', ',exptInfo.prefixCode,', ','ExpNum ',num2str(exptInfo.expNum),', FlyNum ',num2str(exptInfo.flyNum),', CellNum ',num2str(exptInfo.cellNum),', CellExpNum ',num2str(exptInfo.cellExpNum)];[GroupData(n).description,', StimNum = ',num2str(n)]});
+        set(t,'Fontsize',20);
+    elseif strcmpi(exptInfo.stimType,'n')
+        numSubPlot = 4;
+        h(1) = subplot(numSubPlot,1,1);
+        if regexp(GroupData(n).description,'chirp')>=1
+            plotChirp(StimStruct(n).stimObj)
+        else
+            plot(GroupData(n).sampTime,GroupData(n).speakerCommand,'Color',purple)
+            ylabel('Voltage (V)')
+        end
+        hold on
+        set(gca,'Box','off','TickDir','out','XTickLabel','')
+        %     ylim([-1.1 1.1])
+        set(gca,'xtick',[])
+        set(gca,'XColor','white')
+        t = title(h(1),{[dateAsString,', ',exptInfo.prefixCode,', ','ExpNum ',num2str(exptInfo.expNum),', FlyNum ',num2str(exptInfo.flyNum),', CellNum ',num2str(exptInfo.cellNum),', CellExpNum ',num2str(exptInfo.cellExpNum)];[GroupData(n).description,', StimNum = ',num2str(n)]});
+        set(t,'Fontsize',20);
+        
+        h(2) = subplot(numSubPlot,1,2);
+        hold on
+        plot(GroupStim(n).stimTime,GroupData(n).piezoCommand,'Color',gray)
+        plot(GroupData(n).sampTime,GroupData(n).piezoSG,'Color',purple)
+        if size(GroupData(n).piezoSG,1)>1
+            plot(GroupData(n).sampTime,mean(GroupData(n).piezoSG),'k')
+        end
+        ylabel('Voltage (V)')
+        set(gca,'Box','off','TickDir','out','XTickLabel','')
+        %     ylim([-0.1 10.1])
+        set(gca,'xtick',[])
+        set(gca,'XColor','white')
     end
-    hold on
-    set(gca,'Box','off','TickDir','out','XTickLabel','')
-%     ylim([-1.1 1.1])
-    set(gca,'xtick',[])
-    set(gca,'XColor','white')
-    t = title(h(1),{[dateAsString,', ',exptInfo.prefixCode,', ','ExpNum ',num2str(exptInfo.expNum),', FlyNum ',num2str(exptInfo.flyNum),', CellNum ',num2str(exptInfo.cellNum),', CellExpNum ',num2str(exptInfo.cellExpNum)];[GroupData(n).description]});
-    set(t,'Fontsize',20);
-
     
-    h(2) = subplot(4,1,2);
-    hold on
-    plot(GroupStim(n).stimTime,GroupData(n).piezoCommand,'Color',gray)
-    plot(GroupData(n).sampTime,GroupData(n).piezoSG,'Color',purple)
-    if size(GroupData(n).piezoSG,1)>1
-        plot(GroupData(n).sampTime,mean(GroupData(n).piezoSG),'k')
-    end
-    ylabel('Voltage (V)')
-    set(gca,'Box','off','TickDir','out','XTickLabel','')
-%     ylim([-0.1 10.1])
-    set(gca,'xtick',[])
-    set(gca,'XColor','white')
     
-    h(3) = subplot(4,1,3);
+    
+    h(3) = subplot(numSubPlot,1,numSubPlot-1);
     set(gca, 'ColorOrder', ColorSet,'NextPlot', 'replacechildren');
-%     plot(GroupData(n).sampTime,GroupData(n).voltage,'Color',gray)
+    %     plot(GroupData(n).sampTime,GroupData(n).voltage,'Color',gray)
     plot(GroupData(n).sampTime,GroupData(n).voltage)
     hold on
     if size(GroupData(n).voltage,1)>1
-%         plot(GroupData(n).sampTime,mean(GroupData(n).voltage),'k')
+        %         plot(GroupData(n).sampTime,mean(GroupData(n).voltage),'k')
     end
     hold on
     ylabel('Voltage (mV)')
@@ -95,9 +134,9 @@ for n = 1:numStim
     axis tight
     set(gca,'xtick',[])
     set(gca,'XColor','white')
-
     
-    h(4) = subplot(4,1,4);
+    
+    h(4) = subplot(numSubPlot,1,numSubPlot);
     plot(GroupData(n).sampTime,GroupData(n).current,'Color',gray)
     hold on
     if size(GroupData(n).current,1)>1
@@ -119,10 +158,10 @@ for n = 1:numStim
     
     %% Format and save
     saveFileName{n} = [saveFolder,idString,'stimNum',num2str(n,'%03d'),'.pdf'];
-    mySave(saveFileName{n});      
+    mySave(saveFileName{n});
     close all
 end
-% 
+%
 % figFilename = [saveFolder,idString,'.pdf'];
 % myAppendPdfs(saveFileName,figFilename);
 
