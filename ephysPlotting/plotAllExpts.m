@@ -30,6 +30,7 @@ for i = 1:length(cellNumList)
             mergeTrials(exptInfo)
             plotZeroCurrentTrial(exptInfo)
             plotDataGroupedByStim(exptInfo)
+%             plotProbeDiffFigForRepeat(exptInfo)
         end
     end
 end

@@ -22,7 +22,8 @@ exptInfo.cellExpNum     = cellExpNum;
 fileName = [path,'groupedData.mat'];
 load(fileName);
 
-saveFolder = [path,'figures\'];
+saveFolderStem = char(regexp(path,'.*(?=cellNum)','match'));
+saveFolder = [saveFolderStem,'Figures\'];
 if ~isdir(saveFolder)
     mkdir(saveFolder);
 end
@@ -87,9 +88,9 @@ set(gca,'Box','off','TickDir','out','XTickLabel','')
 axis tight
 set(gca,'xtick',[])
 set(gca,'XColor','white')
-legend(legendText)
-legend('Location','NorthWest')
-legend boxoff;
+lh = legend(legendText);
+legend('Location','SouthEast')
+%legend boxoff;
 
 h(2) = subplot(3,1,3);
 plot(GroupData(n).sampTime,GroupData(n).current,'Color',gray)
@@ -112,20 +113,11 @@ end
 
 %% Format and save
 saveFilename{n} = [saveFolder,'\GroupData_Stim',num2str(n),'.pdf'];
-set(gcf, 'PaperType', 'usletter');
-orient landscape
-export_fig(saveFilename{n},'-pdf','-q50')
-imageFilename = [saveFolder,'\overlay.emf'];
-print(fig,'-dmeta',imageFilename)
 
+%% Format and save
+saveFileName{n} = [saveFolder,idString,'probeExpt.pdf'];
+mySave(saveFileName{n});
 close all
 
-
-figFilename = [saveFolder,idString,'allFigs.pdf'];
-if exist(figFilename,'file')
-    delete(figFilename)
-end
-append_pdfs(figFilename,saveFilename{:})
-delete(saveFilename{:})
 
 end
