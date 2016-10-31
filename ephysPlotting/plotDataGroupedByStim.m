@@ -127,6 +127,7 @@ for n = 1:numStim
     h(3) = subplot(numSubPlot,1,numSubPlot-1);
     set(gca, 'ColorOrder', ColorSet,'NextPlot', 'replacechildren');
     %     plot(GroupData(n).sampTime,GroupData(n).voltage,'Color',gray)
+    plotBaseline(GroupData(n).sampTime,GroupData(n).voltage)
     plot(GroupData(n).sampTime,GroupData(n).voltage)
     hold on
     if size(GroupData(n).voltage,1)>1
@@ -169,4 +170,10 @@ end
 
 %groupPdfs(saveFolder);
 
+end
+
+function plotBaseline(time,data)
+baseLevel = mean(mean(data(:,1:10000)));
+hold on
+line([time(1),time(end)],[baseLevel,baseLevel],'Color','k','Linewidth',0.5)
 end

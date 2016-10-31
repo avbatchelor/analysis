@@ -137,7 +137,7 @@ for n = 1:numStim
     %% Plot voltage
     for k = 1:numRepeats
         h(3) = subplot(numSubPlot,1,numStimPlots+k);
-        set(gca, 'ColorOrder', ColorSet,'NextPlot', 'replacechildren');
+        set(gca, 'ColorOrder', ColorSet(3*(k-1)+1:end,:),'NextPlot', 'replacechildren');
         %     plot(GroupData(n).sampTime,GroupData(n).voltage,'Color',gray)
         traceToPlot = (3*(k-1))+(1:3);
         numTrials = size(GroupData(n).voltage,1);
