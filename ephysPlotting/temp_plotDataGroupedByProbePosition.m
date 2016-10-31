@@ -23,7 +23,7 @@ fileName = [path,'groupedData.mat'];
 load(fileName);
 
 saveFolderStem = char(regexp(path,'.*(?=cellNum)','match'));
-saveFolder = [saveFolderStem,'Figures\'];
+saveFolder = [saveFolderStem,'Figures\','cellExpNum_',num2str(exptInfo.cellExpNum),'_figs\'];
 if ~isdir(saveFolder)
     mkdir(saveFolder);
 end
