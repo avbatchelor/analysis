@@ -1,6 +1,13 @@
-function plotProbeDiffFigForRepeat(exptInfo)
+function plotProbeDiffFigForRepeat(prefixCode,expNum,flyNum,cellNum,cellExpNum)
 
 close all
+
+%% group exptInfo
+exptInfo.prefixCode     = prefixCode;
+exptInfo.expNum         = expNum;
+exptInfo.flyNum         = flyNum;
+exptInfo.cellNum        = cellNum;
+exptInfo.cellExpNum     = cellExpNum;
 
 %% Plot settings
 set(0,'DefaultAxesFontSize', 16)

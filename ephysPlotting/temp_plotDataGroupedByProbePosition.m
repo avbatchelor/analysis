@@ -73,8 +73,8 @@ end
 h(3) = subplot(3,1,2);
 legendText = cell(6,1);
 for m = 1:size(GroupData,2)
-    plot(GroupData(m).sampTime,mean(GroupData(m).voltage),'Color',ColorSet(m,:))
-    % plot(GroupData(m).sampTime,mean(GroupData(m).voltage)-mean(GroupData(m).voltage(5000:10000)),'Color',ColorSet(m,:))
+%     plot(GroupData(m).sampTime,mean(GroupData(m).voltage),'Color',ColorSet(m,:))
+    plot(GroupData(m).sampTime,mean(GroupData(m).voltage)-mean(GroupData(m).voltage(5000:10000)),'Color',ColorSet(m,:))
     hold on
     legendText(m,1) = {['probe on ',StimStruct(m).stimObj.probe,', volume = ',num2str(StimStruct(m).stimObj.maxVoltage)]};
 end
@@ -111,8 +111,8 @@ end
 saveFilename{n} = [saveFolder,'\GroupData_Stim',num2str(n),'.pdf'];
 
 %% Format and save
-saveFileName{n} = [saveFolder,idString,'probeExpt.pdf'];
-% saveFileName{n} = [saveFolder,idString,'probeExpt_meanSubtracted.pdf'];
+% saveFileName{n} = [saveFolder,idString,'probeExpt.pdf'];
+saveFileName{n} = [saveFolder,idString,'probeExpt_meanSubtracted.pdf'];
 mySave(saveFileName{n});
 close all
 

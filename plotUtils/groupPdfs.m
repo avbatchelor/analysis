@@ -9,15 +9,24 @@ end
 cd(folder) 
 fileNames = dir('*.pdf'); 
 
-allFileStem = char(regexp(fileNames(1).name,'.*(?=roi)','match'));
-groupFileFolder = [folder,'\','SumFigs\'];
-if ~isdir(groupFileFolder) 
-    mkdir(groupFileFolder) 
+%% Determine folder to save summary figure
+figureFolder = char(regexp(folder,'.*(?=cell)','match'));
+saveFolder = [figureFolder,'SummaryFigs\'];
+if ~isdir(saveFolder) 
+    mkdir(saveFolder) 
 end
-groupFileName = [groupFileFolder,allFileStem,'allFigs.pdf'];
 
+%% Determine summary figure file name
+allFileStem = char(regexp(fileNames(1).name,'.*(?=_stim)','match'));
+%allFileStem = char(regexp(fileNames(1).name,'.*(?=roi)','match'));
+
+groupFileName = [saveFolder,allFileStem,'_summary_fig.pdf'];
+
+%% Determine which pdfs to append
 saveFileNameArray = struct2cell(fileNames); 
 saveFileName = saveFileNameArray(1,:);
 saveFileName = saveFileName';
+
+%% Append pdfs
 myAppendPdfs(saveFileName,groupFileName)
 
