@@ -1,4 +1,4 @@
-function temp_plotDataGroupedByProbePosition(prefixCode,expNum,flyNum,cellNum,cellExpNum)
+function plotDataGroupedByProbePosition(prefixCode,expNum,flyNum,cellNum,cellExpNum)
 
 close all
 

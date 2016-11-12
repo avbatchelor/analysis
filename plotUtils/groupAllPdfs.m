@@ -1,6 +1,8 @@
-function groupAllPdfs
+function groupAllPdfs(folder,varargin)
 
-folder = uigetdir; 
+if nargin == 0 
+    folder = uigetdir; 
+end
 cd(folder) 
 subFolderNames = dir('*_figs'); 
 

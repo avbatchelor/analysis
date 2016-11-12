@@ -79,7 +79,7 @@ spaceplots
 
 
 %% Format and save
-saveFileName = [saveFolder,idString,'stimNum',num2str(0,'%03d'),'zero_current_trial.pdf'];
+saveFileName = [saveFolder,idString,'stimNum',num2str(0,'%03d'),'_zero_current_trial.pdf'];
 mySave(saveFileName);
 close all
 

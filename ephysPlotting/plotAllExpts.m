@@ -3,12 +3,19 @@ function plotAllExpts(prefixCode,expNum,flyNum)
 % Merges trials and plots data grouped by stimulus for each cell and cell
 % experiments for a fly
 
+%% Ask which cellExps are probe experiments 
+x = inputdlg('Enter probe experiments (space-separated numbers):',...
+             'Sample', [1 50]);
+probeExpts = str2num(x{:}); 
+
+%% Create exptInfo
 exptInfo.prefixCode     = prefixCode;
 exptInfo.expNum         = expNum;
 exptInfo.flyNum         = flyNum;
 exptInfo.cellNum        = 1;
 exptInfo.cellExpNum     = 1; 
 
+%% Run analysis files 
 [~,path] = getDataFileName(exptInfo);
 cellFileStem = char(regexp(path,'.*(?=cellNum)','match'));
 cd(cellFileStem); 
@@ -29,11 +36,15 @@ for i = 1:length(cellNumList)
         else 
             mergeTrials(exptInfo)
             plotZeroCurrentTrial(exptInfo)
-            plotDataGroupedByStim(exptInfo)
-%             plotProbeDiffFigForRepeat(exptInfo)
+            if ~any(j == probeExpts)
+                plotDataGroupedByStim(exptInfo)
+            else
+                plotDataGroupedByProbePosition(exptInfo.prefixCode,exptInfo.expNum,exptInfo.flyNum,exptInfo.cellNum,exptInfo.cellExpNum)
+                plotProbeDiffFigForRepeat(exptInfo.prefixCode,exptInfo.expNum,exptInfo.flyNum,exptInfo.cellNum,exptInfo.cellExpNum)
+            end
         end
     end
 end
 
 flyFolder = char(regexp(path,'.*(?=cellNum)','match'));
-groupPdfs([flyFolder,'Figures'])
+groupAllPdfs([flyFolder,'Figures'])
