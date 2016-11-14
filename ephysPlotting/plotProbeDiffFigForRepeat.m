@@ -2,53 +2,33 @@ function plotProbeDiffFigForRepeat(prefixCode,expNum,flyNum,cellNum,cellExpNum)
 
 close all
 
-%% group exptInfo
-exptInfo.prefixCode     = prefixCode;
-exptInfo.expNum         = expNum;
-exptInfo.flyNum         = flyNum;
-exptInfo.cellNum        = cellNum;
-exptInfo.cellExpNum     = cellExpNum;
+%% generate exptInfo
+exptInfo = makeExptInfoStruct(prefixCode,expNum,flyNum,cellNum,cellExpNum);
 
 %% Plot settings
-set(0,'DefaultAxesFontSize', 16)
-set(0,'DefaultFigureColor','w')
-set(0,'DefaultAxesBox','off')
+setPlotDefaults;
 
+%% Set colors
 gray = [192 192 192]./255;
-
 ColorSet = distinguishable_colors(30,'w');
 purple = [97 69 168]./255;
 
-
-%% Load groupedData file
-[~, path, ~, idString] = getDataFileName(exptInfo);
-fileName = [path,'groupedData.mat'];
-load(fileName);
-
-saveFolderStem = char(regexp(path,'.*(?=cellNum)','match'));
-saveFolder = [saveFolderStem,'Figures\','cellExpNum_',num2str(exptInfo.cellExpNum),'_figs\'];
-if ~isdir(saveFolder)
-    mkdir(saveFolder);
-end
-
-%% Load fly details
+%% Load settings and data
+[groupedDataFileName,flyDataFileName,exptDataFileName] = getFileNames(exptInfo);
+load(groupedDataFileName);
+load(flyDataFileName);
+load(exptDataFileName);
 ephysSettings;
-microCzarSettings;   % Loads settings
-filename = [dataDirectory,exptInfo.prefixCode,'\expNum',num2str(exptInfo.expNum,'%03d'),...
-    '\flyNum',num2str(exptInfo.flyNum,'%03d'),'\flyData'];
-load(filename);
 
-%% Load experiment details
-settingsFileName = [path,idString,'exptData.mat'];
-load(settingsFileName);
+%% Get SaveFolderName
+saveFolder = getSaveFolderName(exptInfo);
 
-% Convert date into text
+%% Convert date into text
 dateNumber = datenum(exptInfo.dNum,'yymmdd');
 dateAsString = datestr(dateNumber,'mm-dd-yy');
 
 %% Plot
 numStim = length(GroupData);
-
 
 for n = 1:numStim
     if isempty(GroupData(n).sampTime)
@@ -69,78 +49,8 @@ for n = 1:numStim
         ['probe on ',StimStruct(n).stimObj.probe,', volume = ',num2str(StimStruct(n).stimObj.maxVoltage)]};    
     
     %% Plot stimulus
-    % Determine if stimulus is piezo, speaker or neither
-    if ~isfield(exptInfo,'stimType')
-        exptInfo.stimType = 'n';
-    end
-    % Plot stimulus appropriately
-    if strcmpi(exptInfo.stimType,'p')
-        numStimPlots = 1;
-        numSubPlot = numStimPlots+numRepeats;
-        h(1) = subplot(numSubPlot,1,2);
-        hold on
-        plot(GroupStim(n).stimTime,GroupData(n).piezoCommand,'Color',gray)
-        plot(GroupData(n).sampTime,GroupData(n).piezoSG,'Color',purple)
-        if size(GroupData(n).piezoSG,1)>1
-            plot(GroupData(n).sampTime,mean(GroupData(n).piezoSG),'k')
-        end
-        ylabel('Voltage (V)')
-        set(gca,'Box','off','TickDir','out','XTickLabel','')
-        %     ylim([-0.1 10.1])
-        set(gca,'xtick',[])
-        set(gca,'XColor','white')
-        t = title(h(1),titleText);
-        set(t,'Fontsize',20);
-    elseif strcmpi(exptInfo.stimType,'s')
-        numStimPlots = 1;
-        numSubPlot = numStimPlots+numRepeats;
-        h(1) = subplot(numSubPlot,1,1);
-        if regexp(GroupData(n).description,'chirp')>=1
-            plotChirp(StimStruct(n).stimObj)
-        else
-            plot(GroupData(n).sampTime,GroupData(n).speakerCommand,'Color',purple)
-            ylabel('Voltage (V)')
-        end
-        hold on
-        set(gca,'Box','off','TickDir','out','XTickLabel','')
-        %     ylim([-1.1 1.1])
-        set(gca,'xtick',[])
-        set(gca,'XColor','white')
-        t = title(h(1),titleText);
-        set(t,'Fontsize',20);
-    elseif strcmpi(exptInfo.stimType,'n')
-        numStimPlots = 2;
-        numSubPlot = numStimPlots+numRepeats;
-        h(1) = subplot(numSubPlot,1,1);
-        if regexp(GroupData(n).description,'chirp')>=1
-            plotChirp(StimStruct(n).stimObj)
-        else
-            plot(GroupData(n).sampTime,GroupData(n).speakerCommand,'Color',purple)
-            ylabel('Voltage (V)')
-        end
-        hold on
-        set(gca,'Box','off','TickDir','out','XTickLabel','')
-        %     ylim([-1.1 1.1])
-        set(gca,'xtick',[])
-        set(gca,'XColor','white')
-        t = title(h(1),titleText);
-        set(t,'Fontsize',20);
-        
-        h(2) = subplot(numSubPlot,1,2);
-        hold on
-        plot(GroupStim(n).stimTime,GroupData(n).piezoCommand,'Color',gray)
-        plot(GroupData(n).sampTime,GroupData(n).piezoSG,'Color',purple)
-        if size(GroupData(n).piezoSG,1)>1
-            plot(GroupData(n).sampTime,mean(GroupData(n).piezoSG),'k')
-        end
-        ylabel('Voltage (V)')
-        set(gca,'Box','off','TickDir','out','XTickLabel','')
-        %     ylim([-0.1 10.1])
-        set(gca,'xtick',[])
-        set(gca,'XColor','white')
-    end
-    
-    
+    plotStimulus(exptInfo,GroupStim,GroupData,titleText,StimStruct,n,numRepeats)
+
     %% Plot voltage
     for k = 1:numRepeats
         h(3) = subplot(numSubPlot,1,numStimPlots+k);
@@ -161,10 +71,7 @@ for n = 1:numStim
         end
         hold on
         ylabel('Voltage (mV)')
-        set(gca,'Box','off','TickDir','out','XTickLabel','')
-        axis tight
-        set(gca,'xtick',[])
-        set(gca,'XColor','white')
+        bottomAxisSettings
         trialNums = 1:size(GroupData(n).voltage,1);
         legend(num2str(trialNums'))
     end

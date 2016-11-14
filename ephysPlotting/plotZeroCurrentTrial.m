@@ -3,17 +3,13 @@ function plotZeroCurrentTrial(exptInfo)
 close all
 
 %% Plot settings
-set(0,'DefaultAxesFontSize', 16)
-set(0,'DefaultFigureColor','w')
-set(0,'DefaultAxesBox','off')
+setPlotDefaults;
 
+%% Set Colors 
 gray = [192 192 192]./255;
-
 ColorSet = distinguishable_colors(5,'w');
-purple = [97 69 168]./255;
 
-
-%% Load groupedData file
+%% Load zero current file
 [~, path, ~, idString] = getDataFileName(exptInfo);
 preExptTrialsPath = [path,'\preExptTrials\'];
 if ~isdir(preExptTrialsPath)
@@ -27,6 +23,7 @@ if exist(zeroCFileName,'file') ~= 2
 end
 load(zeroCFileName);
 
+%% Generate saveFolder name
 saveFolderStem = char(regexp(path,'.*(?=cellNum)','match'));
 saveFolder = [saveFolderStem,'Figures\'];
 if ~isdir(saveFolder)
@@ -35,7 +32,6 @@ end
 
 %% Load fly details
 ephysSettings;
-microCzarSettings;   % Loads settings
 filename = [dataDirectory,exptInfo.prefixCode,'\expNum',num2str(exptInfo.expNum,'%03d'),...
     '\flyNum',num2str(exptInfo.flyNum,'%03d'),'\flyData'];
 load(filename);
@@ -44,26 +40,21 @@ load(filename);
 settingsFileName = [path,idString,'exptData.mat'];
 load(settingsFileName);
 
-% Convert date into text
+%% Convert date into text
 dateNumber = datenum(exptInfo.dNum,'yymmdd');
 dateAsString = datestr(dateNumber,'mm-dd-yy');
 
 %% Plot
 sampTime = (1:length(data.voltage))./settings.sampRate.in;
 
-fig = figure(1);
+figure(1);
 setCurrentFigurePosition(2)
 colormap(ColorSet);
 
 h(1) = subplot(2,1,1);
-set(gca, 'ColorOrder', ColorSet,'NextPlot', 'replacechildren');
-%     plot(GroupData(n).sampTime,GroupData(n).voltage,'Color',gray)
 plot(sampTime,data.voltage)
+noXAxisSettings
 ylabel('Voltage (mV)')
-set(gca,'Box','off','TickDir','out','XTickLabel','')
-axis tight
-set(gca,'xtick',[])
-set(gca,'XColor','white')
 t = title(h(1),{[dateAsString,', ',exptInfo.prefixCode,', ','ExpNum ',num2str(exptInfo.expNum),', FlyNum ',num2str(exptInfo.flyNum),', CellNum ',num2str(exptInfo.cellNum),', CellExpNum ',num2str(exptInfo.cellExpNum)];['Zero Current Trial']});
 set(t,'Fontsize',20);
 
@@ -71,8 +62,7 @@ h(2) = subplot(2,1,2);
 plot(sampTime,data.current,'Color',gray)
 xlabel('Time (s)')
 ylabel('Current (pA)')
-set(gca,'Box','off','TickDir','out')
-axis tight
+bottomAxisSettings
 
 linkaxes(h,'x')
 spaceplots

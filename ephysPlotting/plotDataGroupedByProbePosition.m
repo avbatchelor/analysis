@@ -2,51 +2,36 @@ function plotDataGroupedByProbePosition(prefixCode,expNum,flyNum,cellNum,cellExp
 
 close all
 
+%% generate exptInfo
+exptInfo = makeExptInfoStruct(prefixCode,expNum,flyNum,cellNum,cellExpNum);
+
 %% Plot settings
-set(0,'DefaultAxesFontSize', 16)
-set(0,'DefaultFigureColor','w')
-set(0,'DefaultAxesBox','off')
+setPlotDefaults;
 
+%% Set colors
 gray = [192 192 192]./255;
+ColorSet = distinguishable_colors(30,'w');
 
-ColorSet = distinguishable_colors(6,'w');
-
-%% Load groupedData file
-exptInfo.prefixCode     = prefixCode;
-exptInfo.expNum         = expNum;
-exptInfo.flyNum         = flyNum;
-exptInfo.cellNum        = cellNum;
-exptInfo.cellExpNum     = cellExpNum;
-
-[~, path, ~, idString] = getDataFileName(exptInfo);
-fileName = [path,'groupedData.mat'];
-load(fileName);
-
-saveFolderStem = char(regexp(path,'.*(?=cellNum)','match'));
-saveFolder = [saveFolderStem,'Figures\','cellExpNum_',num2str(exptInfo.cellExpNum),'_figs\'];
-if ~isdir(saveFolder)
-    mkdir(saveFolder);
-end
-
-%% Load fly details
-microCzarSettings;   % Loads settings
+%% Load settings and data
+[groupedDataFileName,flyDataFileName,exptDataFileName] = getFileNames(exptInfo);
+load(groupedDataFileName);
+load(flyDataFileName);
+load(exptDataFileName);
 ephysSettings;
-filename = [dataDirectory,prefixCode,'\expNum',num2str(expNum,'%03d'),...
-    '\flyNum',num2str(flyNum,'%03d'),'\flyData'];
-load(filename);
 
-%% Load experiment details
-settingsFileName = [path,idString,'exptData.mat'];
-load(settingsFileName);
+%% Get SaveFolderName
+saveFolder = getSaveFolderName(exptInfo);
 
-% Convert date into text
+%% Convert date into text
 dateNumber = datenum(exptInfo.dNum,'yymmdd');
 dateAsString = datestr(dateNumber,'mm-dd-yy');
 
+%% Get title
+titleText = {[dateAsString,', ',exptInfo.prefixCode,', ','ExpNum ',num2str(exptInfo.expNum),', FlyNum ',num2str(exptInfo.flyNum),', CellNum ',num2str(exptInfo.cellNum),', CellExpNum ',num2str(exptInfo.cellExpNum)];...
+    [GroupData(n).description,', StimNum = ',num2str(n),', volume = ',num2str(StimStruct(n).stimObj.maxVoltage)]};
+
+
 %% Plot
-numStim = length(GroupData);
-
-
 n = 1; 
 fig = figure(n);
 setCurrentFigurePosition(2)
@@ -56,19 +41,12 @@ h(1) = subplot(3,1,1);
 plot(GroupStim(n).stimTime,GroupStim(n).stimulus,'k')
 hold on
 ylabel('Voltage (V)')
-set(gca,'Box','off','TickDir','out','XTickLabel','')
 maxStim = max(GroupStim(n).stimulus);
 ylim([-maxStim-0.1 maxStim+.1])
-set(gca,'xtick',[])
-set(gca,'XColor','white')
-if n == 1
-    t = title(h(1),[dateAsString,', ',prefixCode,', ','ExpNum ',num2str(expNum),', FlyNum ',num2str(flyNum),', CellNum ',num2str(cellNum),', CellExpNum ',num2str(cellExpNum)]);
-    
-    %         t = title({[dateAsString,', ',prefixCode,', ','ExpNum ',num2str(expNum),', CellNum ',num2str(cellNum),', CellExpNum ',num2str(cellExpNum)];...
-    %             ['Membrane Resistance = ',num2str(preExptData.initialMembraneResistance/1000),' G{\Omega}',', Access Resistance = ',num2str(preExptData.initialAccessResistance/1000),' G{\Omega}']});
-    %         set(t, 'horizontalAlignment', 'left','units', 'normalized','position', [0 1 0])
-    set(t,'Fontsize',20);
-end
+noXAxisSettings
+t = title(h(1),titleText);
+set(t,'Fontsize',20);
+
 
 h(3) = subplot(3,1,2);
 legendText = cell(6,1);
@@ -80,10 +58,7 @@ for m = 1:size(GroupData,2)
 end
 
 ylabel('Voltage (mV)')
-set(gca,'Box','off','TickDir','out','XTickLabel','')
-axis tight
-set(gca,'xtick',[])
-set(gca,'XColor','white')
+noXAxisSettings
 lh = legend(legendText);
 legend('Location','SouthEast')
 %legend boxoff;
@@ -95,8 +70,7 @@ plot(GroupData(n).sampTime,mean(GroupData(n).current),'k')
 hold on
 xlabel('Time (s)')
 ylabel('Current (pA)')
-set(gca,'Box','off','TickDir','out')
-axis tight
+bottomAxisSettings
 
 linkaxes(h,'x')
 %xlim([2.5 4])
@@ -108,10 +82,6 @@ else
 end
 
 %% Format and save
-saveFilename{n} = [saveFolder,'\GroupData_Stim',num2str(n),'.pdf'];
-
-%% Format and save
-% saveFileName{n} = [saveFolder,idString,'probeExpt.pdf'];
 saveFileName{n} = [saveFolder,idString,'probeExpt_meanSubtracted.pdf'];
 mySave(saveFileName{n});
 close all

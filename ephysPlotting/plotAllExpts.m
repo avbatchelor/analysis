@@ -9,13 +9,9 @@ x = inputdlg('Enter probe experiments (space-separated numbers):',...
 probeExpts = str2num(x{:}); 
 
 %% Create exptInfo
-exptInfo.prefixCode     = prefixCode;
-exptInfo.expNum         = expNum;
-exptInfo.flyNum         = flyNum;
-exptInfo.cellNum        = 1;
-exptInfo.cellExpNum     = 1; 
+exptInfo = makeExptInfoStruct(prefixCode,expNum,flyNum,1,1);
 
-%% Run analysis files 
+%% Loops through cells and cell experiments, merge trials and run analysis 
 [~,path] = getDataFileName(exptInfo);
 cellFileStem = char(regexp(path,'.*(?=cellNum)','match'));
 cd(cellFileStem); 
@@ -46,5 +42,6 @@ for i = 1:length(cellNumList)
     end
 end
 
+%% Group pdfs
 flyFolder = char(regexp(path,'.*(?=cellNum)','match'));
 groupAllPdfs([flyFolder,'Figures'])
