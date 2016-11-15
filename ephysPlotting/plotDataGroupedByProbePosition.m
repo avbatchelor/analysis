@@ -22,17 +22,16 @@ ephysSettings;
 %% Get SaveFolderName
 saveFolder = getSaveFolderName(exptInfo);
 
-%% Convert date into text
-dateNumber = datenum(exptInfo.dNum,'yymmdd');
-dateAsString = datestr(dateNumber,'mm-dd-yy');
 
 %% Get title
-titleText = {[dateAsString,', ',exptInfo.prefixCode,', ','ExpNum ',num2str(exptInfo.expNum),', FlyNum ',num2str(exptInfo.flyNum),', CellNum ',num2str(exptInfo.cellNum),', CellExpNum ',num2str(exptInfo.cellExpNum)];...
+n = 1; 
+titleString = getTitleString(exptInfo);
+titleText = {titleString;...
     [GroupData(n).description,', StimNum = ',num2str(n),', volume = ',num2str(StimStruct(n).stimObj.maxVoltage)]};
 
 
 %% Plot
-n = 1; 
+
 fig = figure(n);
 setCurrentFigurePosition(2)
 colormap(ColorSet);
@@ -58,18 +57,8 @@ for m = 1:size(GroupData,2)
 end
 
 ylabel('Voltage (mV)')
-noXAxisSettings
 lh = legend(legendText);
 legend('Location','SouthEast')
-%legend boxoff;
-
-h(2) = subplot(3,1,3);
-plot(GroupData(n).sampTime,GroupData(n).current,'Color',gray)
-hold on
-plot(GroupData(n).sampTime,mean(GroupData(n).current),'k')
-hold on
-xlabel('Time (s)')
-ylabel('Current (pA)')
 bottomAxisSettings
 
 linkaxes(h,'x')

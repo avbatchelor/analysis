@@ -24,12 +24,9 @@ ephysSettings;
 %% Get SaveFolderName
 saveFolder = getSaveFolderName(exptInfo);
 
-%% Convert date into text
-dateNumber = datenum(exptInfo.dNum,'yymmdd');
-dateAsString = datestr(dateNumber,'mm-dd-yy');
-
 %% Determine title
-titleText = {[dateAsString,', ',exptInfo.prefixCode,', ','ExpNum ',num2str(exptInfo.expNum),', FlyNum ',num2str(exptInfo.flyNum),', CellNum ',num2str(exptInfo.cellNum),', CellExpNum ',num2str(exptInfo.cellExpNum)];...
+titleString = getTitleString(exptInfo);
+titleText = {titleString;...
     ['probe position: ',StimStruct(1).stimObj.probe,', volume = ',num2str(StimStruct(1).stimObj.maxVoltage)];['Pure tone tuning curve']};
 
 %% Integrate voltage for idfferent stim

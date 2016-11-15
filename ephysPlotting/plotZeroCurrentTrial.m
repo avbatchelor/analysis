@@ -40,9 +40,9 @@ load(filename);
 settingsFileName = [path,idString,'exptData.mat'];
 load(settingsFileName);
 
-%% Convert date into text
-dateNumber = datenum(exptInfo.dNum,'yymmdd');
-dateAsString = datestr(dateNumber,'mm-dd-yy');
+%% Determine title
+titleString = getTitleString(exptInfo);
+titleText = {titleString;'Zero Current Trial'};
 
 %% Plot
 sampTime = (1:length(data.voltage))./settings.sampRate.in;
@@ -55,7 +55,8 @@ h(1) = subplot(2,1,1);
 plot(sampTime,data.voltage)
 noXAxisSettings
 ylabel('Voltage (mV)')
-t = title(h(1),{[dateAsString,', ',exptInfo.prefixCode,', ','ExpNum ',num2str(exptInfo.expNum),', FlyNum ',num2str(exptInfo.flyNum),', CellNum ',num2str(exptInfo.cellNum),', CellExpNum ',num2str(exptInfo.cellExpNum)];['Zero Current Trial']});
+
+t = title(h(1),titleText);
 set(t,'Fontsize',20);
 
 h(2) = subplot(2,1,2);
