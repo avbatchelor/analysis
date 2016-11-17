@@ -1,12 +1,17 @@
-function plotAllExpts(prefixCode,expNum,flyNum)
+function plotAllExpts(prefixCode,expNum,flyNum,remerge,replot,varargin)
 
 % Merges trials and plots data grouped by stimulus for each cell and cell
 % experiments for a fly
 
-%% Ask which cellExps are probe experiments 
-x = inputdlg('Enter probe experiments (space-separated numbers):',...
-             'Sample', [1 50]);
-probeExpts = str2num(x{:}); 
+%% Work out whether to remerge trials
+if ~exist('remerge','var')
+    remerge = 0;
+end
+
+%% Work out whether to replot figures 
+if ~exist('replot','var')
+    replot = 0;
+end
 
 %% Create exptInfo
 exptInfo = makeExptInfoStruct(prefixCode,expNum,flyNum,1,1);
@@ -30,13 +35,24 @@ for i = 1:length(cellNumList)
         numTrials = length(fileNames);
         if numTrials == 0
         else 
-            mergeTrials(exptInfo)
-            plotZeroCurrentTrial(exptInfo)
-            if ~any(j == probeExpts)
-                plotDataGroupedByStim(exptInfo)
-            else
-                plotDataGroupedByProbePosition(exptInfo.prefixCode,exptInfo.expNum,exptInfo.flyNum,exptInfo.cellNum,exptInfo.cellExpNum)
-                plotProbeDiffFigForRepeat(exptInfo.prefixCode,exptInfo.expNum,exptInfo.flyNum,exptInfo.cellNum,exptInfo.cellExpNum)
+            %% Load exptInfo file 
+            [~,~,exptDataFileName,~] = getFileNames(exptInfo);
+            load(exptDataFileName)
+            stimSet = exptInfo.stimSetNum;
+            %% Merge trials
+            mergeTrials(exptInfo,remerge)
+            %% Make figures
+            if replot == 1 
+                plotZeroCurrentTrial(exptInfo)
+                if stimSet == 19 % run different code for probe experiments 
+                    plotDataGroupedByProbePosition(exptInfo.prefixCode,exptInfo.expNum,exptInfo.flyNum,exptInfo.cellNum,exptInfo.cellExpNum)
+                    plotProbeDiffFigForRepeat(exptInfo.prefixCode,exptInfo.expNum,exptInfo.flyNum,exptInfo.cellNum,exptInfo.cellExpNum)
+                else 
+                    plotDataGroupedByStim(exptInfo)
+                end
+                if any(stimSet == [20,24]) 
+                    plotTuningCurve(exptInfo.prefixCode,exptInfo.expNum,exptInfo.flyNum,exptInfo.cellNum,exptInfo.cellExpNum)
+                end
             end
         end
     end

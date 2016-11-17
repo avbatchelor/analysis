@@ -1,6 +1,7 @@
 function [h,numSubPlot] = plotStimulus(exptInfo,GroupStim,GroupData,titleText,StimStruct,n,numExtraPlots)
 
 purple = [97 69 168]./255;
+gray = [192 192 192]./255;
 
 % Determine if stimulus is piezo, speaker or neither
 if ~isfield(exptInfo,'stimType')

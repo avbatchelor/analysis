@@ -31,13 +31,26 @@ titleText = {titleString;...
 
 %% Integrate voltage for idfferent stim
 numStim = length(GroupData);
+count = 1;
 for n = 1:numStim
-    freq(n) = StimStruct(n).stimObj.carrierFreqHz;
-    meanVoltage = mean(GroupData(n).voltage);
-    meanVoltage = meanVoltage-mean(meanVoltage(5000:10000));
-    stimStartInd = StimStruct(n).stimObj.startPadDur*settings.sampRate.in;
-    stimEndInd = stimStartInd + StimStruct(n).stimObj.stimDur*settings.sampRate.in;
-    intVoltage(n) = sum(meanVoltage(stimStartInd:stimEndInd));
+    if isfield(StimStruct(n).stimObj,'class') 
+        if strcmp(StimStruct(n).stimObj.class,'SineWave') 
+            include = 1;
+        end
+    elseif regexp(StimStruct(n).stimObj.description,'tone')
+        include = 1;
+    else 
+        include = 0;
+    end
+    if include == 1
+        freq(count) = StimStruct(n).stimObj.carrierFreqHz;
+        meanVoltage = mean(GroupData(n).voltage);
+        meanVoltage = meanVoltage-mean(meanVoltage(5000:10000));
+        stimStartInd = StimStruct(n).stimObj.startPadDur*settings.sampRate.in;
+        stimEndInd = stimStartInd + StimStruct(n).stimObj.stimDur*settings.sampRate.in;
+        intVoltage(count) = sum(meanVoltage(stimStartInd:stimEndInd));
+        count = count+1;
+    end
 end
 
 normVoltage = intVoltage./max(intVoltage);
