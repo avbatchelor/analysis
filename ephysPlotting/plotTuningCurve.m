@@ -26,8 +26,17 @@ saveFolder = getSaveFolderName(exptInfo);
 
 %% Determine title
 titleString = getTitleString(exptInfo);
+try
 titleText = {titleString;...
     ['probe position: ',StimStruct(1).stimObj.probe,', volume = ',num2str(StimStruct(1).stimObj.maxVoltage)];['Pure tone tuning curve']};
+catch err
+    if (strcmp(err.identifier,'MATLAB:nonStrucReference'))
+        disp('Incomplete cell experiment')
+    else 
+        disp('Unknown error') 
+    end
+    return 
+end
 
 %% Integrate voltage for idfferent stim
 numStim = length(GroupData);
@@ -70,6 +79,8 @@ title(titleText)
 line([0,max(freq)],[0,0],'Color','k')
 xlabel('Frequency (Hz)')
 ylabel('Normalised response during stimulus')
+ylim([-1.1 1.1])
+xlim([0 400])
 
 %% Format figure
 spaceplots(fig,[0 0 0.025 0])

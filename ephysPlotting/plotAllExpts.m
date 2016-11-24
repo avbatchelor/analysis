@@ -33,7 +33,9 @@ for i = 1:length(cellNumList)
         cd(path);
         fileNames = dir('*trial*.mat');
         numTrials = length(fileNames);
-        if numTrials == 0
+        if exptInfo.cellExpNum ==1 && numTrials == 0
+            plotZeroCurrentTrial(exptInfo)
+        elseif numTrials == 0 
         else 
             %% Load exptInfo file 
             [~,~,exptDataFileName,~] = getFileNames(exptInfo);
@@ -43,21 +45,21 @@ for i = 1:length(cellNumList)
             mergeTrials(exptInfo,remerge)
             %% Make figures
             if replot == 1 
-                plotZeroCurrentTrial(exptInfo)
-                if stimSet == 19 % run different code for probe experiments 
-                    plotDataGroupedByProbePosition(exptInfo.prefixCode,exptInfo.expNum,exptInfo.flyNum,exptInfo.cellNum,exptInfo.cellExpNum)
-                    plotProbeDiffFigForRepeat(exptInfo.prefixCode,exptInfo.expNum,exptInfo.flyNum,exptInfo.cellNum,exptInfo.cellExpNum)
-                else 
-                    plotDataGroupedByStim(exptInfo)
-                end
-                if any(stimSet == [20,24]) 
-                    plotTuningCurve(exptInfo.prefixCode,exptInfo.expNum,exptInfo.flyNum,exptInfo.cellNum,exptInfo.cellExpNum)
-                end
+%                 plotZeroCurrentTrial(exptInfo)
+%                 if stimSet == 19 % run different code for probe experiments 
+%                     plotDataGroupedByProbePosition(exptInfo.prefixCode,exptInfo.expNum,exptInfo.flyNum,exptInfo.cellNum,exptInfo.cellExpNum)
+%                     plotProbeDiffFigForRepeat(exptInfo.prefixCode,exptInfo.expNum,exptInfo.flyNum,exptInfo.cellNum,exptInfo.cellExpNum)
+%                 else 
+%                     plotDataGroupedByStim(exptInfo)
+%                 end
+%                 if any(stimSet == [20,24]) 
+%                     plotTuningCurve(exptInfo.prefixCode,exptInfo.expNum,exptInfo.flyNum,exptInfo.cellNum,exptInfo.cellExpNum)
+%                 end
             end
         end
     end
 end
 
 %% Group pdfs
-flyFolder = char(regexp(path,'.*(?=cellNum)','match'));
-groupAllPdfs([flyFolder,'Figures'])
+% flyFolder = char(regexp(path,'.*(?=cellNum)','match'));
+% groupAllPdfs([flyFolder,'Figures'])

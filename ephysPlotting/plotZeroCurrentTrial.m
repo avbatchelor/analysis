@@ -11,12 +11,15 @@ ColorSet = distinguishable_colors(5,'w');
 
 %% Load zero current file
 [~, path, ~, idString] = getDataFileName(exptInfo);
-preExptTrialsPath = [path,'\preExptTrials\'];
+preExptTrialsPath = [path,'preExptTrials\'];
 if ~isdir(preExptTrialsPath)
     return
 end
 cd(preExptTrialsPath);
 zeroCFile = dir('*zeroCurrentTrial*.mat');
+if isempty(zeroCFile)
+    return
+end
 zeroCFileName = [preExptTrialsPath,zeroCFile(1).name];
 if exist(zeroCFileName,'file') ~= 2
     return
@@ -35,10 +38,6 @@ ephysSettings;
 filename = [dataDirectory,exptInfo.prefixCode,'\expNum',num2str(exptInfo.expNum,'%03d'),...
     '\flyNum',num2str(exptInfo.flyNum,'%03d'),'\flyData'];
 load(filename);
-
-%% Load experiment details
-settingsFileName = [path,idString,'exptData.mat'];
-load(settingsFileName);
 
 %% Determine title
 titleString = getTitleString(exptInfo);
@@ -70,7 +69,7 @@ spaceplots
 
 
 %% Format and save
-saveFileName = [saveFolder,idString,'stimNum',num2str(0,'%03d'),'_zero_current_trial.pdf'];
+saveFileName = [saveFolder,idString,'_zero_current_trial.pdf'];
 mySave(saveFileName);
 close all
 
