@@ -1,4 +1,4 @@
-function plotAllExpts(prefixCode,expNum,flyNum,remerge,replot,varargin)
+function plotAllExpts(prefixCode,expNum,flyNum,cellNum,remerge,replot,varargin)
 
 % Merges trials and plots data grouped by stimulus for each cell and cell
 % experiments for a fly
@@ -21,8 +21,15 @@ exptInfo = makeExptInfoStruct(prefixCode,expNum,flyNum,1,1);
 cellFileStem = char(regexp(path,'.*(?=cellNum)','match'));
 cd(cellFileStem); 
 cellNumList = dir('cellNum*');
+if exist('cellNum','var')
+    cellNumList = cellNum;
+end
 for i = 1:length(cellNumList)
-    exptInfo.cellNum = str2num(char(regexp(cellNumList(i).name,'(?<=cellNum).*','match')));
+    if exist('cellNum','var')
+        exptInfo.cellNum = cellNum;
+    else 
+        exptInfo.cellNum = str2num(char(regexp(cellNumList(i).name,'(?<=cellNum).*','match')));
+    end
     [~,path] = getDataFileName(exptInfo);
     cellExpFileStem = char(regexp(path,'.*(?=cellExpNum)','match'));
     cd(cellExpFileStem);
@@ -45,21 +52,21 @@ for i = 1:length(cellNumList)
             mergeTrials(exptInfo,remerge)
             %% Make figures
             if replot == 1 
-%                 plotZeroCurrentTrial(exptInfo)
-%                 if stimSet == 19 % run different code for probe experiments 
-%                     plotDataGroupedByProbePosition(exptInfo.prefixCode,exptInfo.expNum,exptInfo.flyNum,exptInfo.cellNum,exptInfo.cellExpNum)
-%                     plotProbeDiffFigForRepeat(exptInfo.prefixCode,exptInfo.expNum,exptInfo.flyNum,exptInfo.cellNum,exptInfo.cellExpNum)
-%                 else 
-%                     plotDataGroupedByStim(exptInfo)
-%                 end
-%                 if any(stimSet == [20,24]) 
-%                     plotTuningCurve(exptInfo.prefixCode,exptInfo.expNum,exptInfo.flyNum,exptInfo.cellNum,exptInfo.cellExpNum)
-%                 end
+                plotZeroCurrentTrial(exptInfo)
+                if stimSet == 19 % run different code for probe experiments 
+                    plotDataGroupedByProbePosition(exptInfo.prefixCode,exptInfo.expNum,exptInfo.flyNum,exptInfo.cellNum,exptInfo.cellExpNum)
+                    plotProbeDiffFigForRepeat(exptInfo.prefixCode,exptInfo.expNum,exptInfo.flyNum,exptInfo.cellNum,exptInfo.cellExpNum)
+                else 
+                    plotDataGroupedByStim(exptInfo)
+                end
+                if any(stimSet == [20,24,25]) 
+                    plotTuningCurve(exptInfo.prefixCode,exptInfo.expNum,exptInfo.flyNum,exptInfo.cellNum,exptInfo.cellExpNum)
+                end
             end
         end
     end
 end
 
-%% Group pdfs
+% %% Group pdfs
 % flyFolder = char(regexp(path,'.*(?=cellNum)','match'));
 % groupAllPdfs([flyFolder,'Figures'])

@@ -28,7 +28,7 @@ load(zeroCFileName);
 
 %% Generate saveFolder name
 saveFolderStem = char(regexp(path,'.*(?=cellNum)','match'));
-saveFolder = [saveFolderStem,'Figures\'];
+saveFolder = [saveFolderStem,'Figures\','cellNum_',num2str(exptInfo.cellNum),'\'];
 if ~isdir(saveFolder)
     mkdir(saveFolder);
 end
@@ -69,7 +69,7 @@ spaceplots
 
 
 %% Format and save
-saveFileName = [saveFolder,idString,'_zero_current_trial.pdf'];
+saveFileName = [saveFolder,idString,'zero_current_trial.pdf'];
 mySave(saveFileName);
 close all
 
