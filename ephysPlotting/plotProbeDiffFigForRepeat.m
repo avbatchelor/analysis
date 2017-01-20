@@ -2,6 +2,9 @@ function plotProbeDiffFigForRepeat(prefixCode,expNum,flyNum,cellNum,cellExpNum)
 
 close all
 
+%% For tight subplots
+subplot = @(m,n,p) subtightplot (m, n, p, [0.01 0.05], [0.1 0.15], [0.1 0.01]);
+
 %% generate exptInfo
 exptInfo = makeExptInfoStruct(prefixCode,expNum,flyNum,cellNum,cellExpNum);
 
@@ -79,11 +82,11 @@ for n = 1:numStim
     %% Format figure
     linkaxes(h,'x')
     
-    if n == 1
-        spaceplots(fig,[0 0 0.025 0])
-    else
-        spaceplots
-    end
+%     if n == 1
+%         spaceplots(fig,[0 0 0.025 0])
+%     else
+%         spaceplots
+%     end
     
     %% Format and save
     saveFileName{n} = [saveFolder,idString,'stimNum',num2str(n,'%03d'),'repeatSep.pdf'];

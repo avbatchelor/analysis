@@ -2,6 +2,9 @@ function plotDataGroupedByProbePosition(prefixCode,expNum,flyNum,cellNum,cellExp
 
 close all
 
+%% For tight subplots
+subplot = @(m,n,p) subtightplot (m, n, p, [0.01 0.05], [0.1 0.15], [0.1 0.01]);
+
 %% generate exptInfo
 exptInfo = makeExptInfoStruct(prefixCode,expNum,flyNum,cellNum,cellExpNum);
 
@@ -64,11 +67,11 @@ bottomAxisSettings
 linkaxes(h,'x')
 %xlim([2.5 4])
 
-if n == 1
-    spaceplots(fig,[0 0 0.025 0])
-else
-    spaceplots
-end
+% if n == 1
+%     spaceplots(fig,[0 0 0.025 0])
+% else
+%     spaceplots
+% end
 
 %% Format and save
 saveFileName{n} = [saveFolder,idString,'probeExpt_meanSubtracted.pdf'];

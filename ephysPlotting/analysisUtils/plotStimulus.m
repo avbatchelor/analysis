@@ -1,5 +1,9 @@
 function [h,numSubPlot] = plotStimulus(exptInfo,GroupStim,GroupData,titleText,StimStruct,n,numExtraPlots)
 
+%% For tight subplots
+subplot = @(m,n,p) subtightplot (m, n, p, [0.01 0.05], [0.1 0.15], [0.1 0.01]);
+
+%%
 purple = [97 69 168]./255;
 gray = [192 192 192]./255;
 

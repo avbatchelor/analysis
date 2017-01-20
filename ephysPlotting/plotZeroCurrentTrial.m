@@ -2,6 +2,8 @@ function plotZeroCurrentTrial(exptInfo)
 
 close all
 
+subplot = @(m,n,p) subtightplot (m, n, p, [0.01 0.05], [0.1 0.1], [0.1 0.01]);
+
 %% Plot settings
 setPlotDefaults;
 
@@ -65,7 +67,6 @@ ylabel('Current (pA)')
 bottomAxisSettings
 
 linkaxes(h,'x')
-spaceplots
 
 
 %% Format and save

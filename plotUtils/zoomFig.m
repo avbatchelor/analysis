@@ -20,6 +20,9 @@ p = uipushtool(t,'TooltipString','Toolbar push button',...
 %% Set the button icon
 p.CData = icon;
 
+%% Close figure
+close all
+
 end
              
              

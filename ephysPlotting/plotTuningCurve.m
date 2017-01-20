@@ -3,6 +3,9 @@ function plotTuningCurve(prefixCode,expNum,flyNum,cellNum,cellExpNum)
 
 close all
 
+%% For tight subplots
+subplot = @(m,n,p) subtightplot (m, n, p, [0.01 0.05], [0.1 0.1], [0.1 0.01]);
+
 %% generate exptInfo
 exptInfo = makeExptInfoStruct(prefixCode,expNum,flyNum,cellNum,cellExpNum);
 
@@ -94,8 +97,8 @@ xlim([0 xLimit])
 legend(legendText)
 legend BoxOff
 
-%% Format figure
-spaceplots(fig,[0 0 0.025 0])
+% %% Format figure
+% spaceplots(fig,[0 0 0.025 0])
 
 %% Format and save
 [~, ~, ~, idString] = getDataFileName(exptInfo);
