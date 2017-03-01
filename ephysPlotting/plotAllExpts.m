@@ -1,4 +1,4 @@
-function plotAllExpts(prefixCode,expNum,flyNum,cellNum,remerge,replot,varargin)
+function plotAllExpts(prefixCode,expNum,flyNum,cellNum,remerge,replot,cellExpNumToPlot,varargin)
 
 % Merges trials and plots data grouped by stimulus for each cell and cell
 % experiments for a fly
@@ -12,6 +12,12 @@ end
 if ~exist('replot','var')
     replot = 0;
 end
+
+%% Work out whether to plot all cellExpts 
+if ~exist('cellExpNumToPlot','var')
+    cellExpNumToPlot = 0;
+end
+
 
 %% Create exptInfo
 exptInfo = makeExptInfoStruct(prefixCode,expNum,flyNum,1,1);
@@ -34,7 +40,12 @@ for i = 1:length(cellNumList)
     cellExpFileStem = char(regexp(path,'.*(?=cellExpNum)','match'));
     cd(cellExpFileStem);
     cellExpNumList = dir('cellExpNum*');
-    for j = 1:length(cellExpNumList)
+    if cellExpNumToPlot == 0 
+        cellExpNumListToPlot = 1:length(cellExpNumList);
+    else 
+        cellExpNumListToPlot = cellExpNumToPlot; 
+    end
+    for j = cellExpNumListToPlot
         exptInfo.cellExpNum = str2num(char(regexp(cellExpNumList(j).name,'(?<=cellExpNum).*','match')));
         [~,path] = getDataFileName(exptInfo);
         cd(path);
@@ -53,9 +64,11 @@ for i = 1:length(cellNumList)
             %% Make figures
             if replot == 1 
                 plotZeroCurrentTrial(exptInfo)
-                if stimSet == 19 % run different code for probe experiments 
+                if any(stimSet == [19,29]) % run different code for probe experiments 
                     plotDataGroupedByProbePosition(exptInfo.prefixCode,exptInfo.expNum,exptInfo.flyNum,exptInfo.cellNum,exptInfo.cellExpNum)
                     plotProbeDiffFigForRepeat(exptInfo.prefixCode,exptInfo.expNum,exptInfo.flyNum,exptInfo.cellNum,exptInfo.cellExpNum)
+                elseif stimSet == 21 
+                    plotMean(exptInfo)
                 else 
                     plotDataGroupedByStim(exptInfo)
                 end

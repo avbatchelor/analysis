@@ -16,7 +16,7 @@ gray = [192 192 192]./255;
 ColorSet = distinguishable_colors(30,'w');
 
 %% Load settings and data
-[groupedDataFileName,flyDataFileName,exptDataFileName] = getFileNames(exptInfo);
+[groupedDataFileName,flyDataFileName,exptDataFileName,idString] = getFileNames(exptInfo);
 load(groupedDataFileName);
 load(flyDataFileName);
 load(exptDataFileName);
@@ -51,18 +51,27 @@ set(t,'Fontsize',20);
 
 
 h(3) = subplot(3,1,2);
-legendText = cell(6,1);
+legendText = cell(size(GroupData,2),1);
 for m = 1:size(GroupData,2)
 %     plot(GroupData(m).sampTime,mean(GroupData(m).voltage),'Color',ColorSet(m,:))
-    plot(GroupData(m).sampTime,mean(GroupData(m).voltage)-mean(GroupData(m).voltage(5000:10000)),'Color',ColorSet(m,:))
+    voltageData = mean(GroupData(m).voltage)-mean(GroupData(m).voltage(5000:10000));
+    plot(GroupData(m).sampTime,voltageData,'Color',ColorSet(m,:))
     hold on
-    legendText(m,1) = {['probe on ',StimStruct(m).stimObj.probe,', volume = ',num2str(StimStruct(m).stimObj.maxVoltage)]};
+    if exptInfo.stimSetNum == 19
+        legendText(m,1) = {['probe on ',StimStruct(m).stimObj.probe,', volume = ',num2str(StimStruct(m).stimObj.maxVoltage)]};
+    elseif exptInfo.stimSetNum == 29 
+        legendText(m,1) = {[GroupData(m).odor]};
+    end
 end
 
 ylabel('Voltage (mV)')
 lh = legend(legendText);
 legend('Location','SouthEast')
 bottomAxisSettings
+
+plotZeroLine(GroupData(m).sampTime)
+
+
 
 linkaxes(h,'x')
 %xlim([2.5 4])
@@ -78,5 +87,9 @@ saveFileName{n} = [saveFolder,idString,'probeExpt_meanSubtracted.pdf'];
 mySave(saveFileName{n});
 close all
 
+end
 
+function plotZeroLine(time)
+hold on
+line([time(1),time(end)],[0,0],'Color','k','Linewidth',0.5)
 end

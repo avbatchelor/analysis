@@ -17,7 +17,7 @@ ColorSet = distinguishable_colors(30,'w');
 purple = [97 69 168]./255;
 
 %% Load settings and data
-[groupedDataFileName,flyDataFileName,exptDataFileName] = getFileNames(exptInfo);
+[groupedDataFileName,flyDataFileName,exptDataFileName,idString] = getFileNames(exptInfo);
 load(groupedDataFileName);
 load(flyDataFileName);
 load(exptDataFileName);
@@ -37,29 +37,40 @@ for n = 1:numStim
         continue
     end
     
-    %% Create figure 
+    %% Create figure
     fig = figure(n);
     setCurrentFigurePosition(2)
     colormap(ColorSet);
     
-    %% Calculate number of repeats 
+    %% Calculate number of repeats
     numRepeats = ceil(size(GroupData(1).voltage,1)/3);
     
-    %% Determine title 
-    titleText = {titleString;...
-        [GroupData(n).description,', StimNum = ',num2str(n)];...
-        ['probe on ',StimStruct(n).stimObj.probe,', volume = ',num2str(StimStruct(n).stimObj.maxVoltage)]};    
+    %% Determine title
+    if exptInfo.stimSetNum == 19
+        titleText = {titleString;...
+            [GroupData(n).description,', StimNum = ',num2str(n)];...
+            ['probe on ',StimStruct(n).stimObj.probe,', volume = ',num2str(StimStruct(n).stimObj.maxVoltage)]};
+    else
+        titleText = {titleString;...
+            [GroupData(n).description,', StimNum = ',num2str(n)]};
+    end
     
     %% Plot stimulus
-    plotStimulus(exptInfo,GroupStim,GroupData,titleText,StimStruct,n,numRepeats)
-
+    [h, numSubPlot]=plotStimulus(exptInfo,GroupStim,GroupData,titleText,StimStruct,n,numRepeats);
+    
     %% Plot voltage
     for k = 1:numRepeats
-        h(3) = subplot(numSubPlot,1,numStimPlots+k);
+        h(3) = subplot(numSubPlot,1,numSubPlot-(numRepeats-k));
         set(gca, 'ColorOrder', ColorSet(3*(k-1)+1:end,:),'NextPlot', 'replacechildren');
         %     plot(GroupData(n).sampTime,GroupData(n).voltage,'Color',gray)
         traceToPlot = (3*(k-1))+(1:3);
         numTrials = size(GroupData(n).voltage,1);
+%         %%%%%% Filter 
+%         cutoffFreq = 30;
+%         rate = 2*(cutoffFreq/settings.sampRate.in);
+%         [kb, ka] = butter(2,rate);
+%         GroupData(n).voltage = filtfilt(kb, ka, GroupData(n).voltage')';
+%         %%%%%%
         if max(traceToPlot)>numTrials
             if traceToPlot(1)<=numTrials
                 plot(GroupData(n).sampTime,GroupData(n).voltage(traceToPlot(1):end,:))
@@ -82,11 +93,11 @@ for n = 1:numStim
     %% Format figure
     linkaxes(h,'x')
     
-%     if n == 1
-%         spaceplots(fig,[0 0 0.025 0])
-%     else
-%         spaceplots
-%     end
+    %     if n == 1
+    %         spaceplots(fig,[0 0 0.025 0])
+    %     else
+    %         spaceplots
+    %     end
     
     %% Format and save
     saveFileName{n} = [saveFolder,idString,'stimNum',num2str(n,'%03d'),'repeatSep.pdf'];
