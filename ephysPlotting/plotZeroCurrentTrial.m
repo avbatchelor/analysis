@@ -13,6 +13,7 @@ ColorSet = distinguishable_colors(5,'w');
 
 %% Load zero current file
 [~, path, ~, idString] = getDataFileName(exptInfo);
+pPath = getProcessedDataFileName(exptInfo);
 preExptTrialsPath = [path,'preExptTrials\'];
 if ~isdir(preExptTrialsPath)
     return
@@ -29,7 +30,7 @@ end
 load(zeroCFileName);
 
 %% Generate saveFolder name
-saveFolderStem = char(regexp(path,'.*(?=cellNum)','match'));
+saveFolderStem = char(regexp(pPath,'.*(?=cellNum)','match'));
 saveFolder = [saveFolderStem,'Figures\','cellNum_',num2str(exptInfo.cellNum),'\'];
 if ~isdir(saveFolder)
     mkdir(saveFolder);
