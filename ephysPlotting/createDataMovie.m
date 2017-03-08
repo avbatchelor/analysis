@@ -6,9 +6,10 @@ function createDataMovie(exptInfo)
 vidPath = [path,'groupedVideos\'];
 pPath = getProcessedDataFileName(exptInfo);
 
+% Load data 
+load(fullfile(pPath,[idString,'opticFlow.mat']));
+load(fullfile(pPath,[idString,'groupedData.mat']));
 
-% Load optic flow data 
-opticFlowFileName = fullfile(pPath,[idString,'opticFlow.mat']);
 end 
 
 
