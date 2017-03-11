@@ -2,7 +2,7 @@ close all
 
 x = 0:0.001:10;
 
-for i = 1%:10
+for i = 1:10
     
     freq(i) = i;
     
