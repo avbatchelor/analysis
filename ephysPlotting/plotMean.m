@@ -50,8 +50,8 @@ for n = 1:numStim
     h(3) = subplot(numSubPlot,1,numSubPlot-1);
     set(gca, 'ColorOrder', ColorSet,'NextPlot', 'replacechildren');
     %     plot(GroupData(n).sampTime,GroupData(n).voltage,'Color',gray)
-    baseline{n} = mean(GroupData(n).voltage(:,25000:30000),2)';
-    meanSubVolt = bsxfun(@minus,GroupData(n).voltage,baseline{n}');
+    baseline{n} = mean(mean(GroupData(n).voltage(:,25000:30000),2)');
+    meanSubVolt = mean(GroupData(n).voltage) - baseline{n};
     plot(GroupData(n).sampTime,meanSubVolt)
     plotBaseline(GroupData(n).sampTime,meanSubVolt)
     hold on
@@ -62,11 +62,11 @@ for n = 1:numStim
     ylabel('Voltage (mV)')
     noXAxisSettings
     trialNums = 1:size(GroupData(n).voltage,1);
-    for i = 1:length(trialNums)
-        baselineVect = baseline{n};
-        legendText(i,1) = {[num2str(trialNums(i)),', ',num2str(baselineVect(i)),'mV']};
-    end
-    legend(legendText)
+%     for i = 1:length(trialNums)
+%         baselineVect = baseline{n};
+%         legendText(i,1) = {[num2str(trialNums(i)),', ',num2str(baselineVect(i)),'mV']};
+%     end
+%     legend(legendText)
     
     h(4) = subplot(numSubPlot,1,numSubPlot);
     plot(GroupData(n).sampTime,GroupData(n).current,'Color',gray)

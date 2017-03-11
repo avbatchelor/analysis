@@ -3,6 +3,9 @@ function plotTuningCurve(prefixCode,expNum,flyNum,cellNum,cellExpNum)
 
 close all
 
+%% For tight subplots
+subplot = @(m,n,p) subtightplot (m, n, p, [0.01 0.05], [0.1 0.1], [0.1 0.01]);
+
 %% generate exptInfo
 exptInfo = makeExptInfoStruct(prefixCode,expNum,flyNum,cellNum,cellExpNum);
 
@@ -45,6 +48,8 @@ for n = 1:numStim
     if isfield(StimStruct(n).stimObj,'class') 
         if strcmp(StimStruct(n).stimObj.class,'SineWave') 
             include = 1;
+        else 
+            include = 0;
         end
     elseif regexp(StimStruct(n).stimObj.description,'tone')
         include = 1;
@@ -53,7 +58,8 @@ for n = 1:numStim
     end
     if include == 1
         freq(count) = StimStruct(n).stimObj.carrierFreqHz;
-        meanVoltage = mean(GroupData(n).voltage);
+        vol(count) = StimStruct(n).stimObj.maxVoltage;
+        meanVoltage = mean(GroupData(n).voltage,1);
         meanVoltage = meanVoltage-mean(meanVoltage(5000:10000));
         stimStartInd = StimStruct(n).stimObj.startPadDur*settings.sampRate.in;
         stimEndInd = stimStartInd + StimStruct(n).stimObj.stimDur*settings.sampRate.in;
@@ -68,22 +74,31 @@ normVoltage = intVoltage./max(intVoltage);
 fig = figure(1);
 setCurrentFigurePosition(2)
 colormap(ColorSet);
+hold on 
 
 
 %% PLOT
-plot(freq,normVoltage,'Color',gray,'LineWidth',3)
-hold on
-plot(freq,normVoltage,'r.','MarkerSize',20)
+xLimit = 400;
+uniqueVols = unique(vol);
+for i = 1:length(uniqueVols)
+    volTrials = find(vol == uniqueVols(i));
+    plot(freq(volTrials),normVoltage(volTrials),'Color',ColorSet(i,:),'LineWidth',3)
+    hold on 
+    legendText{i} = ['vol = ',num2str(uniqueVols(i))];
+end
+plot(freq,normVoltage,'.','Color',ColorSet(i+1,:),'MarkerSize',20)
 bottomAxisSettings
 title(titleText)
-line([0,max(freq)],[0,0],'Color','k')
+line([0,xLimit],[0,0],'Color','k')
 xlabel('Frequency (Hz)')
 ylabel('Normalised response during stimulus')
 ylim([-1.1 1.1])
-xlim([0 400])
+xlim([0 xLimit])
+legend(legendText)
+legend BoxOff
 
-%% Format figure
-spaceplots(fig,[0 0 0.025 0])
+% %% Format figure
+% spaceplots(fig,[0 0 0.025 0])
 
 %% Format and save
 [~, ~, ~, idString] = getDataFileName(exptInfo);

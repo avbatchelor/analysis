@@ -18,6 +18,10 @@ end
 
 %% Determine summary figure file name
 allFileStem = char(regexp(fileNames(1).name,'.*(?=_stim)','match'));
+if isempty(allFileStem)
+    allFileStem = char(regexp(fileNames(1).name,'.*(?=_zero)','match'));
+end
+
 %allFileStem = char(regexp(fileNames(1).name,'.*(?=roi)','match'));
 
 groupFileName = [saveFolder,allFileStem,'_summary_fig.pdf'];

@@ -1,5 +1,9 @@
 function [h,numSubPlot] = plotStimulus(exptInfo,GroupStim,GroupData,titleText,StimStruct,n,numExtraPlots)
 
+%% For tight subplots
+subplot = @(m,n,p) subtightplot (m, n, p, [0.01 0.05], [0.1 0.15], [0.1 0.01]);
+
+%%
 purple = [97 69 168]./255;
 gray = [192 192 192]./255;
 
@@ -36,7 +40,7 @@ elseif strcmpi(exptInfo.stimType,'s')
     noXAxisSettings
     t = title(h(1),titleText);
     set(t,'Fontsize',20);
-elseif strcmpi(exptInfo.stimType,'n')
+elseif strcmpi(exptInfo.stimType,'b')
     numStimPlots = 2;
     numSubPlot = numStimPlots+numExtraPlots;
     h(1) = subplot(numSubPlot,1,1);
@@ -60,6 +64,9 @@ elseif strcmpi(exptInfo.stimType,'n')
     end
     ylabel('Voltage (V)')
     noXAxisSettings
+elseif strcmpi(exptInfo.stimType,'n')
+    h = [];
+    numSubPlot = numExtraPlots;
 end
 
 end

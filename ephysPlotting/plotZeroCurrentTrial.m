@@ -2,6 +2,8 @@ function plotZeroCurrentTrial(exptInfo)
 
 close all
 
+subplot = @(m,n,p) subtightplot (m, n, p, [0.01 0.05], [0.1 0.1], [0.1 0.01]);
+
 %% Plot settings
 setPlotDefaults;
 
@@ -11,6 +13,7 @@ ColorSet = distinguishable_colors(5,'w');
 
 %% Load zero current file
 [~, path, ~, idString] = getDataFileName(exptInfo);
+pPath = getProcessedDataFileName(exptInfo);
 preExptTrialsPath = [path,'preExptTrials\'];
 if ~isdir(preExptTrialsPath)
     return
@@ -27,8 +30,8 @@ end
 load(zeroCFileName);
 
 %% Generate saveFolder name
-saveFolderStem = char(regexp(path,'.*(?=cellNum)','match'));
-saveFolder = [saveFolderStem,'Figures\'];
+saveFolderStem = char(regexp(pPath,'.*(?=cellNum)','match'));
+saveFolder = [saveFolderStem,'Figures\','cellNum_',num2str(exptInfo.cellNum),'\'];
 if ~isdir(saveFolder)
     mkdir(saveFolder);
 end
@@ -65,11 +68,10 @@ ylabel('Current (pA)')
 bottomAxisSettings
 
 linkaxes(h,'x')
-spaceplots
 
 
 %% Format and save
-saveFileName = [saveFolder,idString,'_zero_current_trial.pdf'];
+saveFileName = [saveFolder,idString,'zero_current_trial.pdf'];
 mySave(saveFileName);
 close all
 
