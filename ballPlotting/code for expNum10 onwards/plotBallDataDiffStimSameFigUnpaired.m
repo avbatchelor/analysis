@@ -47,9 +47,6 @@ sumTitle = {[dateAsString,', ',exptInfo.prefixCode,', ExpNum ',num2str(exptInfo.
 
 %% Hardcoded paramters
 timeBefore = 0.3;
-pipStartInd = Stim.startPadDur*Stim.sampleRate/dsFactor + 1;
-indBefore = pipStartInd - timeBefore*Stim.sampleRate/dsFactor;
-indAfter = pipStartInd + timeBefore*Stim.sampleRate/dsFactor;
 
 %% Set colors
 uniqueStim = unique(groupedData.stimNum);
@@ -77,7 +74,12 @@ end
 %% Plot for each stim Num
 for i = 1:length(uniqueStim)
     
-    
+    %% Calculate stimulus start time 
+    pipStartInd = groupedData.stimStartPadDur{i}*Stim.sampleRate/dsFactor + 1;
+    indBefore = pipStartInd - timeBefore*Stim.sampleRate/dsFactor;
+    indAfter = pipStartInd + timeBefore*Stim.sampleRate/dsFactor;
+
+    %% Configure figure
     currColor = 'b';
     figure
     set(0,'DefaultFigureWindowStyle','normal')

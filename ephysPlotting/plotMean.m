@@ -1,4 +1,4 @@
-function plotDataGroupedByStim(exptInfo)
+function plotMean(exptInfo)
 
 close all
 
@@ -50,10 +50,14 @@ for n = 1:numStim
     h(3) = subplot(numSubPlot,1,numSubPlot-1);
     set(gca, 'ColorOrder', ColorSet,'NextPlot', 'replacechildren');
     %     plot(GroupData(n).sampTime,GroupData(n).voltage,'Color',gray)
-    baseline{n} = mean(mean(GroupData(n).voltage(:,25000:30000),2)');
+    baseline{n} = mean(mean(GroupData(n).voltage(:,1:10000),2)');
     meanSubVolt = mean(GroupData(n).voltage) - baseline{n};
     plot(GroupData(n).sampTime,meanSubVolt)
+    try 
     plotBaseline(GroupData(n).sampTime,meanSubVolt)
+    catch
+        disp('Trial too short to plot baseline')
+    end
     hold on
     if size(GroupData(n).voltage,1)>1
         %         plot(GroupData(n).sampTime,mean(GroupData(n).voltage),'k')
@@ -103,7 +107,7 @@ end
 end
 
 function plotBaseline(time,data)
-baseLevel = mean(mean(data(:,25000:30000)));
+baseLevel = mean(mean(data(:,1:10000)));
 hold on
 line([time(1),time(end)],[baseLevel,baseLevel],'Color','k','Linewidth',0.5)
 end

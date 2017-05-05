@@ -61,10 +61,10 @@ for i = 1:length(cellNumList)
             stimSet = exptInfo.stimSetNum;
             %% Merge trials
             mergeTrials(exptInfo,remerge)
-            %% Convert tiffs to videos 
-            aviFromTiff(exptInfo)
-            %% Calculate optic flow 
-            calculateOpticFlow(exptInfo)
+%             % Convert tiffs to videos 
+%             aviFromTiff(exptInfo)
+%             % Calculate optic flow 
+%             calculateOpticFlow(exptInfo)
             %% Make figures
             if replot == 1 
                 plotZeroCurrentTrial(exptInfo)

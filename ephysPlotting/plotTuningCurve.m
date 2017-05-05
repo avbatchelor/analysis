@@ -41,6 +41,12 @@ catch err
     return 
 end
 
+%% Only plot tuning curve if I ran all stimuli 
+testArray = {StimStruct.stimObj};
+if any(cellfun(@isempty,testArray))
+    return 
+end
+
 %% Integrate voltage for idfferent stim
 numStim = length(GroupData);
 count = 1;
