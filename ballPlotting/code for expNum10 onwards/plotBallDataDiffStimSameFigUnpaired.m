@@ -1,4 +1,4 @@
-function plotBallDataDiffStimSameFig(prefixCode,expNum,flyNum,flyExpNum)
+function plotBallDataDiffStimSameFigUnpaired(prefixCode,expNum,flyNum,flyExpNum)
 
 %% Load group filename
 dsFactor = 400;
@@ -43,7 +43,7 @@ if ~isfield(exptInfo,'flyExpNotes')
     exptInfo.flyExpNotes = '';
 end
 sumTitle = {[dateAsString,', ',exptInfo.prefixCode,', ExpNum ',num2str(exptInfo.expNum),', FlyNum ',num2str(exptInfo.flyNum),...
-    ', FlyExpNum ',num2str(exptInfo.flyExpNum)];['Aim: ',FlyData.aim];['Expt Notes: ',exptInfo.flyExpNotes]};
+    ', FlyExpNum ',num2str(exptInfo.flyExpNum)];['Aim: ',char(FlyData.aim)];['Expt Notes: ',exptInfo.flyExpNotes]};
 
 %% Hardcoded paramters
 timeBefore = 0.3;
@@ -77,16 +77,14 @@ end
 %% Plot for each stim Num
 for i = 1:length(uniqueStim)
     
-    if mod(i,2)
-        currColor = 'b';
-        figure
-        set(0,'DefaultFigureWindowStyle','normal')
-        setCurrentFigurePosition(1);
-        subplot = @(m,n,p) subtightplot (m, n, p, [0.01 0.05], [0.1 0.01], [0.1 0.01]);
-        set(0,'DefaultFigureColor','w')
-    else
-        currColor = 'r';
-    end
+    
+    currColor = 'b';
+    figure
+    set(0,'DefaultFigureWindowStyle','normal')
+    setCurrentFigurePosition(1);
+    subplot = @(m,n,p) subtightplot (m, n, p, [0.01 0.05], [0.1 0.01], [0.1 0.01]);
+    set(0,'DefaultFigureColor','w')
+    
     
     %% Select the trials for this stimulus
     trialsToIncludeNums = trialNums(groupedData.trialsToInclude);
@@ -96,9 +94,9 @@ for i = 1:length(uniqueStim)
     %% Rotate each of these trials
     count = 0;
     for j = stimNumInd
-            count = count+1;
-            rotVel(count,:,:) = R*[groupedData.xVel{j}';groupedData.yVel{j}'];
-            rotDisp(count,:,:) = R*[groupedData.xDisp{j}';groupedData.yDisp{j}'];
+        count = count+1;
+        rotVel(count,:,:) = R*[groupedData.xVel{j}';groupedData.yVel{j}'];
+        rotDisp(count,:,:) = R*[groupedData.xDisp{j}';groupedData.yDisp{j}'];
     end
     
     if isempty(stimNumInd)
@@ -128,7 +126,7 @@ for i = 1:length(uniqueStim)
     stdXVel = std(rotXVel);
     stdYVel = std(rotYVel);
     
-    %% Get LED data  
+    %% Get LED data
     LEDStim = groupedData.led{i};
     
     %% Plot stimulus
@@ -144,7 +142,7 @@ for i = 1:length(uniqueStim)
     hold on
     mySimplePlot(groupedData.dsTime{i},meanXVel,'Color',currColor,'Linewidth',2)
     mySimplePlot(groupedData.dsTime{i},rotXVel,'Color',currColor,'Linewidth',0.5)
-
+    
     %     mySimplePlot(groupedData.dsTime,meanXVel+stdXVel,'Color',colorSet(i,:),'Linewidth',0.5)
     %     mySimplePlot(groupedData.dsTime,meanXVel-stdXVel,'Color',colorSet(i,:),'Linewidth',0.5)
     set(gca,'XTick',[])
@@ -158,7 +156,7 @@ for i = 1:length(uniqueStim)
     sph(3) = subplot(7,2,5);
     hold on
     mySimplePlot(groupedData.dsTime{i},meanYVel,'Color',currColor,'Linewidth',2)
-    mySimplePlot(groupedData.dsTime{i},rotYVel,'Color',currColor,'Linewidth',0.5)
+%     mySimplePlot(groupedData.dsTime{i},rotYVel,'Color',currColor,'Linewidth',0.5)
     %     mySimplePlot(groupedData.dsTime,meanYVel+stdYVel,'Color',colorSet(i,:),'Linewidth',0.5)
     %     mySimplePlot(groupedData.dsTime,meanYVel-stdYVel,'Color',colorSet(i,:),'Linewidth',0.5)
     set(gca,'XTick',[])
@@ -172,7 +170,7 @@ for i = 1:length(uniqueStim)
     sph(4) = subplot(7,2,7);
     hold on
     mySimplePlot(groupedData.dsTime{i},meanXDisp,'Color',currColor,'Linewidth',2)
-    mySimplePlot(groupedData.dsTime{i},rotXDisp,'Color',currColor,'Linewidth',0.5)
+%     mySimplePlot(groupedData.dsTime{i},rotXDisp,'Color',currColor,'Linewidth',0.5)
     %     mySimplePlot(groupedData.dsTime,meanXDisp+stdXDisp,'Color',colorSet(i,:),'Linewidth',0.5)
     %     mySimplePlot(groupedData.dsTime,meanXDisp-stdXDisp,'Color',colorSet(i,:),'Linewidth',0.5)
     %
@@ -188,7 +186,7 @@ for i = 1:length(uniqueStim)
     sph(5) = subplot(7,2,9);
     hold on
     mySimplePlot(groupedData.dsTime{i},meanYDisp,'Color',currColor,'Linewidth',2)
-    mySimplePlot(groupedData.dsTime{i},rotYDisp,'Color',currColor,'Linewidth',0.5)
+%     mySimplePlot(groupedData.dsTime{i},rotYDisp,'Color',currColor,'Linewidth',0.5)
     %     mySimplePlot(groupedData.dsTime,meanYDisp+stdYDisp,'Color',colorSet(i,:),'Linewidth',0.5)
     %     mySimplePlot(groupedData.dsTime,meanYDisp-stdYDisp,'Color',colorSet(i,:),'Linewidth',0.5)
     ylabel({'Y Disp';'(mm)'})
@@ -216,20 +214,20 @@ for i = 1:length(uniqueStim)
     
     sph(7) = subtightplot (7, 2, 13, [0.1 0.05], [0.1 0.01], [0.1 0.01]);
     hold on
-%     bins = -10:0.5:40;
-%     lvTemp = [lvTemp;rotXVel(:)];
-%     hist(lvTemp,bins);
-%     xlim([-10 40])
-%     xlabel('Lateral velocity (mm/s)')
-%     ylabel('Counts')
-    if mod(i,2)
-        bh1 = bar(trialNums,groupedData.trialSpeed,'EdgeColor',gray,'FaceColor',gray);
-    end
+    %     bins = -10:0.5:40;
+    %     lvTemp = [lvTemp;rotXVel(:)];
+    %     hist(lvTemp,bins);
+    %     xlim([-10 40])
+    %     xlabel('Lateral velocity (mm/s)')
+    %     ylabel('Counts')
+    
+    bh1 = bar(trialNums,groupedData.trialSpeed,'EdgeColor',gray,'FaceColor',gray);
+    
     line([0,trialNums(end)],[3,3],'Color','k')
     bw = get(bh1,'BarWidth');
     bar(stimNumIndNotSelected,groupedData.trialSpeed(stimNumIndNotSelected),'EdgeColor',currColor,'FaceColor',currColor,'BarWidth',bw/min(diff(sort(stimNumIndNotSelected))));
-%     notIncInd = trialNums(~groupedData.trialsToInclude);
-%     bar(notIncInd,groupedData.trialSpeed(~groupedData.trialsToInclude),'FaceColor','b')
+    %     notIncInd = trialNums(~groupedData.trialsToInclude);
+    %     bar(notIncInd,groupedData.trialSpeed(~groupedData.trialsToInclude),'FaceColor','b')
     plot(stimNumIndNotSelected,max(groupedData.trialSpeed)+1,'*','Color',currColor)
     ylabel({'Trial avg speed';'(mm/s)'})
     xlabel('Trial number')
@@ -237,19 +235,17 @@ for i = 1:length(uniqueStim)
     box off;
     set(gca,'TickDir','out')
     axis tight
-    if mod(i,2)
-        t1s = ['Successful left trials = ',num2str(length(stimNumInd)),'/',num2str(length(stimNumIndNotSelected))];
-    else 
-        t2s = ['Successful right trials = ',num2str(length(stimNumInd)),'/',num2str(length(stimNumIndNotSelected))];
-        title([t1s,'   ',t2s])
-    end
+    
+    t1s = ['Successful trials = ',num2str(length(stimNumInd)),'/',num2str(length(stimNumIndNotSelected))];
+    title([t1s])
+    
     
     sph(8) = subplot(7,2,2:2:6);
     hold on
     line([rotXDisp(:,pipStartInd),rotXDisp(:,indBefore)]',[rotYDisp(:,pipStartInd),rotYDisp(:,indBefore)]','Color','k');
     line([rotXDisp(:,pipStartInd),rotXDisp(:,indAfter)]',[rotYDisp(:,pipStartInd),rotYDisp(:,indAfter)]','Color',currColor);
     axis tight
-%     xlim([-5 5])
+    %     xlim([-5 5])
     ylabel('Y displacement (mm)')
     
     
@@ -260,7 +256,7 @@ for i = 1:length(uniqueStim)
     %     plot(meanXDisp+stdXDisp,meanYDisp,'Color',colorSet(i,:),'Linewidth',0.5)
     %     plot(meanXDisp-stdXDisp,meanYDisp,'Color',colorSet(i,:),'Linewidth',0.5)
     axis tight
-%     xlim([-5 5])
+    %     xlim([-5 5])
     xlabel('X displacement (mm)')
     ylabel('Y displacement (mm)')
     if i == 2
@@ -270,12 +266,12 @@ for i = 1:length(uniqueStim)
     
     clear rotVel rotDisp
     
-    if ~mod(i,2)
-        suptitle(sumTitle)
-        saveFileName = [saveFolder,'flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'_stim',num2str(i-1,'%03d'),'_to_',num2str(i,'%03d'),'.pdf'];
-        mySave(saveFileName,[5 5]);
-        close all
-    end
+    
+    suptitle(sumTitle)
+    saveFileName = [saveFolder,'flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'_stim',num2str(i-1,'%03d'),'_to_',num2str(i,'%03d'),'.pdf'];
+    mySave(saveFileName,[5 5]);
+    close all
+    
     
     
 end
@@ -303,8 +299,8 @@ if isempty(LEDStart)
     return
 end
 LEDEnd = strfind(LEDStim',[1,0]);
-LEDStartTime = LEDStart/Stim.sampleRate; 
-LEDEndTime = LEDEnd/Stim.sampleRate; 
+LEDStartTime = LEDStart/Stim.sampleRate;
+LEDEndTime = LEDEnd/Stim.sampleRate;
 Y = ylim(gca);
 X = [LEDStartTime,LEDEndTime];
 line([X(1) X(1)],[Y(1) Y(2)],'Color','g','LineWidth',2);

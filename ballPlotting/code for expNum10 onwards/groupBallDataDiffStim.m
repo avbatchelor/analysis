@@ -23,6 +23,7 @@ for i = 1:length(dirCont)
     groupedData.stim{trialMeta.stimNum} = Stim.stimulus;
     groupedData.stimTimeVect{trialMeta.stimNum} = Stim.timeVec; 
     groupedData.stimNum(trialNum) = trialMeta.stimNum;
+    groupedData.led{trialMeta.stimNum} = LEDtrig.stimulus;
     if isfield(Stim,'carrierFreqHz')
         groupedData.stimFreq(trialMeta.stimNum) = Stim.carrierFreqHz;
     else 
