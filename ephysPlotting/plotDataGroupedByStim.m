@@ -40,9 +40,14 @@ for n = 1:numStim
         exptInfo.stimType = 'n';
     end
     
+    try 
+        odor = StimStruct(n).stimObj.odor;
+    catch 
+        odor = 'no odor';
+    end
     titleText = {titleString;...
-        [GroupData(n).description,', StimNum = ',num2str(n)];...
-        ['probe position = ',StimStruct(n).stimObj.probe,', volume = ',num2str(StimStruct(n).stimObj.maxVoltage)]};    
+        [GroupData(n).description,', StimNum = ',num2str(n),', Stim set = ',num2str(exptInfo.stimSetNum)];...
+        ['probe position = ',StimStruct(n).stimObj.probe,', volume = ',num2str(StimStruct(n).stimObj.maxVoltage),', odor = ',odor]};    
     
     numExtraPlots = 2;
     [h, numSubPlot] = plotStimulus(exptInfo,GroupStim,GroupData,titleText,StimStruct,n,numExtraPlots);
@@ -50,14 +55,14 @@ for n = 1:numStim
     h(3) = subplot(numSubPlot,1,numSubPlot-1);
     set(gca, 'ColorOrder', ColorSet,'NextPlot', 'replacechildren');
     %     plot(GroupData(n).sampTime,GroupData(n).voltage,'Color',gray)
-    baseline{n} = mean(GroupData(n).voltage(:,25000:30000),2)';
-    meanSubVolt = bsxfun(@minus,GroupData(n).voltage,baseline{n}');
-    plot(GroupData(n).sampTime,meanSubVolt)
-    try 
-    plotBaseline(GroupData(n).sampTime,meanSubVolt)
-    catch
-        disp('Trial too short to plot baseline')
+    if StimStruct(n).stimObj.startPadDur <= 1 
+        baselineTime = 1:settings.sampRate.in*StimStruct(n).stimObj.startPadDur;
+    else 
+        baselineTime = settings.sampRate.in*(StimStruct(n).stimObj.startPadDur-1):settings.sampRate.in*StimStruct(n).stimObj.startPadDur;
     end
+    baseline = mean(GroupData(n).voltage(:,baselineTime),2)';
+    meanSubVolt = bsxfun(@minus,GroupData(n).voltage,baseline');
+    plot(GroupData(n).sampTime,meanSubVolt)
     hold on
     if size(GroupData(n).voltage,1)>1
         %         plot(GroupData(n).sampTime,mean(GroupData(n).voltage),'k')
@@ -67,10 +72,11 @@ for n = 1:numStim
     noXAxisSettings
     trialNums = 1:size(GroupData(n).voltage,1);
     for i = 1:length(trialNums)
-        baselineVect = baseline{n};
+        baselineVect = baseline;
         legendText(i,1) = {[num2str(trialNums(i)),', ',num2str(baselineVect(i)),'mV']};
     end
     legend(legendText)
+    plotBaseline(GroupData(n).sampTime); 
     
     h(4) = subplot(numSubPlot,1,numSubPlot);
     plot(GroupData(n).sampTime,GroupData(n).current,'Color',gray)
@@ -106,8 +112,8 @@ end
 
 end
 
-function plotBaseline(time,data)
-baseLevel = mean(mean(data(:,1:10000)));
+function plotBaseline(time)
+baseLevel = 0;
 hold on
 line([time(1),time(end)],[baseLevel,baseLevel],'Color','k','Linewidth',0.5)
 end

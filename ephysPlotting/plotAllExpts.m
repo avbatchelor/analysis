@@ -60,19 +60,21 @@ for i = 1:length(cellNumList)
             load(exptDataFileName)
             stimSet = exptInfo.stimSetNum;
             %% Merge trials
-            mergeTrials(exptInfo,remerge)
+            mergeSuccessful = mergeTrials(exptInfo,remerge);
 %             % Convert tiffs to videos 
 %             aviFromTiff(exptInfo)
 %             % Calculate optic flow 
 %             calculateOpticFlow(exptInfo)
             %% Make figures
-            if replot == 1 
+            if replot == 1 && mergeSuccessful == 1
                 plotZeroCurrentTrial(exptInfo)
                 if any(stimSet == [19,29]) % run different code for probe experiments 
                     plotDataGroupedByProbePosition(exptInfo.prefixCode,exptInfo.expNum,exptInfo.flyNum,exptInfo.cellNum,exptInfo.cellExpNum)
                     plotProbeDiffFigForRepeat(exptInfo.prefixCode,exptInfo.expNum,exptInfo.flyNum,exptInfo.cellNum,exptInfo.cellExpNum)
                 elseif stimSet == 21 
                     plotMean(exptInfo)
+                elseif stimSet == 30 
+                    plotDiffFigEachTrial(exptInfo.prefixCode,exptInfo.expNum,exptInfo.flyNum,exptInfo.cellNum,exptInfo.cellExpNum)
                 else 
                     plotDataGroupedByStim(exptInfo)
                 end
