@@ -43,7 +43,7 @@ for n = 1:numStim
     colormap(ColorSet);
     
     %% Calculate number of repeats
-    numTrials = size(GroupData(1).voltage,1);
+    numTrials = size(GroupData(n).voltage,1);
     
     %% Determine title
     try 

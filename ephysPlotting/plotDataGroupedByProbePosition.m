@@ -54,13 +54,16 @@ h(3) = subplot(3,1,2);
 legendText = cell(size(GroupData,2),1);
 for m = 1:size(GroupData,2)
 %     plot(GroupData(m).sampTime,mean(GroupData(m).voltage),'Color',ColorSet(m,:))
-    voltageData = mean(GroupData(m).voltage)-mean(GroupData(m).voltage(5000:10000));
+    meanVoltage = mean(GroupData(m).voltage,1);
+    voltageData = meanVoltage-mean(meanVoltage(5000:10000));
     plot(GroupData(m).sampTime,voltageData,'Color',ColorSet(m,:))
     hold on
     if exptInfo.stimSetNum == 19
         legendText(m,1) = {['probe on ',StimStruct(m).stimObj.probe,', volume = ',num2str(StimStruct(m).stimObj.maxVoltage)]};
     elseif exptInfo.stimSetNum == 29 
         legendText(m,1) = {[GroupData(m).odor]};
+    elseif exptInfo.stimSetNum == 22 
+        legendText(m,1) = {num2str(m)};
     end
 end
 

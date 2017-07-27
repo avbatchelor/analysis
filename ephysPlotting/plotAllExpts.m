@@ -71,10 +71,13 @@ for i = 1:length(cellNumList)
                 if any(stimSet == [19,29]) % run different code for probe experiments 
                     plotDataGroupedByProbePosition(exptInfo.prefixCode,exptInfo.expNum,exptInfo.flyNum,exptInfo.cellNum,exptInfo.cellExpNum)
                     plotProbeDiffFigForRepeat(exptInfo.prefixCode,exptInfo.expNum,exptInfo.flyNum,exptInfo.cellNum,exptInfo.cellExpNum)
-                elseif stimSet == 21 
-                    plotMean(exptInfo)
-                elseif stimSet == 30 
+%                 elseif stimSet == 21 
+%                     plotMean(exptInfo)
+                elseif any(stimSet == [21,30]) 
                     plotDiffFigEachTrial(exptInfo.prefixCode,exptInfo.expNum,exptInfo.flyNum,exptInfo.cellNum,exptInfo.cellExpNum)
+                elseif stimSet == 22
+                    plotDataGroupedByProbePosition(exptInfo.prefixCode,exptInfo.expNum,exptInfo.flyNum,exptInfo.cellNum,exptInfo.cellExpNum)
+                    plotDataGroupedByStim(exptInfo)
                 else 
                     plotDataGroupedByStim(exptInfo)
                 end
