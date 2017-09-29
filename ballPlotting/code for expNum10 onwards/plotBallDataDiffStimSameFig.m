@@ -92,13 +92,14 @@ for i = 1:length(uniqueStim)
     trialsToIncludeNums = trialNums(groupedData.trialsToInclude);
     stimNumIndNotSelected = find(groupedData.stimNum == uniqueStim(i));
     stimNumInd = intersect(trialsToIncludeNums,stimNumIndNotSelected);
-    
+    pipEndInd = Stim.totalDur - Stim.endPadDur;
+
     %% Rotate each of these trials
     count = 0;
     for j = stimNumInd
-            count = count+1;
-            rotVel(count,:,:) = R*[groupedData.xVel{j}';groupedData.yVel{j}'];
-            rotDisp(count,:,:) = R*[groupedData.xDisp{j}';groupedData.yDisp{j}'];
+        count = count+1;
+        rotVel(count,:,:) = R*[groupedData.xVel{j}';groupedData.yVel{j}'];
+        rotDisp(count,:,:) = R*[groupedData.xDisp{j}';groupedData.yDisp{j}'];
     end
     
     if isempty(stimNumInd)
@@ -128,8 +129,10 @@ for i = 1:length(uniqueStim)
     stdXVel = std(rotXVel);
     stdYVel = std(rotYVel);
     
-    %% Get LED data  
-    LEDStim = groupedData.led{i};
+    %% Get LED data
+    if isfield('groupedData','led')
+        LEDStim = groupedData.led{i};
+    end
     
     %% Plot stimulus
     sph(1) = subtightplot (7, 2, 1, [0.01 0.05], [0.1 0.01], [0.1 0.01]);
@@ -144,7 +147,7 @@ for i = 1:length(uniqueStim)
     hold on
     mySimplePlot(groupedData.dsTime{i},meanXVel,'Color',currColor,'Linewidth',2)
     mySimplePlot(groupedData.dsTime{i},rotXVel,'Color',currColor,'Linewidth',0.5)
-
+    
     %     mySimplePlot(groupedData.dsTime,meanXVel+stdXVel,'Color',colorSet(i,:),'Linewidth',0.5)
     %     mySimplePlot(groupedData.dsTime,meanXVel-stdXVel,'Color',colorSet(i,:),'Linewidth',0.5)
     set(gca,'XTick',[])
@@ -152,7 +155,9 @@ for i = 1:length(uniqueStim)
     set(get(gca,'YLabel'),'Rotation',0,'HorizontalAlignment','right')
     moveXAxis(groupedData,i)
     shadestimArea(groupedData,i)
-    shadeLEDArea(LEDStim,Stim)
+    if exist('LEDStim','var')
+        shadeLEDArea(LEDStim,Stim)
+    end
     symAxisY
     
     sph(3) = subplot(7,2,5);
@@ -165,7 +170,9 @@ for i = 1:length(uniqueStim)
     ylabel({'Forward Vel';'(mm/s)'})
     set(get(gca,'YLabel'),'Rotation',0,'HorizontalAlignment','right')
     shadestimArea(groupedData,i)
-    shadeLEDArea(LEDStim,Stim)
+    if exist('LEDStim','var')
+        shadeLEDArea(LEDStim,Stim)
+    end
     moveXAxis(groupedData,i)
     symAxisY
     
@@ -181,7 +188,9 @@ for i = 1:length(uniqueStim)
     ylabel({'X Disp';'(mm)'})
     set(get(gca,'YLabel'),'Rotation',0,'HorizontalAlignment','right')
     shadestimArea(groupedData,i)
-    shadeLEDArea(LEDStim,Stim)
+    if exist('LEDStim','var')
+        shadeLEDArea(LEDStim,Stim)
+    end
     moveXAxis(groupedData,i)
     symAxisY
     
@@ -196,7 +205,9 @@ for i = 1:length(uniqueStim)
     hold on
     line([groupedData.dsTime{i}(1),groupedData.dsTime{i}(end)],[0,0],'Color','k')
     shadestimArea(groupedData,i)
-    shadeLEDArea(LEDStim,Stim)
+    if exist('LEDStim','var')
+        shadeLEDArea(LEDStim,Stim)
+    end
     xlabel('Time (s)')
     linkaxes(sph(1:5),'x')
     symAxisY
@@ -216,20 +227,20 @@ for i = 1:length(uniqueStim)
     
     sph(7) = subtightplot (7, 2, 13, [0.1 0.05], [0.1 0.01], [0.1 0.01]);
     hold on
-%     bins = -10:0.5:40;
-%     lvTemp = [lvTemp;rotXVel(:)];
-%     hist(lvTemp,bins);
-%     xlim([-10 40])
-%     xlabel('Lateral velocity (mm/s)')
-%     ylabel('Counts')
+    %     bins = -10:0.5:40;
+    %     lvTemp = [lvTemp;rotXVel(:)];
+    %     hist(lvTemp,bins);
+    %     xlim([-10 40])
+    %     xlabel('Lateral velocity (mm/s)')
+    %     ylabel('Counts')
     if mod(i,2)
         bh1 = bar(trialNums,groupedData.trialSpeed,'EdgeColor',gray,'FaceColor',gray);
     end
     line([0,trialNums(end)],[3,3],'Color','k')
     bw = get(bh1,'BarWidth');
     bar(stimNumIndNotSelected,groupedData.trialSpeed(stimNumIndNotSelected),'EdgeColor',currColor,'FaceColor',currColor,'BarWidth',bw/min(diff(sort(stimNumIndNotSelected))));
-%     notIncInd = trialNums(~groupedData.trialsToInclude);
-%     bar(notIncInd,groupedData.trialSpeed(~groupedData.trialsToInclude),'FaceColor','b')
+    %     notIncInd = trialNums(~groupedData.trialsToInclude);
+    %     bar(notIncInd,groupedData.trialSpeed(~groupedData.trialsToInclude),'FaceColor','b')
     plot(stimNumIndNotSelected,max(groupedData.trialSpeed)+1,'*','Color',currColor)
     ylabel({'Trial avg speed';'(mm/s)'})
     xlabel('Trial number')
@@ -239,7 +250,7 @@ for i = 1:length(uniqueStim)
     axis tight
     if mod(i,2)
         t1s = ['Successful left trials = ',num2str(length(stimNumInd)),'/',num2str(length(stimNumIndNotSelected))];
-    else 
+    else
         t2s = ['Successful right trials = ',num2str(length(stimNumInd)),'/',num2str(length(stimNumIndNotSelected))];
         title([t1s,'   ',t2s])
     end
@@ -249,7 +260,7 @@ for i = 1:length(uniqueStim)
     line([rotXDisp(:,pipStartInd),rotXDisp(:,indBefore)]',[rotYDisp(:,pipStartInd),rotYDisp(:,indBefore)]','Color','k');
     line([rotXDisp(:,pipStartInd),rotXDisp(:,indAfter)]',[rotYDisp(:,pipStartInd),rotYDisp(:,indAfter)]','Color',currColor);
     axis tight
-%     xlim([-5 5])
+    %     xlim([-5 5])
     ylabel('Y displacement (mm)')
     
     
@@ -257,10 +268,14 @@ for i = 1:length(uniqueStim)
     hold on
     plot(meanXDisp,meanYDisp,'Color',currColor,'Linewidth',2)
     plot(rotXDisp',rotYDisp','Color',currColor,'Linewidth',0.5)
+%     xEndSubtracted = rotXDisp - rotXDisp(pipEndInd);
+%     yEndSubtracted = rotYDisp - rotYDisp(pipEndInd);
+%     plot(mean(xEndSubtracted),mean(yEndSubtracted),'Color',colorSet(i,:))
+    
     %     plot(meanXDisp+stdXDisp,meanYDisp,'Color',colorSet(i,:),'Linewidth',0.5)
     %     plot(meanXDisp-stdXDisp,meanYDisp,'Color',colorSet(i,:),'Linewidth',0.5)
     axis tight
-%     xlim([-5 5])
+    %     xlim([-5 5])
     xlabel('X displacement (mm)')
     ylabel('Y displacement (mm)')
     if i == 2
@@ -303,8 +318,8 @@ if isempty(LEDStart)
     return
 end
 LEDEnd = strfind(LEDStim',[1,0]);
-LEDStartTime = LEDStart/Stim.sampleRate; 
-LEDEndTime = LEDEnd/Stim.sampleRate; 
+LEDStartTime = LEDStart/Stim.sampleRate;
+LEDEndTime = LEDEnd/Stim.sampleRate;
 Y = ylim(gca);
 X = [LEDStartTime,LEDEndTime];
 line([X(1) X(1)],[Y(1) Y(2)],'Color','g','LineWidth',2);

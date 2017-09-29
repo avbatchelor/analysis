@@ -31,7 +31,9 @@ for i = 1:length(dirCont)
 
     %% Stimulus data 
     groupedData.stim{trialMeta.stimNum} = Stim.stimulus;
-    groupedData.led{trialMeta.stimNum} = LEDtrig.stimulus;
+    if exist('LEDtrig','var')
+        groupedData.led{trialMeta.stimNum} = LEDtrig.stimulus;
+    end
 
     %% Meta data 
     groupedData.stimNum(trialNum) = trialMeta.stimNum;

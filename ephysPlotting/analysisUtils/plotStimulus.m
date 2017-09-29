@@ -12,7 +12,7 @@ if ~isfield(exptInfo,'stimType')
     exptInfo.stimType = 'n';
 end
 % Plot stimulus appropriately
-if strcmpi(exptInfo.stimType,'p')
+if strcmpi(exptInfo.stimType,'p') 
     numStimPlots = 1;
     numSubPlot = numStimPlots+numExtraPlots;
     h(1) = subplot(numSubPlot,1,2);
@@ -26,7 +26,7 @@ if strcmpi(exptInfo.stimType,'p')
     noXAxisSettings
     t = title(h(1),titleText);
     set(t,'Fontsize',20);
-elseif strcmpi(exptInfo.stimType,'s')
+elseif strcmpi(exptInfo.stimType,'s') && ~regexp(StimStruct(1).stimObj.description,'Opto')
     numStimPlots = 1;
     numSubPlot = numStimPlots+numExtraPlots;
     h(1) = subplot(numSubPlot,1,1);
@@ -64,6 +64,17 @@ elseif strcmpi(exptInfo.stimType,'b')
     end
     ylabel('Voltage (V)')
     noXAxisSettings
+elseif regexp(StimStruct(1).stimObj.description,'Opto')
+    numStimPlots = 1;
+    numSubPlot = numStimPlots+numExtraPlots;
+    h(1) = subplot(numSubPlot,1,1);
+    stimTrace = GroupStim(n).stimulus;
+    triggerInd = strfind(stimTrace',[0 1]);
+    stimTrace(triggerInd(1):triggerInd(2)+1) = 1; 
+    plot(stimTrace,'Color',gray,'Linewidth',2)
+    noXAxisSettings
+    t = title(h(1),titleText);
+    set(t,'Fontsize',20);
 elseif strcmpi(exptInfo.stimType,'n')
     h = [];
     numSubPlot = numExtraPlots;

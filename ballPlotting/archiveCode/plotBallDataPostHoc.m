@@ -35,6 +35,7 @@ timeBefore = 0.3;
 pipStartInd = Stim.startPadDur*Stim.sampleRate + 1; 
 indBefore = pipStartInd - timeBefore*Stim.sampleRate; 
 indAfter = pipStartInd + timeBefore*Stim.sampleRate;
+pipEndInd = Stim.totalDur - Stim.endPadDur;
 
 %% Decode
 uniqueStim = unique(groupedData.stimNum);

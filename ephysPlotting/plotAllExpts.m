@@ -78,6 +78,8 @@ for i = 1:length(cellNumList)
                 elseif stimSet == 22
                     plotDataGroupedByProbePosition(exptInfo.prefixCode,exptInfo.expNum,exptInfo.flyNum,exptInfo.cellNum,exptInfo.cellExpNum)
                     plotDataGroupedByStim(exptInfo)
+                elseif any(stimSet == [36,38]) 
+                    plotOptoData(exptInfo)
                 else 
                     plotDataGroupedByStim(exptInfo)
                 end
