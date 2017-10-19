@@ -20,6 +20,7 @@ fileStem = char(regexp(filename,'.*(?=.pdf)','match'));
 imageFilename = [fileStem,'_image.eps'];
 % print(gcf,'-depsc',imageFilename,'-r50','-painters','-cmyk')
 export_fig(imageFilename,'-eps','-q50')
+epsclean(imageFilename)
 
 % fileStem = char(regexp(filename,'.*(?=.pdf)','match'));
 % imageFilename = [fileStem,'_meta_image.emf'];

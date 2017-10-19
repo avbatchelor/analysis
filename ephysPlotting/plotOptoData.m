@@ -1,4 +1,4 @@
-function plotDataGroupedByStim(exptInfo)
+function plotOptoData(exptInfo)
 
 close all
 
@@ -41,18 +41,18 @@ for n = 1:numStim
     end
     
     try 
-        odor = StimStruct(n).stimObj.odor;
+        state = StimStruct(n).stimObj.state;
     catch 
-        odor = 'no odor';
+        state = 'no state';
     end
     titleText = {titleString;...
         [GroupData(n).description,', StimNum = ',num2str(n),', Stim set = ',num2str(exptInfo.stimSetNum)];...
-        ['probe position = ',StimStruct(n).stimObj.probe,', volume = ',num2str(StimStruct(n).stimObj.maxVoltage),', odor = ',odor]};    
+        ['probe position = ',StimStruct(n).stimObj.probe,', volume = ',num2str(StimStruct(n).stimObj.maxVoltage),', state = ',state]};    
     
-    numExtraPlots = 2;
+    numExtraPlots = 4;
     [h, numSubPlot] = plotStimulus(exptInfo,GroupStim,GroupData,titleText,StimStruct,n,numExtraPlots);
     
-    h(3) = subplot(numSubPlot,1,numSubPlot-1);
+    h(3) = subplot(numSubPlot,1,numSubPlot-3);
     set(gca, 'ColorOrder', ColorSet,'NextPlot', 'replacechildren');
     %     plot(GroupData(n).sampTime,GroupData(n).voltage,'Color',gray)
     if StimStruct(n).stimObj.startPadDur <= 1 
@@ -62,7 +62,7 @@ for n = 1:numStim
     end
     baseline = mean(GroupData(n).voltage(:,baselineTime),2)';
     meanSubVolt = bsxfun(@minus,GroupData(n).voltage,baseline');
-    plot(GroupData(n).sampTime,meanSubVolt)
+    plot(GroupData(n).sampTime,meanSubVolt(1,:))
     hold on
     if size(GroupData(n).voltage,1)>1
         %         plot(GroupData(n).sampTime,mean(GroupData(n).voltage),'k')
@@ -75,21 +75,53 @@ for n = 1:numStim
         baselineVect = baseline;
         legendText(i,1) = {[num2str(trialNums(i)),', ',num2str(baselineVect(i)),'mV']};
     end
-    legend(legendText)
+%     legend(legendText)
     plotBaseline(GroupData(n).sampTime); 
     
-    h(4) = subplot(numSubPlot,1,numSubPlot);
-    plot(GroupData(n).sampTime,GroupData(n).current,'Color',gray)
+    h(4) = subplot(numSubPlot,1,numSubPlot-2);
+    set(gca, 'ColorOrder', ColorSet,'NextPlot', 'replacechildren');
+    %     plot(GroupData(n).sampTime,GroupData(n).voltage,'Color',gray)
+    if StimStruct(n).stimObj.startPadDur <= 1 
+        baselineTime = 1:settings.sampRate.in*StimStruct(n).stimObj.startPadDur;
+    else 
+        baselineTime = settings.sampRate.in*(StimStruct(n).stimObj.startPadDur-1):settings.sampRate.in*StimStruct(n).stimObj.startPadDur;
+    end
+    baseline = mean(GroupData(n).voltage(:,baselineTime),2)';
+    meanSubVolt = bsxfun(@minus,GroupData(n).voltage,baseline');
+    plot(GroupData(n).sampTime,mean(meanSubVolt))
     hold on
-    if size(GroupData(n).current,1)>1
-        plot(GroupData(n).sampTime,mean(GroupData(n).current),'k')
+    if size(GroupData(n).voltage,1)>1
+        %         plot(GroupData(n).sampTime,mean(GroupData(n).voltage),'k')
     end
     hold on
+    ylabel('Voltage (mV)')
+    noXAxisSettings
+    trialNums = 1:size(GroupData(n).voltage,1);
+    for i = 1:length(trialNums)
+        baselineVect = baseline;
+        legendText(i,1) = {[num2str(trialNums(i)),', ',num2str(baselineVect(i)),'mV']};
+    end
+%     legend(legendText)
+    plotBaseline(GroupData(n).sampTime);
+    
+    h(5) = subplot(numSubPlot,1,numSubPlot-1);
+%     plot(GroupData(n).sampTime,GroupData(n).current,'Color',gray)
+%     hold on
+%     if size(GroupData(n).current,1)>1
+%         plot(GroupData(n).sampTime,mean(GroupData(n).current),'k')
+%     end
+    rasterPlot(GroupData(n).spikes,GroupData(n).sampTime)
+%     set(gcf,'Colormap',gray)
+    hold on
+    noXAxisSettings
+
+    h(6) = subplot(numSubPlot,1,numSubPlot);
+    psth(GroupData(n).spikes,GroupData(n).sampTime,0.1)
     xlabel('Time (s)')
-    ylabel('Current (pA)')
+    ylabel('Counts')
     bottomAxisSettings
     
-    linkaxes(h,'x')
+%     linkaxes(h,'x')
     
     if strcmpi(exptInfo.stimType,'n')
         t = title(h(3),titleText);
