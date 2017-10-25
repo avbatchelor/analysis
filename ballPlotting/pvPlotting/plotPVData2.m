@@ -133,7 +133,7 @@ for i = 1:length(uniqueStim)
     ylabel('PV (V)')
     set(get(gca,'YLabel'),'Rotation',0,'HorizontalAlignment','right')
     symAxisY
-    ylim([-0.02 0.02])
+%     ylim([-0.02 0.02])
 
     if ~mod(i,2)
         linkaxes(sph(:),'x')
