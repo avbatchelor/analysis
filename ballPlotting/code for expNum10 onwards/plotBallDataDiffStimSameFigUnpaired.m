@@ -46,7 +46,7 @@ sumTitle = {[dateAsString,', ',exptInfo.prefixCode,', ExpNum ',num2str(exptInfo.
     ', FlyExpNum ',num2str(exptInfo.flyExpNum)];['Aim: ',char(FlyData.aim)];['Expt Notes: ',exptInfo.flyExpNotes]};
 
 %% Hardcoded paramters
-timeBefore = 0.3;
+timeBefore = 1;
 
 %% Set colors
 uniqueStim = unique(groupedData.stimNum);
@@ -75,7 +75,7 @@ end
 for i = 1:length(uniqueStim)
     
     %% Calculate stimulus start time 
-    pipStartInd = groupedData.stimStartPadDur{i}*Stim.sampleRate/dsFactor + 1;
+    pipStartInd = round((groupedData.stimStartPadDur{i}*Stim.sampleRate + 1)/dsFactor);
     indBefore = pipStartInd - timeBefore*Stim.sampleRate/dsFactor;
     indAfter = pipStartInd + timeBefore*Stim.sampleRate/dsFactor;
 
