@@ -129,8 +129,8 @@ for i = 1:length(uniqueStim)
 %     set(get(gca,'YLabel'),'Rotation',0,'HorizontalAlignment','right')
 %     symAxisY
         hold on
-    mySimplePlot(groupedData.stimTimeVect{i}(startInd:endInd),meanPV(startInd:endInd),'Color',currColor,'Linewidth',2)
-    ylabel('PV (V)')
+    mySimplePlot(groupedData.stimTimeVect{i}(startInd:endInd),1000*meanPV(startInd:endInd),'Color',currColor,'Linewidth',2)
+    ylabel('PV (mm/s)')
     set(get(gca,'YLabel'),'Rotation',0,'HorizontalAlignment','right')
     symAxisY
 %     ylim([-0.02 0.02])
