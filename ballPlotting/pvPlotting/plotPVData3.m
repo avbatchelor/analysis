@@ -19,8 +19,8 @@ fileName = [path,fileNamePreamble,'exptData.mat'];
 load(fileName);
 
 % Load first trial data
-firstTrialFileName = [path,fileNamePreamble,'trial',num2str(1,'%03d'),'.mat'];
-load(firstTrialFileName);
+% firstTrialFileName = [path,fileNamePreamble,'trial',num2str(1,'%03d'),'.mat'];
+% load(firstTrialFileName);
 
 %% Figure prep
 close all
@@ -52,18 +52,20 @@ for i = 1:length(uniqueStim)
     subplot = @(m,n,p) subtightplot (m, n, p, [0.01 0.05], [0.1 0.01], [0.1 0.01]);
     
     %% Assign title
-    sumTitle = {[dateAsString,', ',exptInfo.prefixCode,', ','ExpNum ',num2str(exptInfo.expNum)];[char(groupedData.description(i))]};
+    sumTitle = {[dateAsString,', ',exptInfo.prefixCode,', ','ExpNum ',num2str(exptInfo.expNum)];...
+        [char(groupedData.description(i)),', Volume = ',num2str(StimStruct(i).stimObj.maxVoltage) ]};
     
     %% Calculate meta data
     % Select the trials for this stimulus
     stimNumInd = find(groupedData.stimNum == uniqueStim(i));
+    disp(stimNumInd)
     
-    % Get stimulus start and end times
-    startInd = groupedData.stimStartInd{i};
-    endInd = startInd+5000;
+    % Get stimulus start and end indices
+    startInd = StimStruct(i).stimObj.startPadDur * StimStruct(i).stimObj.sampleRate + 1;
+    endInd = round((StimStruct(i).stimObj.startPadDur + StimStruct(i).stimObj.stimDur) * StimStruct(i).stimObj.sampleRate); 
     
     %% Calculate mean
-    startPadEndIdx = (Stim.startPadDur*Stim.sampleRate)-1;
+    startPadEndIdx = (StimStruct(i).stimObj.startPadDur*StimStruct(i).stimObj.sampleRate)-1;
     meanPV = mean(cell2mat(groupedData.KEraw(stimNumInd))');
     
     %% BaselineSubtract 
@@ -73,9 +75,12 @@ for i = 1:length(uniqueStim)
     integratedPV = cumtrapz(groupedData.stimTimeVect{i},(baselineSubtractedPV)./settings.preamp_gain)./settings.KE_sf;
     
     %% High pass filter
-    rate = 2*(10/Stim.sampleRate);
+    rate = 2*(10/StimStruct(i).stimObj.sampleRate);
     [kb, ka] = butter(2,rate,'high');
     filteredPV = filtfilt(kb, ka, integratedPV);
+    
+    %% Convert to mmPerSec 
+    pvInMM = 1000*filteredPV;
     
     %% Number of Plots 
     numPlots = 6; 
@@ -164,17 +169,46 @@ for i = 1:length(uniqueStim)
     plotNum = 6;
     ph(plotNum) = subplot(numPlots,1,plotNum);
     hold on
-    plot(groupedData.stimTimeVect{i},1000*filteredPV)
+    plot(groupedData.stimTimeVect{i},pvInMM)
     ylabel('PV (mm/s)')
     bottomAxisSettings
     symAxisY
-    t = title({'Averaged, baseline subtracted,','integrated and high pass filtered (10Hz cutoff)'});
-    leftAlignTitle(t);
     
+    %% Detect max voltage 
+    pvDurStim = pvInMM(startInd:endInd);
+    minDistance = (StimStruct(i).stimObj.ipi - StimStruct(i).stimObj.pipDur) * StimStruct(i).stimObj.sampleRate;
+    currentTimeVec = groupedData.stimTimeVect{i};
+    
+    % Max peaks 
+    [maxPeaks,relPeakIdxs] = findpeaks(pvDurStim,'MinPeakDistance',minDistance);
+    peakIdxs = startInd-1+relPeakIdxs;
+    peakTimes = currentTimeVec(peakIdxs);
+    threshold = max(maxPeaks)/2;
+    rmIdx = find(maxPeaks<threshold);
+    peakTimes(rmIdx) = [];
+    maxPeaks(rmIdx) = [];
+    plot(peakTimes,maxPeaks,'ro')
+
+    % Min peaks 
+    [minPeaks,relPeakIdxs] = findpeaks(-pvDurStim,'MinPeakDistance',minDistance);
+    peakIdxs = startInd-1+relPeakIdxs;
+    peakTimes = currentTimeVec(peakIdxs);
+    threshold = max(minPeaks)/2;
+    rmIdx = find(minPeaks<threshold);
+    peakTimes(rmIdx) = [];
+    minPeaks(rmIdx) = [];
+    plot(peakTimes,-minPeaks,'go')
+    
+    % Mean max PV
+    maxPV = mean([minPeaks,maxPeaks]);
+    
+    t = title({'Averaged, baseline subtracted,','integrated and high pass filtered (10Hz cutoff)',['Max PV = ',num2str(maxPV),' mm/s']});
+    leftAlignTitle(t);
+
     %% Adjust axes
     linkaxes(ph(:),'x')
-    startView = Stim.startPadDur -0.1;
-    endView = Stim.startPadDur + Stim.stimDur + 0.1;
+    startView = StimStruct(i).stimObj.startPadDur -0.1;
+    endView = StimStruct(i).stimObj.startPadDur + StimStruct(i).stimObj.stimDur + 0.1;
     xlim([startView, endView])
     
     %% Add title
