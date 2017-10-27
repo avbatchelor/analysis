@@ -52,7 +52,7 @@ for i = 1:length(uniqueStim)
     subplot = @(m,n,p) subtightplot (m, n, p, [0.01 0.05], [0.1 0.01], [0.1 0.01]);
     
     %% Assign title
-    sumTitle = {[dateAsString,', ',exptInfo.prefixCode,', ','ExpNum ',num2str(exptInfo.expNum)];...
+    sumTitle = {[dateAsString,', ',exptInfo.prefixCode,', ','ExpNum ',num2str(exptInfo.expNum),', ',exptInfo.microphone,', speaker = ',num2str(exptInfo.speaker)];...
         [char(groupedData.description(i)),', Volume = ',num2str(StimStruct(i).stimObj.maxVoltage) ]};
     
     %% Calculate meta data
@@ -72,7 +72,7 @@ for i = 1:length(uniqueStim)
     baselineSubtractedPV = meanPV-mean(meanPV(1:startPadEndIdx));
     
     %% Integrate
-    integratedPV = cumtrapz(groupedData.stimTimeVect{i},(baselineSubtractedPV)./settings.preamp_gain)./settings.KE_sf;
+    integratedPV = cumtrapz(groupedData.stimTimeVect{i},(baselineSubtractedPV)./exptInfo.ampGain)./settings.KE_sf;
     
     %% High pass filter
     rate = 2*(10/StimStruct(i).stimObj.sampleRate);
@@ -176,7 +176,11 @@ for i = 1:length(uniqueStim)
     
     %% Detect max voltage 
     pvDurStim = pvInMM(startInd:endInd);
-    minDistance = (StimStruct(i).stimObj.ipi - StimStruct(i).stimObj.pipDur) * StimStruct(i).stimObj.sampleRate;
+    if isfield(StimStruct(i).stimObj,'ipi')
+        minDistance = (StimStruct(i).stimObj.ipi - StimStruct(i).stimObj.pipDur) * StimStruct(i).stimObj.sampleRate;
+    else
+        minDistance = (StimStruct(i).stimObj.stimDur/4)* StimStruct(i).stimObj.sampleRate;
+    end
     currentTimeVec = groupedData.stimTimeVect{i};
     
     % Max peaks 
