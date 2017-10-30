@@ -52,8 +52,11 @@ for i = 1:length(uniqueStim)
     subplot = @(m,n,p) subtightplot (m, n, p, [0.01 0.05], [0.1 0.01], [0.1 0.01]);
     
     %% Assign title
+    try
     sumTitle = {[dateAsString,', ',exptInfo.prefixCode,', ','ExpNum ',num2str(exptInfo.expNum),', ',exptInfo.microphone,', speaker = ',num2str(exptInfo.speaker)];...
         [char(groupedData.description(i)),', Volume = ',num2str(StimStruct(i).stimObj.maxVoltage) ]};
+    catch
+    end
     
     %% Calculate meta data
     % Select the trials for this stimulus
@@ -179,7 +182,7 @@ for i = 1:length(uniqueStim)
     if isfield(StimStruct(i).stimObj,'ipi')
         minDistance = (StimStruct(i).stimObj.ipi - StimStruct(i).stimObj.pipDur) * StimStruct(i).stimObj.sampleRate;
     else
-        minDistance = (StimStruct(i).stimObj.stimDur/4)* StimStruct(i).stimObj.sampleRate;
+        minDistance = (StimStruct(i).stimObj.stimDur/3)* StimStruct(i).stimObj.sampleRate;
     end
     currentTimeVec = groupedData.stimTimeVect{i};
     
@@ -220,8 +223,7 @@ for i = 1:length(uniqueStim)
     
     %% Save figure
     saveFileName = [saveFolder,'flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'_stim',num2str(i-1,'%03d'),'_to_',num2str(i,'%03d'),'.pdf'];
-    export_fig(saveFileName,'-pdf','-q50')
-    
+    mySave(saveFileName);
     
     
     
