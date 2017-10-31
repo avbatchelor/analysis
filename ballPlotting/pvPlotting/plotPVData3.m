@@ -41,10 +41,15 @@ settings = ballSettingsWithPV;
 
 %% Determine # of stimuli
 uniqueStim = unique(groupedData.stimNum);
+numStim = length(uniqueStim);
 
+%% Make empty matrices
+carrierFreq = NaN(numStim,1);
+maxPVVect = NaN(numStim,1);
+commandVoltages = NaN(numStim,1);
 
 %% Plot for each stim Num
-for i = 1:length(uniqueStim)
+for i = 1:numStim
     
     %% Figure settings
     figure
@@ -52,11 +57,10 @@ for i = 1:length(uniqueStim)
     subplot = @(m,n,p) subtightplot (m, n, p, [0.01 0.05], [0.1 0.01], [0.1 0.01]);
     
     %% Assign title
-    try
-    sumTitle = {[dateAsString,', ',exptInfo.prefixCode,', ','ExpNum ',num2str(exptInfo.expNum),', ',exptInfo.microphone,', speaker = ',num2str(exptInfo.speaker)];...
-        [char(groupedData.description(i)),', Volume = ',num2str(StimStruct(i).stimObj.maxVoltage) ]};
-    catch
-    end
+    sumTitle = {[dateAsString,', ',exptInfo.prefixCode,', ','ExpNum ',num2str(exptInfo.expNum),', ','FlyNum ',num2str(exptInfo.flyNum),', ','ExpNum ',num2str(exptInfo.flyExpNum)];...
+        [char(groupedData.description(i)),', Volume = ',num2str(StimStruct(i).stimObj.maxVoltage) ];...
+        ['Microphone: ',exptInfo.microphone,', Speaker = ',num2str(exptInfo.speaker),', ',exptInfo.ampType,', Speaker Distance = ',num2str(exptInfo.speakerDistance),'cm']};
+    
     
     %% Calculate meta data
     % Select the trials for this stimulus
@@ -65,29 +69,37 @@ for i = 1:length(uniqueStim)
     
     % Get stimulus start and end indices
     startInd = StimStruct(i).stimObj.startPadDur * StimStruct(i).stimObj.sampleRate + 1;
-    endInd = round((StimStruct(i).stimObj.startPadDur + StimStruct(i).stimObj.stimDur) * StimStruct(i).stimObj.sampleRate); 
+    endInd = round((StimStruct(i).stimObj.startPadDur + StimStruct(i).stimObj.stimDur) * StimStruct(i).stimObj.sampleRate);
     
     %% Calculate mean
     startPadEndIdx = (StimStruct(i).stimObj.startPadDur*StimStruct(i).stimObj.sampleRate)-1;
     meanPV = mean(cell2mat(groupedData.KEraw(stimNumInd))');
     
-    %% BaselineSubtract 
+    %% BaselineSubtract
     baselineSubtractedPV = meanPV-mean(meanPV(1:startPadEndIdx));
     
     %% Integrate
-    integratedPV = cumtrapz(groupedData.stimTimeVect{i},(baselineSubtractedPV)./exptInfo.ampGain)./settings.KE_sf;
+    load('C:\Users\Alex\Documents\GitHub\analysis\ballPlotting\pvPlotting\freqVsKE');
+    if strcmp(exptInfo.microphone,'KE1')
+        microphoneConstant = k1Map(StimStruct(i).stimObj.carrierFreqHz);
+    else
+        microphoneConstant = k2Map(StimStruct(i).stimObj.carrierFreqHz);
+    end
+    
+    integratedPV = cumtrapz(groupedData.stimTimeVect{i},(baselineSubtractedPV)./exptInfo.ampGain)./microphoneConstant;
     
     %% High pass filter
-    rate = 2*(10/StimStruct(i).stimObj.sampleRate);
+    cutoffFreq = 70;
+    rate = 2*(cutoffFreq/StimStruct(i).stimObj.sampleRate);
     [kb, ka] = butter(2,rate,'high');
     filteredPV = filtfilt(kb, ka, integratedPV);
     
-    %% Convert to mmPerSec 
+    %% Convert to mmPerSec
     pvInMM = 1000*filteredPV;
     
-    %% Number of Plots 
-    numPlots = 6; 
-
+    %% Number of Plots
+    numPlots = 6;
+    
     %% Plot stimulus
     plotNum = 1;
     ph(plotNum) = subtightplot (numPlots, 1, plotNum, [0.01 0.05], [0.1 0.01], [0.1 0.01]);
@@ -100,28 +112,28 @@ for i = 1:length(uniqueStim)
     leftAlignTitle(t);
     
     %% Plot raw data
-    % Subplot settings 
+    % Subplot settings
     plotNum = 2;
     ph(plotNum) = subtightplot (numPlots, 1, plotNum, [0.01 0.05], [0.1 0.01], [0.1 0.01]);
     
-    % Plot 
+    % Plot
     plot(groupedData.stimTimeVect{i},cell2mat(groupedData.KEraw(stimNumInd)))
     
     % Axis settings
     symAxisY
     noXAxisSettings
-
+    
     % Labels
     ylabel('Stimlus (V)')
     t = title('Raw Data');
     leftAlignTitle(t);
     
     %% Plot average
-    % Subplot settings 
+    % Subplot settings
     plotNum = 3;
     ph(plotNum) = subtightplot (numPlots, 1, plotNum, [0.01 0.05], [0.1 0.01], [0.1 0.01]);
     
-    % Plot 
+    % Plot
     plot(groupedData.stimTimeVect{i},meanPV)
     
     % Axis settings
@@ -134,11 +146,11 @@ for i = 1:length(uniqueStim)
     leftAlignTitle(t);
     
     %% Plot baseline subtracted
-    % Subplot settings 
+    % Subplot settings
     plotNum = 4;
     ph(plotNum) = subtightplot (numPlots, 1, plotNum, [0.01 0.05], [0.1 0.01], [0.1 0.01]);
     
-    % Plot 
+    % Plot
     plot(groupedData.stimTimeVect{i},baselineSubtractedPV)
     
     % Axis settings
@@ -151,11 +163,11 @@ for i = 1:length(uniqueStim)
     leftAlignTitle(t);
     
     %% Plot integrated
-    % Subplot settings 
+    % Subplot settings
     plotNum = 5;
     ph(plotNum) = subtightplot (numPlots, 1, plotNum, [0.01 0.05], [0.1 0.01], [0.1 0.01]);
     
-    % Plot 
+    % Plot
     plot(groupedData.stimTimeVect{i},integratedPV)
     
     % Axis settings
@@ -177,28 +189,32 @@ for i = 1:length(uniqueStim)
     bottomAxisSettings
     symAxisY
     
-    %% Detect max voltage 
-    pvDurStim = pvInMM(startInd:endInd);
+    %% Detect max voltage
     if isfield(StimStruct(i).stimObj,'ipi')
+        pvDurStim = pvInMM(startInd:endInd);
         minDistance = (StimStruct(i).stimObj.ipi - StimStruct(i).stimObj.pipDur) * StimStruct(i).stimObj.sampleRate;
+        idxToAdd = startInd-1;
     else
+        rampInd = (StimStruct(i).stimObj.stimDur/10) * StimStruct(i).stimObj.sampleRate;
+        pvDurStim = pvInMM(startInd+rampInd:endInd-rampInd);
         minDistance = (StimStruct(i).stimObj.stimDur/3)* StimStruct(i).stimObj.sampleRate;
+        idxToAdd = startInd-1+rampInd;
     end
     currentTimeVec = groupedData.stimTimeVect{i};
     
-    % Max peaks 
+    % Max peaks
     [maxPeaks,relPeakIdxs] = findpeaks(pvDurStim,'MinPeakDistance',minDistance);
-    peakIdxs = startInd-1+relPeakIdxs;
+    peakIdxs = idxToAdd+relPeakIdxs;
     peakTimes = currentTimeVec(peakIdxs);
     threshold = max(maxPeaks)/2;
     rmIdx = find(maxPeaks<threshold);
     peakTimes(rmIdx) = [];
     maxPeaks(rmIdx) = [];
     plot(peakTimes,maxPeaks,'ro')
-
-    % Min peaks 
+    
+    % Min peaks
     [minPeaks,relPeakIdxs] = findpeaks(-pvDurStim,'MinPeakDistance',minDistance);
-    peakIdxs = startInd-1+relPeakIdxs;
+    peakIdxs = idxToAdd+relPeakIdxs;
     peakTimes = currentTimeVec(peakIdxs);
     threshold = max(minPeaks)/2;
     rmIdx = find(minPeaks<threshold);
@@ -211,7 +227,11 @@ for i = 1:length(uniqueStim)
     
     t = title({'Averaged, baseline subtracted,','integrated and high pass filtered (10Hz cutoff)',['Max PV = ',num2str(maxPV),' mm/s']});
     leftAlignTitle(t);
-
+    
+    carrierFreq(i) = StimStruct(i).stimObj.carrierFreqHz;
+    maxPVVect(i) = maxPV;
+    commandVoltages(i) = StimStruct(i).stimObj.maxVoltage;
+    
     %% Adjust axes
     linkaxes(ph(:),'x')
     startView = StimStruct(i).stimObj.startPadDur -0.1;
@@ -225,9 +245,25 @@ for i = 1:length(uniqueStim)
     saveFileName = [saveFolder,'flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'_stim',num2str(i-1,'%03d'),'_to_',num2str(i,'%03d'),'.pdf'];
     mySave(saveFileName);
     
-    
+    close all;
     
 end
+
+%% Plot 
+uCarrierFreqs = unique(carrierFreq);
+for i = 1:length(uCarrierFreqs)
+    freqIdx = find(carrierFreq == uCarrierFreqs(i));
+    figure;
+    hold on 
+    plot(commandVoltages(freqIdx),maxPVVect(freqIdx),'bo')
+    desiredCommand = interp1(maxPVVect(freqIdx),commandVoltages(freqIdx),1.25);
+    plot(desiredCommand,1.25,'ro')
+    xlabel('Command Voltage (V)')
+    ylabel('Particle velocity (mm/s)')
+    title(['Frequency = ',num2str(uCarrierFreqs(i)),', Command Voltage = ',num2str(desiredCommand),' V']);
+end
+
+
 
 
 end

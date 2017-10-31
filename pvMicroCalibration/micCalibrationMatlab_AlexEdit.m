@@ -238,10 +238,12 @@ end
 figure(2)
 k1vsamp = subplot(2,1,1);
 k1vsfreq = subplot(2,1,2);
+hold on 
 
 figure(3)
 k2vsamp = subplot(2,1,1);
 k2vsfreq = subplot(2,1,2);
+hold on 
 
 co = get(k1vsamp,'colorOrder');
 mo = {'o','+'};
@@ -284,7 +286,6 @@ set(k1vsfreq,'xscale','log');
 ylabel(k1vsfreq,'k_{KE1}');
 xlabel(k1vsfreq,'freq (Hz)')
 set(k1vsfreq,'xLim',[40,1200]);
-set(k1vsfreq,'yLim',[2e-4,4e-4]);
 
 ylims = get(k2vsamp,'ylim');
 %set(k2vsamp,'yLim',[0,ylims(2)]);
@@ -299,5 +300,32 @@ set(k2vsfreq,'xscale','log');
 ylabel(k2vsfreq,'k_{KE2}');
 xlabel(k2vsfreq,'freq (Hz)')
 set(k2vsfreq,'xLim',[40,1200]);
-set(k2vsfreq,'yLim',[2e-4,4e-4]);
+
+%% Plot means 
+meanKE1 = nanmean(kKE1_mat,2);
+meanKE2 = nanmean(kKE2_mat,2);
+plot(freqs,meanKE1,'k','LineWidth',2','Parent',k1vsfreq)
+plot(freqs,meanKE2,'k','LineWidth',2','Parent',k2vsfreq)
+
+% Linear interpolation
+queryFreqs = [100,140,200,225,300,400];
+interpK1s = interp1(freqs,meanKE1,queryFreqs);
+interpK2s = interp1(freqs,meanKE2,queryFreqs);
+
+plot(queryFreqs,interpK1s,'ro','Parent',k1vsfreq)
+plot(queryFreqs,interpK2s,'ro','Parent',k2vsfreq)
+
+% % Spline interpolation 
+% interpK1s = interp1(freqs,meanKE1,queryFreqs,'spline');
+% interpK2s = interp1(freqs,meanKE2,queryFreqs,'spline');
+% 
+% plot(queryFreqs,interpK1s,'go','Parent',k1vsfreq)
+% plot(queryFreqs,interpK2s,'go','Parent',k2vsfreq)
+
+k1Map = containers.Map(queryFreqs,interpK1s);
+k2Map = containers.Map(queryFreqs,interpK2s);
+
+save('C:\Users\Alex\Documents\GitHub\analysis\ballPlotting\pvPlotting\freqVsKE','k1Map','k2Map')
+
+
 
