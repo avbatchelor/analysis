@@ -308,7 +308,7 @@ plot(freqs,meanKE1,'k','LineWidth',2','Parent',k1vsfreq)
 plot(freqs,meanKE2,'k','LineWidth',2','Parent',k2vsfreq)
 
 % Linear interpolation
-queryFreqs = [100,140,200,225,300,400];
+queryFreqs = [100,140,200,225,300,400,500,800];
 interpK1s = interp1(freqs,meanKE1,queryFreqs);
 interpK2s = interp1(freqs,meanKE2,queryFreqs);
 

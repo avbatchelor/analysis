@@ -232,6 +232,32 @@ for i = 1:numStim
     maxPVVect(i) = maxPV;
     commandVoltages(i) = StimStruct(i).stimObj.maxVoltage;
     
+    %% Fit a sine wave to particle velocity 
+    % Estimate period (per is # of samples in full wave)
+    per = 1/StimStruct(i).stimObj.carrierFreqHz;                     
+    offset = 0; 
+    
+    % Fit 
+    timeVec = groupedData.stimTimeVect{i};
+    x = timeVec(idxToAdd+1:idxToAdd+length(pvDurStim));
+    y = pvDurStim;
+    % Function to fit
+    fit = @(b,x)  maxPV.*(sin(2*pi*x./per + 2*pi/b(1))) + offset; 
+    % Least-Squares cost function
+    fcn = @(b) sum((fit(b,x) - y).^2); 
+    % Minimise Least-Squares
+    s = fminsearch(fcn, 0);                       
+    
+    % Plot 
+    figure(1)
+    plot(x,fit(s,x),'r')
+    
+    figure(3) 
+    plot(x,maxPV.*(sin(2*pi*x./per)) + offset); 
+    
+    figure(4) 
+    plot(x,sin(x))
+    
     %% Adjust axes
     linkaxes(ph(:),'x')
     startView = StimStruct(i).stimObj.startPadDur -0.1;
@@ -256,7 +282,7 @@ for i = 1:length(uCarrierFreqs)
     figure;
     hold on 
     plot(commandVoltages(freqIdx),maxPVVect(freqIdx),'bo')
-    desiredCommand = interp1(maxPVVect(freqIdx),commandVoltages(freqIdx),1.25);
+    desiredCommand = interp1(maxPVVect(freqIdx),commandVoltages(freqIdx),1.25,'spline');
     plot(desiredCommand,1.25,'ro')
     xlabel('Command Voltage (V)')
     ylabel('Particle velocity (mm/s)')
