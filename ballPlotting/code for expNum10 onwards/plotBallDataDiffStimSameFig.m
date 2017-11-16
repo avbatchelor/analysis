@@ -1,4 +1,4 @@
-function plotBallDataDiffStimSameFig(prefixCode,expNum,flyNum,flyExpNum)
+function plotBallDataDiffStimSameFig(prefixCode,expNum,flyNum,flyExpNum,allTrials)
 
 %% Load group filename
 dsFactor = 400;
@@ -43,7 +43,7 @@ if ~isfield(exptInfo,'flyExpNotes')
     exptInfo.flyExpNotes = '';
 end
 sumTitle = {[dateAsString,', ',exptInfo.prefixCode,', ExpNum ',num2str(exptInfo.expNum),', FlyNum ',num2str(exptInfo.flyNum),...
-    ', FlyExpNum ',num2str(exptInfo.flyExpNum)];['Aim: ',FlyData.aim];['Expt Notes: ',exptInfo.flyExpNotes]};
+    ', FlyExpNum ',num2str(exptInfo.flyExpNum)];['Aim: ',char(FlyData.aim)];['Expt Notes: ',exptInfo.flyExpNotes]};
 
 %% Hardcoded paramters
 timeBefore = 0.3;
@@ -93,7 +93,7 @@ for i = 1:length(uniqueStim)
     stimNumIndNotSelected = find(groupedData.stimNum == uniqueStim(i));
     stimNumInd = intersect(trialsToIncludeNums,stimNumIndNotSelected);
     pipEndInd = Stim.totalDur - Stim.endPadDur;
-
+    
     %% Rotate each of these trials
     count = 0;
     for j = stimNumInd
@@ -146,8 +146,9 @@ for i = 1:length(uniqueStim)
     sph(2) = subplot(7,2,3);
     hold on
     mySimplePlot(groupedData.dsTime{i},meanXVel,'Color',currColor,'Linewidth',2)
-    mySimplePlot(groupedData.dsTime{i},rotXVel,'Color',currColor,'Linewidth',0.5)
-    
+    if strcmp(allTrials,'y')
+        mySimplePlot(groupedData.dsTime{i},rotXVel,'Color',currColor,'Linewidth',0.5)
+    end
     %     mySimplePlot(groupedData.dsTime,meanXVel+stdXVel,'Color',colorSet(i,:),'Linewidth',0.5)
     %     mySimplePlot(groupedData.dsTime,meanXVel-stdXVel,'Color',colorSet(i,:),'Linewidth',0.5)
     set(gca,'XTick',[])
@@ -163,7 +164,9 @@ for i = 1:length(uniqueStim)
     sph(3) = subplot(7,2,5);
     hold on
     mySimplePlot(groupedData.dsTime{i},meanYVel,'Color',currColor,'Linewidth',2)
-    mySimplePlot(groupedData.dsTime{i},rotYVel,'Color',currColor,'Linewidth',0.5)
+    if strcmp(allTrials,'y')
+        mySimplePlot(groupedData.dsTime{i},rotYVel,'Color',currColor,'Linewidth',0.5)
+    end
     %     mySimplePlot(groupedData.dsTime,meanYVel+stdYVel,'Color',colorSet(i,:),'Linewidth',0.5)
     %     mySimplePlot(groupedData.dsTime,meanYVel-stdYVel,'Color',colorSet(i,:),'Linewidth',0.5)
     set(gca,'XTick',[])
@@ -179,7 +182,9 @@ for i = 1:length(uniqueStim)
     sph(4) = subplot(7,2,7);
     hold on
     mySimplePlot(groupedData.dsTime{i},meanXDisp,'Color',currColor,'Linewidth',2)
-    mySimplePlot(groupedData.dsTime{i},rotXDisp,'Color',currColor,'Linewidth',0.5)
+    if strcmp(allTrials,'y')
+        mySimplePlot(groupedData.dsTime{i},rotXDisp,'Color',currColor,'Linewidth',0.5)
+    end
     %     mySimplePlot(groupedData.dsTime,meanXDisp+stdXDisp,'Color',colorSet(i,:),'Linewidth',0.5)
     %     mySimplePlot(groupedData.dsTime,meanXDisp-stdXDisp,'Color',colorSet(i,:),'Linewidth',0.5)
     %
@@ -197,7 +202,9 @@ for i = 1:length(uniqueStim)
     sph(5) = subplot(7,2,9);
     hold on
     mySimplePlot(groupedData.dsTime{i},meanYDisp,'Color',currColor,'Linewidth',2)
-    mySimplePlot(groupedData.dsTime{i},rotYDisp,'Color',currColor,'Linewidth',0.5)
+    if strcmp(allTrials,'y')
+        mySimplePlot(groupedData.dsTime{i},rotYDisp,'Color',currColor,'Linewidth',0.5)
+    end
     %     mySimplePlot(groupedData.dsTime,meanYDisp+stdYDisp,'Color',colorSet(i,:),'Linewidth',0.5)
     %     mySimplePlot(groupedData.dsTime,meanYDisp-stdYDisp,'Color',colorSet(i,:),'Linewidth',0.5)
     ylabel({'Y Disp';'(mm)'})
@@ -267,10 +274,12 @@ for i = 1:length(uniqueStim)
     sph(9) = subtightplot (7, 2, 8:2:14, [0.1 0.05], [0.1 0.01], [0.1 0.01]);
     hold on
     plot(meanXDisp,meanYDisp,'Color',currColor,'Linewidth',2)
-    plot(rotXDisp',rotYDisp','Color',currColor,'Linewidth',0.5)
-%     xEndSubtracted = rotXDisp - rotXDisp(pipEndInd);
-%     yEndSubtracted = rotYDisp - rotYDisp(pipEndInd);
-%     plot(mean(xEndSubtracted),mean(yEndSubtracted),'Color',colorSet(i,:))
+    if strcmp(allTrials,'y')
+        plot(rotXDisp',rotYDisp','Color',currColor,'Linewidth',0.5)
+    end
+    %     xEndSubtracted = rotXDisp - rotXDisp(pipEndInd);
+    %     yEndSubtracted = rotYDisp - rotYDisp(pipEndInd);
+    %     plot(mean(xEndSubtracted),mean(yEndSubtracted),'Color',colorSet(i,:))
     
     %     plot(meanXDisp+stdXDisp,meanYDisp,'Color',colorSet(i,:),'Linewidth',0.5)
     %     plot(meanXDisp-stdXDisp,meanYDisp,'Color',colorSet(i,:),'Linewidth',0.5)

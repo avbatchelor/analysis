@@ -15,7 +15,7 @@ for i = 1:length(expNumList)
     elseif strcmp(prefixCode,'38F12-in') && expNum == 1
         plotBallDataDiffStimSameFigUnpaired(prefixCode,expNum,flyNum,flyExpNum)
     else
-        plotBallDataDiffStimSameFig(prefixCode,expNum,flyNum,flyExpNum)
+        plotBallDataDiffStimSameFig(prefixCode,expNum,flyNum,flyExpNum,'n')
     end
 end
 

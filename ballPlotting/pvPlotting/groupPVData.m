@@ -36,7 +36,9 @@ for i = 1:numTrials
     groupedData.stimDur{trialMeta.stimNum} = Stim.stimDur;
     groupedData.pv{trialNum} = data.pv;
     groupedData.acqStim1{trialNum} = data.acqStim1;
-    groupedData.acqStim2{trialNum} = data.acqStim2;
+    if isfield(groupedData,'acqStim2')
+        groupedData.acqStim2{trialNum} = data.acqStim2;
+    end
     groupedData.KEraw{trialNum} = data.KEraw;
     if isfield(Stim,'description')
         groupedData.description{trialMeta.stimNum} = Stim.description;
