@@ -9,11 +9,15 @@ exptInfo.flyExpNum      = flyExpNum;
 [~, path, fileNamePreamble, ~] = getDataFileNameBall(exptInfo);
 cd(path);
 dirCont = dir('*trial*');
+
+stimSequence = [];
+
 for i = 1:length(dirCont)
     %% Load data 
     load(dirCont(i).name);
     trialNum = trialMeta.trialNum;
     settings = ballSettings;
+    stimNum = trialMeta.stimNum;
     
     %% Process data 
     [procData.vel(:,1),procData.disp(:,1)] = processBallData(data.xVel,settings.xMinVal,settings.xMaxVal,settings,Stim);
@@ -34,6 +38,15 @@ for i = 1:length(dirCont)
     if exist('LEDtrig','var')
         groupedData.led{trialMeta.stimNum} = LEDtrig.stimulus;
     end
+    
+    %% Make stim struct 
+    if any(stimSequence == stimNum)
+    else
+        StimStruct(stimNum).stimObj = Stim;
+    end
+    
+    % Record stim num sequenceata matrix
+    stimSequence = [stimSequence, stimNum];
 
     %% Meta data 
     groupedData.stimNum(trialNum) = trialMeta.stimNum;
@@ -53,15 +66,18 @@ for i = 1:length(dirCont)
     temp.yDisp = groupedData.yDisp{trialNum};
     groupedData.midChunk.xDisp{trialNum} = temp.xDisp(indBefore:indAfter);
     groupedData.midChunk.yDisp{trialNum} = temp.yDisp(indBefore:indAfter);
+    groupedData.startChunk.xDisp{trialNum} = temp.xDisp(1:pipStartInd-2);
+    groupedData.startChunk.yDisp{trialNum} = temp.yDisp(1:pipStartInd-2);
+    
     %% Find indices of trials that where running speed is too slow/fast  
     Vxy = sqrt((groupedData.xVel{trialNum}.^2)+(groupedData.yVel{trialNum}.^2));
     avgResultantVelocity = mean(Vxy);
-    groupedData.trialsToInclude(trialNum) = 3<avgResultantVelocity && avgResultantVelocity<50;
+    groupedData.trialsToInclude(trialNum) = 10<avgResultantVelocity && avgResultantVelocity<30;
     groupedData.trialSpeed(trialNum) = avgResultantVelocity;
     clear procData temp
 end
 
 fileName = [path,fileNamePreamble,'groupedData.mat'];
-save(fileName, 'groupedData');
+save(fileName, 'groupedData','StimStruct');
 
 
