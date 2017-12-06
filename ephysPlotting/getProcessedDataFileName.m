@@ -1,7 +1,6 @@
 function pPath = getProcessedDataFileName(exptInfo)
 
-[~, path, ~, ~] = getDataFileName(exptInfo);
+[~, path, ~, ~] = getDataFileNameBall(exptInfo);
 
-pPath = strrep(path, 'DataD', 'ProcessedDataD');
-
+pPath = strrep(path, '\Data\', '\ProcessedData\');
 

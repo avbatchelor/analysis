@@ -20,8 +20,8 @@ for i = 1:length(dirCont)
     stimNum = trialMeta.stimNum;
     
     %% Process data 
-    [procData.vel(:,1),procData.disp(:,1)] = processBallData(data.xVel,settings.xMinVal,settings.xMaxVal,settings,Stim);
-    [procData.vel(:,2),procData.disp(:,2)] = processBallData(data.yVel,settings.yMinVal,settings.yMaxVal,settings,Stim);
+    [procData.vel(:,1),procData.disp(:,1)] = processBallData(data.xVel,Stim,'x');
+    [procData.vel(:,2),procData.disp(:,2)] = processBallData(data.yVel,Stim,'y');
     
     %% Movement data 
     groupedData.xVel{trialNum} = downsample(procData.vel(:,1),dsFactor,dsPhaseShift);
@@ -77,7 +77,12 @@ for i = 1:length(dirCont)
     clear procData temp
 end
 
-fileName = [path,fileNamePreamble,'groupedData.mat'];
+pPath = getProcessedDataFileName(exptInfo);
+mkdir(pPath);
+fileName = [pPath,fileNamePreamble,'groupedData.mat'];
 save(fileName, 'groupedData','StimStruct');
+
+
+
 
 

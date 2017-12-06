@@ -1,5 +1,6 @@
 function groupPdfs(folder,varargin)
 
+cd('C:\Users\Alex\Documents\ProcessedData\ballData')
 if nargin == 0 
     folder = uigetdir; 
 end
