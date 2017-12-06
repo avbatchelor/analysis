@@ -1,4 +1,4 @@
-function plotBallDataDiffStimSameFig(prefixCode,expNum,flyNum,flyExpNum,allTrials,sameFig)
+function plotBallDataDiffStimSameFigAll(prefixCode,expNum,flyNum,flyExpNum,allTrials,sameFig)
 
 
 %% Load group filename
@@ -49,7 +49,7 @@ gray = [192 192 192]./255;
 
 % Subplot settings 
 numCols = 3;
-numRows = 7;
+numRows = 5;
 spIndex = reshape(1:numCols*numRows, numCols, numRows).';
 
 %% Data for title
@@ -103,7 +103,7 @@ for k = uniqueStimTypes
     figure(1)
     set(0,'DefaultFigureWindowStyle','normal')
     setCurrentFigurePosition(1);
-    subplot = @(m,n,p) subtightplot (m, n, p, [0.01 0.05], [0.1 0.1], [0.1 0.01]);
+    subplot = @(m,n,p) subtightplot (m, n, p, [0.01 0.05], [0.1 0.01], [0.1 0.01]);
     set(0,'DefaultFigureColor','w')
     
     stimTypeInd = find(stimType == k);
@@ -122,9 +122,9 @@ for k = uniqueStimTypes
     %% Plot for each stim Num
     for i = stimTypeInd
         
-        colorSet = distinguishable_colors(length(stimTypeInd),'w');
-        colorSet = circshift(colorSet,1,1);
-    
+        colorSet = distinguishable_colors(length(stimTypeInd)/2,'w');
+        colorSet = [colorSet;colorSet];
+
         stimCount = stimCount + 1; 
         currColor = colorSet(stimCount,:);
         
@@ -138,7 +138,8 @@ for k = uniqueStimTypes
         stimIndSamp = randInd(1:10);
         
         if isfield(StimStruct(i).stimObj,'speakerAngle')
-            legendText{end+1} = ['Angle = ',num2str(StimStruct(i).stimObj.speakerAngle)];
+            legendText{end+1} = ['Angle = ',num2str(StimStruct(i).stimObj.speakerAngle),...
+                ', ',num2str(StimStruct(i).stimObj.description)];
         else 
             legendText{end+1} = '';
         end
@@ -252,7 +253,7 @@ for k = uniqueStimTypes
         moveXAxis(groupedData,i)
         symAxisY
         
-        sph(5) = subplot (numRows, numCols, spIndex(5));
+        sph(5) = subplot(numRows, numCols, spIndex(5));
         hold on
         mySimplePlot(groupedData.dsTime{i},meanYDisp,'Color',currColor,'Linewidth',2)
         if strcmp(allTrials,'y')
@@ -272,61 +273,7 @@ for k = uniqueStimTypes
         linkaxes(sph(1:5),'x')
         symAxisY
         
-        sph(6) = subplot (numRows, numCols, spIndex(6));
-        hold on
-        bins = -10:0.5:40;
-        fvTemp = [fvTemp;rotYVel(:)];
-        hist(fvTemp,bins);
-        xlim([-10 40])
-        xlabel('Forward speed (mm/s)')
-        ylabel('Counts')
-        set(get(gca,'YLabel'),'Rotation',0,'HorizontalAlignment','right')
-        box off;
-        set(gca,'TickDir','out')
-        axis tight
-        
-%         sph(7) = subplot (numRows, numCols, spIndex(7));
-%         hold on
-%         %     bins = -10:0.5:40;
-%         %     lvTemp = [lvTemp;rotXVel(:)];
-%         %     hist(lvTemp,bins);
-%         %     xlim([-10 40])
-%         %     xlabel('Lateral speed (mm/s)')
-%         %     ylabel('Counts')
-%         % Plot all trials in gray
-%         if stimCount == 1
-%             bh1 = bar(trialNums,groupedData.trialSpeed,'EdgeColor',gray,'FaceColor',gray);
-%         end
-%         % Plot baseline 
-%         line([0,trialNums(end)],[10,10],'Color','k')
-%         bw = get(bh1,'BarWidth');
-%         bar(stimNumInd,groupedData.trialSpeed(stimNumInd),'EdgeColor',currColor,'FaceColor',currColor,'BarWidth',bw/min(diff(sort(stimNumIndNotSelected))));
-%         %     notIncInd = trialNums(~groupedData.trialsToInclude);
-%         %     bar(notIncInd,groupedData.trialSpeed(~groupedData.trialsToInclude),'FaceColor','b')
-%         plot(stimNumIndNotSelected,max(groupedData.trialSpeed)+1,'*','Color',currColor)
-%         ylabel({'Trial avg speed';'(mm/s)'})
-%         xlabel('Trial number')
-%         set(get(gca,'YLabel'),'Rotation',0,'HorizontalAlignment','right')
-%         box off;
-%         set(gca,'TickDir','out')
-%         axis tight
-%         if mod(i,2)
-%             t1s = ['Successful left trials = ',num2str(length(stimNumInd)),'/',num2str(length(stimNumIndNotSelected))];
-%         else
-%             t2s = ['Successful right trials = ',num2str(length(stimNumInd)),'/',num2str(length(stimNumIndNotSelected))];
-%             title([t1s,'   ',t2s])
-%         end
-        
-        sph(8) = subplot(numRows, numCols, spIndex(8:10));
-        hold on
-        line([rotXDisp(:,pipStartInd),rotXDisp(:,indBefore)]',[rotYDisp(:,pipStartInd),rotYDisp(:,indBefore)]','Color','k');
-        line([rotXDisp(:,pipStartInd),rotXDisp(:,indAfter)]',[rotYDisp(:,pipStartInd),rotYDisp(:,indAfter)]','Color',currColor);
-        axis square
-        xlim([-3 3])
-        ylabel('Y displacement (mm)')
-        
-        
-        sph(9) = subtightplot (numRows, numCols, spIndex(11:14),[0.01 0.05], [0.1 0.01], [0.1 0.01]);
+        sph(9) = subtightplot (numRows, numCols, spIndex(6:10),[0.01 0.05], [0.1 0.01], [0.1 0.01]);
         hold on
         plot(meanXDisp,meanYDisp,'Color',currColor,'Linewidth',2)
         if strcmp(allTrials,'y')
@@ -338,7 +285,7 @@ for k = uniqueStimTypes
         
         %     plot(meanXDisp+stdXDisp,meanYDisp,'Color',colorSet(i,:),'Linewidth',0.5)
         %     plot(meanXDisp-stdXDisp,meanYDisp,'Color',colorSet(i,:),'Linewidth',0.5) 
-        xlim([-3 3])
+        xlim([-3.5 3.5])
         xlabel('X displacement (mm)')
         ylabel('Y displacement (mm)')
         
@@ -346,24 +293,21 @@ for k = uniqueStimTypes
         clear rotVel rotDisp
         
         
-        %% Angle histogram
-        beforeDisp = [rotXDisp(:,indBefore),rotYDisp(:,indBefore)];
-        afterDisp = [rotXDisp(:,indAfter),rotYDisp(:,indAfter)];
-        plotAngleHist(beforeDisp,afterDisp,currColor,numRows,numCols,stimCount);
+
         
 
         
     end
     
-    legend(sph(9),legendText,'Location','best')
+    legend(sph(9),legendText,'Location','eastoutside')
     legend('boxoff')
     
     suptitle(sumTitle)
-    saveFileName = [saveFolder,'flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'_stim',num2str(i-1,'%03d'),'_to_',num2str(i,'%03d'),'.pdf'];
-    mySave(saveFileName,[5 5]);
-    close all
-    
-    groupPdfs(saveFolder)
+%     saveFileName = [saveFolder,'flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'_stim',num2str(i-1,'%03d'),'_to_',num2str(i,'%03d'),'.pdf'];
+%     mySave(saveFileName,[5 5]);
+%     close all
+%     
+%     groupPdfs(saveFolder)
 
     
 end
