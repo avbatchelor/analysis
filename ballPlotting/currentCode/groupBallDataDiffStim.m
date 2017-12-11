@@ -1,11 +1,14 @@
 function groupBallDataDiffStim(prefixCode,expNum,flyNum,flyExpNum)
 
+%% Downsample paramters 
 dsFactor = 400;
 dsPhaseShift = 200;
-exptInfo.prefixCode     = prefixCode;
-exptInfo.expNum         = expNum;
-exptInfo.flyNum         = flyNum;
-exptInfo.flyExpNum      = flyExpNum;
+
+%% Make exptInfo struct 
+exptInfo = exptInfoStruct(prefixCode,expNum,flyNum,flyExpNum);
+
+
+
 [~, path, fileNamePreamble, ~] = getDataFileNameBall(exptInfo);
 cd(path);
 dirCont = dir('*trial*');
