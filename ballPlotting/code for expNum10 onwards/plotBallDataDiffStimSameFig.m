@@ -188,7 +188,7 @@ for k = uniqueStimTypes
         
         %% Plot stimulus
         figure(1)
-        sph(1) = subtightplot (numRows, numCols, spIndex(1), [0.01 0.05], [0.1 0.01], [0.1 0.01]);
+        sph(1) = subplot (numRows, numCols, spIndex(1));
         mySimplePlot(groupedData.stimTimeVect{i},groupedData.stim{i})
         set(gca,'XTick',[])
         ylabel({'Stim';'(V)'})
@@ -326,7 +326,7 @@ for k = uniqueStimTypes
         ylabel('Y displacement (mm)')
         
         
-        sph(9) = subtightplot (numRows, numCols, spIndex(11:14),[0.01 0.05], [0.1 0.01], [0.1 0.01]);
+        sph(9) = subplot (numRows, numCols, spIndex(11:14));
         hold on
         plot(meanXDisp,meanYDisp,'Color',currColor,'Linewidth',2)
         if strcmp(allTrials,'y')
