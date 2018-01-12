@@ -7,8 +7,7 @@ dsPhaseShift = 200;
 %% Make exptInfo struct 
 exptInfo = exptInfoStruct(prefixCode,expNum,flyNum,flyExpNum);
 
-
-
+%% Get data filenames
 [~, path, fileNamePreamble, ~] = getDataFileNameBall(exptInfo);
 cd(path);
 dirCont = dir('*trial*');
@@ -18,15 +17,16 @@ stimSequence = [];
 for i = 1:length(dirCont)
     %% Load data 
     load(dirCont(i).name);
+    
+    %% Get trial and stim num
     trialNum = trialMeta.trialNum;
-    settings = ballSettings;
     stimNum = trialMeta.stimNum;
     
     %% Process data 
-    [procData.vel(:,1),procData.disp(:,1)] = processBallData(data.xVel,Stim,'x');
-    [procData.vel(:,2),procData.disp(:,2)] = processBallData(data.yVel,Stim,'y');
+    [procData.vel(:,1),procData.disp(:,1)] = processDigBallData(rawData(:,5:12),stim);
+    [procData.vel(:,2),procData.disp(:,2)] = processDigBallData(rawData(:,13:20),stim);
     
-    %% Movement data 
+    %% Downsample velocity and displacement data 
     groupedData.xVel{trialNum} = downsample(procData.vel(:,1),dsFactor,dsPhaseShift);
     groupedData.yVel{trialNum} = downsample(procData.vel(:,2),dsFactor,dsPhaseShift);
     groupedData.xDisp{trialNum} = downsample(procData.disp(:,1),dsFactor,dsPhaseShift);
@@ -80,6 +80,7 @@ for i = 1:length(dirCont)
     clear procData temp
 end
 
+%% Save data
 pPath = getProcessedDataFileName(exptInfo);
 mkdir(pPath);
 fileName = [pPath,fileNamePreamble,'groupedData.mat'];

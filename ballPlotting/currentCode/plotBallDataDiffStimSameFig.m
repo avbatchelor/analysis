@@ -285,37 +285,37 @@ for k = uniqueStimTypes
         set(gca,'TickDir','out')
         axis tight
         
-%         sph(7) = subplot (numRows, numCols, spIndex(7));
-%         hold on
-%         %     bins = -10:0.5:40;
-%         %     lvTemp = [lvTemp;rotXVel(:)];
-%         %     hist(lvTemp,bins);
-%         %     xlim([-10 40])
-%         %     xlabel('Lateral speed (mm/s)')
-%         %     ylabel('Counts')
-%         % Plot all trials in gray
-%         if stimCount == 1
-%             bh1 = bar(trialNums,groupedData.trialSpeed,'EdgeColor',gray,'FaceColor',gray);
-%         end
-%         % Plot baseline 
-%         line([0,trialNums(end)],[10,10],'Color','k')
-%         bw = get(bh1,'BarWidth');
-%         bar(stimNumInd,groupedData.trialSpeed(stimNumInd),'EdgeColor',currColor,'FaceColor',currColor,'BarWidth',bw/min(diff(sort(stimNumIndNotSelected))));
-%         %     notIncInd = trialNums(~groupedData.trialsToInclude);
-%         %     bar(notIncInd,groupedData.trialSpeed(~groupedData.trialsToInclude),'FaceColor','b')
-%         plot(stimNumIndNotSelected,max(groupedData.trialSpeed)+1,'*','Color',currColor)
-%         ylabel({'Trial avg speed';'(mm/s)'})
-%         xlabel('Trial number')
-%         set(get(gca,'YLabel'),'Rotation',0,'HorizontalAlignment','right')
-%         box off;
-%         set(gca,'TickDir','out')
-%         axis tight
-%         if mod(i,2)
-%             t1s = ['Successful left trials = ',num2str(length(stimNumInd)),'/',num2str(length(stimNumIndNotSelected))];
-%         else
-%             t2s = ['Successful right trials = ',num2str(length(stimNumInd)),'/',num2str(length(stimNumIndNotSelected))];
-%             title([t1s,'   ',t2s])
-%         end
+        sph(7) = subplot (numRows, numCols, spIndex(7));
+        hold on
+        %     bins = -10:0.5:40;
+        %     lvTemp = [lvTemp;rotXVel(:)];
+        %     hist(lvTemp,bins);
+        %     xlim([-10 40])
+        %     xlabel('Lateral speed (mm/s)')
+        %     ylabel('Counts')
+        % Plot all trials in gray
+        if stimCount == 1
+            bh1 = bar(trialNums,groupedData.trialSpeed,'EdgeColor',gray,'FaceColor',gray);
+        end
+        % Plot baseline 
+        line([0,trialNums(end)],[10,10],'Color','k')
+        bw = get(bh1,'BarWidth');
+        bar(stimNumInd,groupedData.trialSpeed(stimNumInd),'EdgeColor',currColor,'FaceColor',currColor,'BarWidth',bw/min(diff(sort(stimNumIndNotSelected))));
+        %     notIncInd = trialNums(~groupedData.trialsToInclude);
+        %     bar(notIncInd,groupedData.trialSpeed(~groupedData.trialsToInclude),'FaceColor','b')
+        plot(stimNumIndNotSelected,max(groupedData.trialSpeed)+1,'*','Color',currColor)
+        ylabel({'Trial avg speed';'(mm/s)'})
+        xlabel('Trial number')
+        set(get(gca,'YLabel'),'Rotation',0,'HorizontalAlignment','right')
+        box off;
+        set(gca,'TickDir','out')
+        axis tight
+        if mod(i,2)
+            t1s = ['Successful left trials = ',num2str(length(stimNumInd)),'/',num2str(length(stimNumIndNotSelected))];
+        else
+            t2s = ['Successful right trials = ',num2str(length(stimNumInd)),'/',num2str(length(stimNumIndNotSelected))];
+            title([t1s,'   ',t2s])
+        end
         
         sph(8) = subplot(numRows, numCols, spIndex(8:10));
         hold on
