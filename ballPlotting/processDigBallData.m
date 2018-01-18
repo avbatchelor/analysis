@@ -18,9 +18,9 @@ if exist('stim','var')
     % Integrate to calcuate displacement 
     disp = cumtrapz(stim.timeVec,velMmFilt);
 
-%     % Set 0 displacement to stimulus start
-%     stimStartInt = stim.startPadDur*stim.sampleRate +1; 
-%     disp = disp - disp(stimStartInt,1);
+    % Set 0 displacement to stimulus start
+    stimStartInt = stim.startPadDur*stim.sampleRate +1; 
+    disp = disp - disp(stimStartInt,1);
 else 
     disp = [];
 end
