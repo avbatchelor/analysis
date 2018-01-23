@@ -15,6 +15,8 @@ dirCont = dir('*trial*');
 stimSequence = [];
 
 for i = 1:length(dirCont)
+    disp(['Trial = ',num2str(i)]);
+    
     %% Load data 
     load(dirCont(i).name);
     
@@ -23,8 +25,8 @@ for i = 1:length(dirCont)
     stimNum = trialMeta.stimNum;
     
     %% Process data 
-    [procData.vel(:,1),procData.disp(:,1)] = processDigBallData(rawData(:,5:12),stim);
-    [procData.vel(:,2),procData.disp(:,2)] = processDigBallData(rawData(:,13:20),stim);
+    [procData.vel(:,1),procData.disp(:,1)] = processDigBallData(data.xVelDig,Stim);
+    [procData.vel(:,2),procData.disp(:,2)] = processDigBallData(data.yVelDig,Stim);
     
     %% Downsample velocity and displacement data 
     groupedData.xVel{trialNum} = downsample(procData.vel(:,1),dsFactor,dsPhaseShift);
@@ -75,7 +77,6 @@ for i = 1:length(dirCont)
     %% Find indices of trials that where running speed is too slow/fast  
     Vxy = sqrt((groupedData.xVel{trialNum}.^2)+(groupedData.yVel{trialNum}.^2));
     avgResultantVelocity = mean(Vxy);
-    groupedData.trialsToInclude(trialNum) = 10<avgResultantVelocity && avgResultantVelocity<30;
     groupedData.trialSpeed(trialNum) = avgResultantVelocity;
     clear procData temp
 end

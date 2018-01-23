@@ -71,15 +71,16 @@ pipStartInd = Stim.startPadDur*Stim.sampleRate/dsFactor + 1;
 indBefore = pipStartInd - timeBefore*Stim.sampleRate/dsFactor;
 indAfter = pipStartInd + timeBefore*Stim.sampleRate/dsFactor;
 
-
+%% Select trials based on speed 
+trialsToInclude = 3<groupedData.trialSpeed & groupedData.trialSpeed<30;
 
 %% Rotate all trials
 refVect = [0; -1];
-if sum(groupedData.trialsToInclude) == 0
+if sum(trialsToInclude) == 0
     return
 end
 trialNums = 1:length(groupedData.stimNum);
-allFastTrials = trialNums(groupedData.trialsToInclude);
+allFastTrials = trialNums(trialsToInclude);
 xDispAFT = [groupedData.startChunk.xDisp{allFastTrials}];
 yDispAFT = [groupedData.startChunk.yDisp{allFastTrials}];
 trialVect = [mean(xDispAFT(1,:));mean(yDispAFT(1,:))];
@@ -129,7 +130,7 @@ for k = uniqueStimTypes
         currColor = colorSet(stimCount,:);
         
         %% Select the trials for this stimulus
-        trialsToIncludeNums = trialNums(groupedData.trialsToInclude);
+        trialsToIncludeNums = trialNums(trialsToInclude);
         stimNumIndNotSelected = find(groupedData.stimNum == uniqueStim(i));
         stimNumInd = intersect(trialsToIncludeNums,stimNumIndNotSelected);
         pipEndInd = Stim.totalDur - Stim.endPadDur;
@@ -139,6 +140,7 @@ for k = uniqueStimTypes
         
         if isfield(StimStruct(i).stimObj,'speakerAngle')
             legendText{end+1} = ['Angle = ',num2str(StimStruct(i).stimObj.speakerAngle),...
+                ' Envelope = ',num2str(StimStruct(i).stimObj.envelope),...
                 ', ',num2str(StimStruct(i).stimObj.description)];
         else 
             legendText{end+1} = '';
