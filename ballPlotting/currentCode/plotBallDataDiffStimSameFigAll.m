@@ -123,12 +123,16 @@ for k = uniqueStimTypes
     %% Plot for each stim Num
     for i = stimTypeInd
         
-        colorSet = distinguishable_colors(length(stimTypeInd)/2,'w');
-        colorSet = [colorSet;colorSet];
+%         colorSet = distinguishable_colors(length(stimTypeInd)/2,'w');
+%         colorSet = [colorSet;colorSet];
+% 
+%         stimCount = stimCount + 1; 
+%         currColor = colorSet(stimCount,:);
 
+        colorSet = distinguishable_colors(length(uniqueStim),'w');
         stimCount = stimCount + 1; 
-        currColor = colorSet(stimCount,:);
-        
+        currColor = colorSet(i,:);
+
         %% Select the trials for this stimulus
         trialsToIncludeNums = trialNums(trialsToInclude);
         stimNumIndNotSelected = find(groupedData.stimNum == uniqueStim(i));
@@ -305,9 +309,9 @@ for k = uniqueStimTypes
     legend('boxoff')
     
     suptitle(sumTitle)
-%     saveFileName = [saveFolder,'flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'_stim',num2str(i-1,'%03d'),'_to_',num2str(i,'%03d'),'.pdf'];
-%     mySave(saveFileName,[5 5]);
-%     close all
+    saveFileName = [saveFolder,'flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'_allStimuli.pdf'];
+    mySave(saveFileName,[5 5]);
+    close all
 %     
 %     groupPdfs(saveFolder)
 
