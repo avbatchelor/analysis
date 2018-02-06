@@ -1,4 +1,9 @@
-function plotAngleHist(beforeDisp,afterDisp,currColor,numRows,numCols,stimCount)
+function plotAngleHist(beforeDisp,afterDisp,currColor,numUniqueStim,stimCount)
+
+%% Figure settings 
+figure(2);
+set(0,'DefaultFigureWindowStyle','normal')
+setCurrentFigurePosition(1);
 
 %% Calculate angles
 beforeStraightVector = [0 -1];
@@ -14,41 +19,37 @@ end
 %% Histogram settings
 gray = [192 192 192]./255;
 bins = -180:5:180;
+numRows = numUniqueStim;
+numCols = 2;
 spIndex = reshape(1:numCols*numRows, numCols, numRows).';
 
 
-%% Calculate and plot histograms
-if stimCount == 1
-    sph(10) = subtightplot (numRows, numCols, spIndex(15),[0.1 0.05], [0.1 0.01], [0.1 0.01]);
-elseif stimCount == 2
-    sph(11) = subtightplot (numRows, numCols, spIndex(16),[0.1 0.05], [0.1 0.01], [0.1 0.01]);
-elseif stimCount == 3
-    sph(12) = subtightplot (numRows, numCols, spIndex(17),[0.1 0.05], [0.1 0.01], [0.1 0.01]);
-end
+%% Plot before angle 
+sph(stimCount) = subtightplot (numRows, numCols, spIndex(stimCount),[0.1 0.05], [0.1 0.01], [0.1 0.01]);
 h1 = histogram(beforeAngle,bins,'FaceColor',gray);
-line([0,0],[0,max(h1.Values)],'Color','k')
-xlim([-50 50])
-noXAxisSettings;
-title(['Before Angle, Median = ',num2str(median(beforeAngle))])
- 
-if stimCount == 1
-    sph(13) = subtightplot (numRows, numCols, spIndex(18),[0.1 0.05], [0.1 0.01], [0.1 0.01]);
-elseif stimCount == 2
-    sph(14) = subtightplot (numRows, numCols, spIndex(19),[0.1 0.05], [0.1 0.01], [0.1 0.01]);
-elseif stimCount == 3
-    sph(15) = subtightplot (numRows, numCols, spIndex(20),[0.1 0.05], [0.1 0.01], [0.1 0.01]);
-    bottomAxisSettings;
-end
-h2 = histogram(afterAngle,bins,'FaceColor',currColor);
-line([0,0],[0,max(h2.Values)],'Color','k')
+line([0,0],[0,max(h1.Values)],'Color','k','Linewidth',3)
 xlim([-50 50])
 xlabel('Angle')
 ylabel('Counts')
-if stimCount == 1
-    noXAxisSettings;
-else 
+% if stimCount == numRows || stimCount == numUniqueStim
     bottomAxisSettings;
-end
+% else
+%     noXAxisSettings;
+% end
+title(['Before Angle, Median = ',num2str(median(beforeAngle))])
+ 
+%% Plot after angle 
+sph(stimCount) = subtightplot (numRows, numCols, spIndex(numRows+stimCount),[0.1 0.05], [0.1 0.01], [0.1 0.01]);
+h2 = histogram(afterAngle,bins,'FaceColor',currColor);
+line([0,0],[0,max(h2.Values)],'Color','k','Linewidth',3)
+xlim([-50 50])
+xlabel('Angle')
+ylabel('Counts')
+% if stimCount == numRows || stimCount == numUniqueStim
+    bottomAxisSettings;
+% else
+%     noXAxisSettings;
+% end
 title(['After Angle, Median = ',num2str(median(afterAngle))])
 
 

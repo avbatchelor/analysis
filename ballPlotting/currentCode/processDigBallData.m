@@ -1,8 +1,12 @@
-function [velMmFilt,disp] = processDigBallData(inputMat,stim)
+function [velMmFilt,disp] = processDigBallData(inputMat,stim,axis)
 
 % Convert binary matrix to signed integer
 asDec = binaryVectorToDecimal(inputMat,'LSBFirst');
-asDec = asDec -127;
+if strcmp(axis,'x')
+    asDec = asDec - 127;
+else
+    asDec = asDec - 50;
+end
 
 % Load ball settings 
 settings = ballSettings;

@@ -1,22 +1,19 @@
 function plotBallDataDiffStimSameFig(prefixCode,expNum,flyNum,flyExpNum,allTrials,sameFig)
 
 
-%% Load group filename
-exptInfo.prefixCode     = prefixCode;
-exptInfo.expNum         = expNum;
-exptInfo.flyNum         = flyNum;
-exptInfo.flyExpNum      = flyExpNum;
+%% Put exptInfo in a struct
+exptInfo = exptInfoStruct(prefixCode,expNum,flyNum,flyExpNum);
 
-%% Load data 
-% Get paths 
+%% Load data
+% Get paths
 [~, path, fileNamePreamble, ~] = getDataFileNameBall(exptInfo);
 pPath = getProcessedDataFileName(exptInfo);
 
-% Grouped data 
+% Grouped data
 fileName = [pPath,fileNamePreamble,'groupedData.mat'];
 load(fileName);
 
-% Expt data 
+% Expt data
 fileName = [path,fileNamePreamble,'exptData.mat'];
 load(fileName);
 
@@ -24,31 +21,31 @@ load(fileName);
 firstTrialFileName = [path,fileNamePreamble,'trial',num2str(1,'%03d'),'.mat'];
 load(firstTrialFileName);
 
-% Fly data 
+% Fly data
 flyDataPath = char(regexp(path,'.*(?=flyExpNum)','match'));
 flyDataPreamble = char(regexp(fileNamePreamble,'.*(?=flyExpNum)','match'));
 flyDataFileName = [flyDataPath,flyDataPreamble,'flyData'];
 load(flyDataFileName);
 
-%% Create save folder 
+%% Create save folder
 fileStem = char(regexp(pPath,'.*(?=flyExpNum)','match'));
 saveFolder = [fileStem,'Figures\'];
 mkdir(saveFolder)
 
-%% Assign empty matrices 
+%% Assign empty matrices
 fvTemp = [];
-lvTemp = [];
 
 %% Figure prep
 close all
 
 % Set colors
 uniqueStim = unique(groupedData.stimNum);
+numUniqueStim = length(uniqueStim);
 
 gray = [192 192 192]./255;
 
-% Subplot settings 
-numCols = 3;
+% Subplot settings
+numCols = 2;
 numRows = 7;
 spIndex = reshape(1:numCols*numRows, numCols, numRows).';
 
@@ -71,15 +68,17 @@ pipStartInd = Stim.startPadDur*Stim.sampleRate/dsFactor + 1;
 indBefore = pipStartInd - timeBefore*Stim.sampleRate/dsFactor;
 indAfter = pipStartInd + timeBefore*Stim.sampleRate/dsFactor;
 
+%% Select trials based on speed
+trialsToInclude = 3<groupedData.trialSpeed & groupedData.trialSpeed<30;
 
 
 %% Rotate all trials
 refVect = [0; -1];
-if sum(groupedData.trialsToInclude) == 0
+if sum(trialsToInclude) == 0
     return
 end
 trialNums = 1:length(groupedData.stimNum);
-allFastTrials = trialNums(groupedData.trialsToInclude);
+allFastTrials = trialNums(trialsToInclude);
 xDispAFT = [groupedData.startChunk.xDisp{allFastTrials}];
 yDispAFT = [groupedData.startChunk.yDisp{allFastTrials}];
 trialVect = [mean(xDispAFT(1,:));mean(yDispAFT(1,:))];
@@ -95,7 +94,7 @@ end
 stimType = sameStim(StimStruct);
 uniqueStimTypes = unique(stimType);
 if strcmp(sameFig,'y')
-   uniqueStimTypes = 1; 
+    uniqueStimTypes = 1;
 end
 
 for k = uniqueStimTypes
@@ -109,27 +108,34 @@ for k = uniqueStimTypes
     stimTypeInd = find(stimType == k);
     
     sumTitle = {[dateAsString,', ',exptInfo.prefixCode,', ExpNum ',num2str(exptInfo.expNum),', FlyNum ',num2str(exptInfo.flyNum),...
-    ', FlyExpNum ',num2str(exptInfo.flyExpNum)];['Aim: ',char(FlyData.aim),', Description: ',StimStruct(stimTypeInd(1)).stimObj.description]};
+        ', FlyExpNum ',num2str(exptInfo.flyExpNum)];['Aim: ',char(FlyData.aim),', Description: ',StimStruct(stimTypeInd(1)).stimObj.description]};
     
     legendText = {};
     
-    stimCount = 0; 
+    stimCount = 0;
     
     if strcmp(sameFig,'y')
-       	stimTypeInd = uniqueStim; 
+        stimTypeInd = uniqueStim;
     end
     
     %% Plot for each stim Num
     for i = stimTypeInd
         
-        colorSet = distinguishable_colors(length(stimTypeInd),'w');
-        colorSet = circshift(colorSet,1,1);
-    
-        stimCount = stimCount + 1; 
-        currColor = colorSet(stimCount,:);
+        if strcmp(sameFig,'n')
+            colorSet = distinguishable_colors(length(stimTypeInd),'w');
+            colorSet = circshift(colorSet,1,1);
+            
+            stimCount = stimCount + 1;
+            currColor = colorSet(stimCount,:);
+            
+        else
+            colorSet = distinguishable_colors(length(uniqueStim),'w');
+            stimCount = stimCount + 1;
+            currColor = colorSet(i,:);
+        end
         
         %% Select the trials for this stimulus
-        trialsToIncludeNums = trialNums(groupedData.trialsToInclude);
+        trialsToIncludeNums = trialNums(trialsToInclude);
         stimNumIndNotSelected = find(groupedData.stimNum == uniqueStim(i));
         stimNumInd = intersect(trialsToIncludeNums,stimNumIndNotSelected);
         pipEndInd = Stim.totalDur - Stim.endPadDur;
@@ -139,13 +145,13 @@ for k = uniqueStimTypes
         
         if isfield(StimStruct(i).stimObj,'speakerAngle')
             legendText{end+1} = ['Angle = ',num2str(StimStruct(i).stimObj.speakerAngle)];
-        else 
+        else
             legendText{end+1} = '';
         end
         
-%         checkRotation(groupedData,R,stimNumInd)
-%         pause 
-%         
+        %         checkRotation(groupedData,R,stimNumInd)
+        %         pause
+        %
         %% Rotate each of these trials
         count = 0;
         for j = stimNumInd
@@ -297,7 +303,7 @@ for k = uniqueStimTypes
         if stimCount == 1
             bh1 = bar(trialNums,groupedData.trialSpeed,'EdgeColor',gray,'FaceColor',gray);
         end
-        % Plot baseline 
+        % Plot baseline
         line([0,trialNums(end)],[10,10],'Color','k')
         bw = get(bh1,'BarWidth');
         bar(stimNumInd,groupedData.trialSpeed(stimNumInd),'EdgeColor',currColor,'FaceColor',currColor,'BarWidth',bw/min(diff(sort(stimNumIndNotSelected))));
@@ -337,7 +343,7 @@ for k = uniqueStimTypes
         %     plot(mean(xEndSubtracted),mean(yEndSubtracted),'Color',colorSet(i,:))
         
         %     plot(meanXDisp+stdXDisp,meanYDisp,'Color',colorSet(i,:),'Linewidth',0.5)
-        %     plot(meanXDisp-stdXDisp,meanYDisp,'Color',colorSet(i,:),'Linewidth',0.5) 
+        %     plot(meanXDisp-stdXDisp,meanYDisp,'Color',colorSet(i,:),'Linewidth',0.5)
         xlim([-3 3])
         xlabel('X displacement (mm)')
         ylabel('Y displacement (mm)')
@@ -349,9 +355,10 @@ for k = uniqueStimTypes
         %% Angle histogram
         beforeDisp = [rotXDisp(:,indBefore),rotYDisp(:,indBefore)];
         afterDisp = [rotXDisp(:,indAfter),rotYDisp(:,indAfter)];
-        plotAngleHist(beforeDisp,afterDisp,currColor,numRows,numCols,stimCount);
+        plotAngleHist(beforeDisp,afterDisp,currColor,numUniqueStim,stimCount);
         
-
+        
+        
         
     end
     
@@ -364,7 +371,7 @@ for k = uniqueStimTypes
     close all
     
     groupPdfs(saveFolder)
-
+    
     
 end
 
