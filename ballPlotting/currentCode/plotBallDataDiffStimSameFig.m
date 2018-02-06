@@ -99,13 +99,13 @@ end
 
 for k = uniqueStimTypes
     
-    figure(1)
-    set(0,'DefaultFigureWindowStyle','normal')
-    setCurrentFigurePosition(1);
     subplot = @(m,n,p) subtightplot (m, n, p, [0.01 0.05], [0.1 0.1], [0.1 0.01]);
-    set(0,'DefaultFigureColor','w')
     
-    stimTypeInd = find(stimType == k);
+    if strcmp(sameFig,'y')
+        stimTypeInd = uniqueStim;
+    else
+        stimTypeInd = find(stimType == k);
+    end
     
     sumTitle = {[dateAsString,', ',exptInfo.prefixCode,', ExpNum ',num2str(exptInfo.expNum),', FlyNum ',num2str(exptInfo.flyNum),...
         ', FlyExpNum ',num2str(exptInfo.flyExpNum)];['Aim: ',char(FlyData.aim),', Description: ',StimStruct(stimTypeInd(1)).stimObj.description]};
@@ -114,12 +114,14 @@ for k = uniqueStimTypes
     
     stimCount = 0;
     
-    if strcmp(sameFig,'y')
-        stimTypeInd = uniqueStim;
-    end
-    
     %% Plot for each stim Num
     for i = stimTypeInd
+        
+        if strcmp(sameFig,'y')
+            goFigure(1);
+        else 
+            goFigure;
+        end
         
         if strcmp(sameFig,'n')
             colorSet = distinguishable_colors(length(stimTypeInd),'w');
