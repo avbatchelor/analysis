@@ -368,7 +368,7 @@ for k = uniqueStimTypes
     suptitle(sumTitle)
     saveFileName = [saveFolder,'flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'_stim',num2str(i-1,'%03d'),'_to_',num2str(i,'%03d'),'.pdf'];
     mySave(saveFileName,[5 5]);
-    close all
+%     close all
     
     groupPdfs(saveFolder)
     

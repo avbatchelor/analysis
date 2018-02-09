@@ -25,8 +25,8 @@ for i = 1:length(dirCont)
     stimNum = trialMeta.stimNum;
     
     %% Process data 
-    [procData.vel(:,1),procData.disp(:,1)] = processDigBallData(data.xVelDig,Stim);
-    [procData.vel(:,2),procData.disp(:,2)] = processDigBallData(data.yVelDig,Stim);
+    [procData.vel(:,1),procData.disp(:,1)] = processDigBallData(data.xVelDig,Stim,'x');
+    [procData.vel(:,2),procData.disp(:,2)] = processDigBallData(data.yVelDig,Stim,'y');
     
     %% Downsample velocity and displacement data 
     groupedData.xVel{trialNum} = downsample(procData.vel(:,1),dsFactor,dsPhaseShift);
