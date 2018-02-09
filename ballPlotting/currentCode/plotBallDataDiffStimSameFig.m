@@ -99,7 +99,7 @@ end
 
 for k = uniqueStimTypes
     
-    subplot = @(m,n,p) subtightplot (m, n, p, [0.01 0.05], [0.1 0.1], [0.1 0.01]);
+    subplot = @(m,n,p) subtightplot (m, n, p, [0.05 0.05], [0.01 0.01], [0.1 0.01]);
     
     if strcmp(sameFig,'y')
         stimTypeInd = uniqueStim;
@@ -114,12 +114,16 @@ for k = uniqueStimTypes
     
     stimCount = 0;
     
+    if strcmp(sameFig,'s')
+        goFigure;
+    end
+    
     %% Plot for each stim Num
     for i = stimTypeInd
         
         if strcmp(sameFig,'y')
             goFigure(1);
-        else 
+        elseif strcmp(sameFig,'n')
             goFigure;
         end
         
@@ -146,7 +150,7 @@ for k = uniqueStimTypes
         stimIndSamp = randInd(1:10);
         
         if isfield(StimStruct(i).stimObj,'speakerAngle')
-            legendText{end+1} = ['Angle = ',num2str(StimStruct(i).stimObj.speakerAngle)];
+            legendText{end+1} = ['Angle = ',num2str(StimStruct(i).stimObj.speakerAngle),', ',num2str(StimStruct(i).stimObj.description)];
         else
             legendText{end+1} = '';
         end
@@ -195,7 +199,6 @@ for k = uniqueStimTypes
         end
         
         %% Plot stimulus
-        figure(1)
         sph(1) = subplot (numRows, numCols, spIndex(1));
         mySimplePlot(groupedData.stimTimeVect{i},groupedData.stim{i})
         set(gca,'XTick',[])
@@ -283,8 +286,8 @@ for k = uniqueStimTypes
         sph(6) = subplot (numRows, numCols, spIndex(6));
         hold on
         bins = -10:0.5:40;
-        fvTemp = [fvTemp;rotYVel(:)];
-        hist(fvTemp,bins);
+%         hist(fvTemp,bins);
+        histogram(rotYVel(:),unique(rotYVel(:)));
         xlim([-10 40])
         xlabel('Forward speed (mm/s)')
         ylabel('Counts')
@@ -370,7 +373,7 @@ for k = uniqueStimTypes
     suptitle(sumTitle)
     saveFileName = [saveFolder,'flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'_stim',num2str(i-1,'%03d'),'_to_',num2str(i,'%03d'),'.pdf'];
     mySave(saveFileName,[5 5]);
-    close all
+%     close all
     
     groupPdfs(saveFolder)
     

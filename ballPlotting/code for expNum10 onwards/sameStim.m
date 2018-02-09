@@ -9,6 +9,12 @@ for i = numStim:-1:1
     for j = numStim:-1:1
         struct1 = StimStruct(i).stimObj;
         struct2 = StimStruct(j).stimObj;
+        if strcmp(struct1.class,'noStimulus') && strcmp(struct2.class,'noStimulus')
+            stimType(j) = stimTypeCount;
+            continue
+        elseif strcmp(struct1.class,'noStimulus') || strcmp(struct2.class,'noStimulus')
+            continue
+        end
         classLog = strcmp(struct1.class,struct2.class);
         freqLog = struct1.carrierFreqHz == struct2.carrierFreqHz;
         if classLog && freqLog
