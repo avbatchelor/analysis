@@ -99,13 +99,13 @@ end
 
 for k = uniqueStimTypes
     
-    figure(1)
-    set(0,'DefaultFigureWindowStyle','normal')
-    setCurrentFigurePosition(1);
-    subplot = @(m,n,p) subtightplot (m, n, p, [0.01 0.05], [0.1 0.1], [0.1 0.01]);
-    set(0,'DefaultFigureColor','w')
+    subplot = @(m,n,p) subtightplot (m, n, p, [0.05 0.05], [0.01 0.01], [0.1 0.01]);
     
-    stimTypeInd = find(stimType == k);
+    if strcmp(sameFig,'y')
+        stimTypeInd = uniqueStim;
+    else
+        stimTypeInd = find(stimType == k);
+    end
     
     sumTitle = {[dateAsString,', ',exptInfo.prefixCode,', ExpNum ',num2str(exptInfo.expNum),', FlyNum ',num2str(exptInfo.flyNum),...
         ', FlyExpNum ',num2str(exptInfo.flyExpNum)];['Aim: ',char(FlyData.aim),', Description: ',StimStruct(stimTypeInd(1)).stimObj.description]};
@@ -114,12 +114,18 @@ for k = uniqueStimTypes
     
     stimCount = 0;
     
-    if strcmp(sameFig,'y')
-        stimTypeInd = uniqueStim;
+    if strcmp(sameFig,'s')
+        goFigure;
     end
     
     %% Plot for each stim Num
     for i = stimTypeInd
+        
+        if strcmp(sameFig,'y')
+            goFigure(1);
+        elseif strcmp(sameFig,'n')
+            goFigure;
+        end
         
         if strcmp(sameFig,'n')
             colorSet = distinguishable_colors(length(stimTypeInd),'w');
@@ -144,7 +150,7 @@ for k = uniqueStimTypes
         stimIndSamp = randInd(1:10);
         
         if isfield(StimStruct(i).stimObj,'speakerAngle')
-            legendText{end+1} = ['Angle = ',num2str(StimStruct(i).stimObj.speakerAngle)];
+            legendText{end+1} = ['Angle = ',num2str(StimStruct(i).stimObj.speakerAngle),', ',num2str(StimStruct(i).stimObj.description)];
         else
             legendText{end+1} = '';
         end
@@ -193,7 +199,6 @@ for k = uniqueStimTypes
         end
         
         %% Plot stimulus
-        figure(1)
         sph(1) = subplot (numRows, numCols, spIndex(1));
         mySimplePlot(groupedData.stimTimeVect{i},groupedData.stim{i})
         set(gca,'XTick',[])
@@ -281,8 +286,8 @@ for k = uniqueStimTypes
         sph(6) = subplot (numRows, numCols, spIndex(6));
         hold on
         bins = -10:0.5:40;
-        fvTemp = [fvTemp;rotYVel(:)];
-        hist(fvTemp,bins);
+%         hist(fvTemp,bins);
+        histogram(rotYVel(:),unique(rotYVel(:)));
         xlim([-10 40])
         xlabel('Forward speed (mm/s)')
         ylabel('Counts')

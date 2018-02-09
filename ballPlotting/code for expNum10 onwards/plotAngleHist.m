@@ -25,7 +25,8 @@ spIndex = reshape(1:numCols*numRows, numCols, numRows).';
 
 
 %% Plot before angle 
-sph(stimCount) = subtightplot (numRows, numCols, spIndex(stimCount),[0.1 0.05], [0.1 0.01], [0.1 0.01]);
+% sph(stimCount) = subtightplot (numRows, numCols, spIndex(stimCount),[0.1 0.05], [0.1 0.01], [0.1 0.01]);
+sph(stimCount) = subplot(numRows, numCols, spIndex(stimCount));
 h1 = histogram(beforeAngle,bins,'FaceColor',gray);
 line([0,0],[0,max(h1.Values)],'Color','k','Linewidth',3)
 xlim([-50 50])
@@ -39,7 +40,8 @@ ylabel('Counts')
 title(['Before Angle, Median = ',num2str(median(beforeAngle))])
  
 %% Plot after angle 
-sph(stimCount) = subtightplot (numRows, numCols, spIndex(numRows+stimCount),[0.1 0.05], [0.1 0.01], [0.1 0.01]);
+% sph(stimCount) = subtightplot (numRows, numCols, spIndex(numRows+stimCount),[0.1 0.05], [0.1 0.01], [0.1 0.01]);
+sph(stimCount) = subplot (numRows, numCols, spIndex(numRows+stimCount));
 h2 = histogram(afterAngle,bins,'FaceColor',currColor);
 line([0,0],[0,max(h2.Values)],'Color','k','Linewidth',3)
 xlim([-50 50])
