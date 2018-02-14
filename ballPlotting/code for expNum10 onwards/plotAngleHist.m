@@ -1,9 +1,7 @@
 function plotAngleHist(beforeDisp,afterDisp,currColor,numUniqueStim,stimCount)
 
-%% Figure settings 
-figure(2);
-set(0,'DefaultFigureWindowStyle','normal')
-setCurrentFigurePosition(1);
+%% Figure settings
+figure(20);
 
 %% Calculate angles
 beforeStraightVector = [0 -1];

@@ -114,29 +114,25 @@ for k = uniqueStimTypes
     
     stimCount = 0;
     
-    if strcmp(sameFig,'s')
-        goFigure;
-    end
-    
     %% Plot for each stim Num
     for i = stimTypeInd
         
+        stimCount = stimCount + 1;
+
         if strcmp(sameFig,'y')
             goFigure(1);
         elseif strcmp(sameFig,'n')
-            goFigure;
+            goFigure(stimCount);
+        elseif strcmp(sameFig,'m')
+            goFigure(k);
         end
         
         if strcmp(sameFig,'n')
             colorSet = distinguishable_colors(length(stimTypeInd),'w');
             colorSet = circshift(colorSet,1,1);
-            
-            stimCount = stimCount + 1;
             currColor = colorSet(stimCount,:);
-            
         else
             colorSet = distinguishable_colors(length(uniqueStim),'w');
-            stimCount = stimCount + 1;
             currColor = colorSet(i,:);
         end
         
@@ -370,12 +366,12 @@ for k = uniqueStimTypes
     legend(sph(9),legendText,'Location','best')
     legend('boxoff')
     
-    suptitle(sumTitle)
-    saveFileName = [saveFolder,'flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'_stim',num2str(i-1,'%03d'),'_to_',num2str(i,'%03d'),'.pdf'];
-    mySave(saveFileName,[5 5]);
-%     close all
-    
-    groupPdfs(saveFolder)
+%     suptitle(sumTitle)
+%     saveFileName = [saveFolder,'flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'_stim',num2str(i-1,'%03d'),'_to_',num2str(i,'%03d'),'.pdf'];
+%     mySave(saveFileName,[5 5]);
+% %     close all
+%     
+%     groupPdfs(saveFolder)
     
     
 end
