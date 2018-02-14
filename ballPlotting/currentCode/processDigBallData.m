@@ -1,11 +1,15 @@
-function [velMmFilt,disp] = processDigBallData(inputMat,stim,axis)
+function [velMmFilt,disp] = processDigBallData(inputMat,stim,axis,exptInfo)
 
 % Convert binary matrix to signed integer
 asDec = binaryVectorToDecimal(inputMat,'LSBFirst');
 if strcmp(axis,'x')
     asDec = asDec - 127;
 else
-    asDec = asDec - 50;
+    if datenum(exptInfo.dNum,'yymmdd') >= datenum('180206','yymmdd')
+        asDec = asDec - 50;
+    else 
+        asDec = asDec - 127; 
+    end
 end
 
 % Load ball settings 
@@ -14,7 +18,8 @@ settings = ballSettings;
 % Convert counts to mm/s
 velMm = asDec.*settings.mmPerCount.*settings.sensorPollFreq;
 
-% Mode filter 
+% Mode filter - removes errors that occur becuase output bits aren't set
+% simultaneously
 velMmFilt = colfilt(velMm, [11 1], 'sliding', @mode);
 
 %% Calculate displacement 
