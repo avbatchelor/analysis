@@ -2,7 +2,7 @@ function groupBallDataDiffStim(prefixCode,expNum,flyNum,flyExpNum)
 
 %% Downsample paramters 
 dsFactor = 400;
-dsPhaseShift = 200;
+dsPhaseShift = 0;
 
 %% Make exptInfo struct 
 exptInfo = exptInfoStruct(prefixCode,expNum,flyNum,flyExpNum);
@@ -12,7 +12,11 @@ exptInfo = exptInfoStruct(prefixCode,expNum,flyNum,flyExpNum);
 cd(path);
 dirCont = dir('*trial*');
 
-stimSequence = [];
+% Load exptInfo
+load(fullfile(path,[fileNamePreamble,'exptData']))
+
+%% Loop through trials, process and save 
+groupedData.stimNum = [];
 
 for i = 1:length(dirCont)
     disp(['Trial = ',num2str(i)]);
@@ -25,8 +29,8 @@ for i = 1:length(dirCont)
     stimNum = trialMeta.stimNum;
     
     %% Process data 
-    [procData.vel(:,1),procData.disp(:,1)] = processDigBallData(data.xVelDig,Stim);
-    [procData.vel(:,2),procData.disp(:,2)] = processDigBallData(data.yVelDig,Stim);
+    [procData.vel(:,1),procData.disp(:,1)] = processDigBallData(data.xVelDig,Stim,'x',exptInfo);
+    [procData.vel(:,2),procData.disp(:,2)] = processDigBallData(data.yVelDig,Stim,'y',exptInfo);
     
     %% Downsample velocity and displacement data 
     groupedData.xVel{trialNum} = downsample(procData.vel(:,1),dsFactor,dsPhaseShift);
@@ -34,34 +38,21 @@ for i = 1:length(dirCont)
     groupedData.xDisp{trialNum} = downsample(procData.disp(:,1),dsFactor,dsPhaseShift);
     groupedData.yDisp{trialNum} = downsample(procData.disp(:,2),dsFactor,dsPhaseShift);
     
-    %% Time data
-    groupedData.dsTime{trialMeta.stimNum} = downsample(Stim.timeVec,400,200);
-    groupedData.stimTimeVect{trialMeta.stimNum} = Stim.timeVec; 
 
-    %% Stimulus data 
-    groupedData.stim{trialMeta.stimNum} = Stim.stimulus;
-    if exist('LEDtrig','var')
-        groupedData.led{trialMeta.stimNum} = LEDtrig.stimulus;
-    end
     
+    %% Time data
+    groupedData.dsTime{trialMeta.stimNum} = downsample(Stim.timeVec,dsFactor,dsPhaseShift);
+
     %% Make stim struct 
-    if any(stimSequence == stimNum)
+    if any(groupedData.stimNum == stimNum)
     else
         StimStruct(stimNum).stimObj = Stim;
     end
-    
-    % Record stim num sequenceata matrix
-    stimSequence = [stimSequence, stimNum];
 
     %% Meta data 
     groupedData.stimNum(trialNum) = trialMeta.stimNum;
-    if isfield(Stim,'carrierFreqHz')
-        groupedData.stimFreq(trialMeta.stimNum) = Stim.carrierFreqHz;
-    else 
-        groupedData.stimFreq(trialMeta.stimNum) = 0;
-    end
-    groupedData.stimStartPadDur{trialMeta.stimNum} = Stim.startPadDur; 
-    groupedData.stimDur{trialMeta.stimNum} = Stim.stimDur;
+
+    %% Calculated data 
     % Take the middle chunk of the trial 
     timeBefore = 0.3;
     pipStartInd = Stim.startPadDur*Stim.sampleRate/dsFactor + 1;
@@ -75,9 +66,12 @@ for i = 1:length(dirCont)
     groupedData.startChunk.yDisp{trialNum} = temp.yDisp(1:pipStartInd-2);
     
     %% Find indices of trials that where running speed is too slow/fast  
-    Vxy = sqrt((groupedData.xVel{trialNum}.^2)+(groupedData.yVel{trialNum}.^2));
-    avgResultantVelocity = mean(Vxy);
-    groupedData.trialSpeed(trialNum) = avgResultantVelocity;
+    groupedData.trialSpeed(trialNum) = mean(sqrt((groupedData.xVel{trialNum}.^2)+(groupedData.yVel{trialNum}.^2)));
+    
+    %% Save trial meta data 
+    
+    
+    %% 
     clear procData temp
 end
 
@@ -86,8 +80,4 @@ pPath = getProcessedDataFileName(exptInfo);
 mkdir(pPath);
 fileName = [pPath,fileNamePreamble,'groupedData.mat'];
 save(fileName, 'groupedData','StimStruct');
-
-
-
-
 
