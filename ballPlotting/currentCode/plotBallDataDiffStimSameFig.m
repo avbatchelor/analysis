@@ -98,23 +98,23 @@ for k = uniqueStimTypes
     %% Plot for each stim Num
     for i = stimTypeInd
         
+        stimCount = stimCount + 1;
         %% Set figure number appropriately
         if strcmp(sameFig,'y')
             goFigure(1);
         elseif strcmp(sameFig,'n')
-            goFigure;
+            goFigure(stimCount);
+        elseif strcmp(sameFig,'m')
+            goFigure(k);
         end
         
         %% Set colors correctly 
         if strcmp(sameFig,'n')
             colorSet = distinguishable_colors(length(stimTypeInd),'w');
             colorSet = circshift(colorSet,1,1);
-            
-            stimCount = stimCount + 1;
             currColor = colorSet(stimCount,:);
         else
             colorSet = distinguishable_colors(length(uniqueStim),'w');
-            stimCount = stimCount + 1;
             currColor = colorSet(i,:);
         end
         
@@ -375,6 +375,7 @@ for k = uniqueStimTypes
     
     % Group pdfs 
     groupPdfs(saveFolder)
+
     
 end
 
