@@ -19,6 +19,8 @@ load(fullfile(path,[fileNamePreamble,'exptData']))
 groupedData.stimNum = [];
 
 for i = 1:length(dirCont)
+    
+    %% Display trial number
     disp(['Trial = ',num2str(i)]);
     
     %% Load data 
@@ -32,15 +34,16 @@ for i = 1:length(dirCont)
     [procData.vel(:,1),procData.disp(:,1)] = processDigBallData(data.xVelDig,Stim,'x',exptInfo);
     [procData.vel(:,2),procData.disp(:,2)] = processDigBallData(data.yVelDig,Stim,'y',exptInfo);
     
-    %% Downsample velocity and displacement data 
+    %% Downsample velocity, displacement & time data 
+    % Velocity
     groupedData.xVel{trialNum} = downsample(procData.vel(:,1),dsFactor,dsPhaseShift);
     groupedData.yVel{trialNum} = downsample(procData.vel(:,2),dsFactor,dsPhaseShift);
+    
+    % Displacement
     groupedData.xDisp{trialNum} = downsample(procData.disp(:,1),dsFactor,dsPhaseShift);
     groupedData.yDisp{trialNum} = downsample(procData.disp(:,2),dsFactor,dsPhaseShift);
     
-
-    
-    %% Time data
+    % Time
     groupedData.dsTime{trialMeta.stimNum} = downsample(Stim.timeVec,dsFactor,dsPhaseShift);
 
     %% Make stim struct 
@@ -60,18 +63,15 @@ for i = 1:length(dirCont)
     indAfter = pipStartInd + timeBefore*Stim.sampleRate/dsFactor;
     temp.xDisp = groupedData.xDisp{trialNum}; 
     temp.yDisp = groupedData.yDisp{trialNum};
-    groupedData.midChunk.xDisp{trialNum} = temp.xDisp(indBefore:indAfter);
-    groupedData.midChunk.yDisp{trialNum} = temp.yDisp(indBefore:indAfter);
+    % Saved
+
     groupedData.startChunk.xDisp{trialNum} = temp.xDisp(1:pipStartInd-2);
     groupedData.startChunk.yDisp{trialNum} = temp.yDisp(1:pipStartInd-2);
     
-    %% Find indices of trials that where running speed is too slow/fast  
+    %% Calculate mean resultant speed for each trial
     groupedData.trialSpeed(trialNum) = mean(sqrt((groupedData.xVel{trialNum}.^2)+(groupedData.yVel{trialNum}.^2)));
     
-    %% Save trial meta data 
-    
-    
-    %% 
+    %% Clear trial data 
     clear procData temp
 end
 

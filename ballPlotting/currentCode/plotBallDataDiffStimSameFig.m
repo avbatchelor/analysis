@@ -32,16 +32,11 @@ fileStem = char(regexp(pPath,'.*(?=flyExpNum)','match'));
 saveFolder = [fileStem,'Figures\'];
 mkdir(saveFolder)
 
-%% Assign empty matrices
-fvTemp = [];
-
 %% Figure prep
+% Close figures
 close all
 
 % Set colors
-uniqueStim = unique(groupedData.stimNum);
-numUniqueStim = length(uniqueStim);
-
 gray = [192 192 192]./255;
 
 % Subplot settings
@@ -49,139 +44,100 @@ numCols = 2;
 numRows = 7;
 spIndex = reshape(1:numCols*numRows, numCols, numRows).';
 
-%% Data for title
-dateNumber = datenum(exptInfo.dNum,'yymmdd');
-dateAsString = datestr(dateNumber,'mm-dd-yy');
-
-if ~isfield(FlyData,'aim')
-    FlyData.aim = '';
-end
-if ~isfield(exptInfo,'flyExpNotes')
-    exptInfo.flyExpNotes = '';
-end
-
 
 %% Hardcoded paramters
-dsFactor = 400;
-timeBefore = 0.3;
+analysisSettings;
 pipStartInd = Stim.startPadDur*Stim.sampleRate/dsFactor + 1;
 indBefore = pipStartInd - timeBefore*Stim.sampleRate/dsFactor;
 indAfter = pipStartInd + timeBefore*Stim.sampleRate/dsFactor;
 
 %% Select trials based on speed
 trialsToInclude = 3<groupedData.trialSpeed & groupedData.trialSpeed<30;
+trialsToIncludeIdxs = trialNums(trialsToInclude);
 
+%% Calculate number of stimuli 
+% Number of unique stimuli - same stimulus at different location considered
+% unique stimulus
+uniqueStim = unique(groupedData.stimNum);
+numUniqueStim = length(uniqueStim);
 
-%% Rotate all trials
-refVect = [0; -1];
-if sum(trialsToInclude) == 0
-    return
-end
-trialNums = 1:length(groupedData.stimNum);
-allFastTrials = trialNums(trialsToInclude);
-xDispAFT = [groupedData.startChunk.xDisp{allFastTrials}];
-yDispAFT = [groupedData.startChunk.yDisp{allFastTrials}];
-trialVect = [mean(xDispAFT(1,:));mean(yDispAFT(1,:))];
-rotAng = acos(dot(trialVect,refVect)/(norm(trialVect)*norm(refVect)));
-if trialVect(1) > 0
-    R = [cos(rotAng) sin(rotAng);-sin(rotAng) cos(rotAng)];
-elseif trialVect(1) <= 0
-    R = [cos(rotAng) -sin(rotAng);sin(rotAng) cos(rotAng)];
-end
-
-
-%% Find out number of stim types
+% Stimuli are considered the same 'type' if the sound played by the
+% speaker is identical 
 stimType = sameStim(StimStruct);
 uniqueStimTypes = unique(stimType);
+
+% If you want to plot all stimuli on the same figure set the
+% uniqueStimTypes to 1
 if strcmp(sameFig,'y')
     uniqueStimTypes = 1;
+    stimTypeInd = uniqueStim; 
 end
 
-for k = uniqueStimTypes
-    
-    subplot = @(m,n,p) subtightplot (m, n, p, [0.05 0.05], [0.01 0.01], [0.1 0.01]);
-    
-    if strcmp(sameFig,'y')
-        stimTypeInd = uniqueStim;
-    else
-        stimTypeInd = find(stimType == k);
-    end
-    
-    sumTitle = {[dateAsString,', ',exptInfo.prefixCode,', ExpNum ',num2str(exptInfo.expNum),', FlyNum ',num2str(exptInfo.flyNum),...
+%% Data for title
+sumTitle = {[dateAsString,', ',exptInfo.prefixCode,', ExpNum ',num2str(exptInfo.expNum),', FlyNum ',num2str(exptInfo.flyNum),...
         ', FlyExpNum ',num2str(exptInfo.flyExpNum)];['Aim: ',char(FlyData.aim),', Description: ',StimStruct(stimTypeInd(1)).stimObj.description]};
     
-    legendText = {};
+%% Create empty matrices 
+legendText = cell(uniqueStim,1);
+stimCount = 0;
     
-    stimCount = 0;
+%% Loop through to plot the correct number of figures 
+for k = uniqueStimTypes
     
-    if strcmp(sameFig,'s')
+    % Make subplots tight
+    subplot = @(m,n,p) subtightplot (m, n, p, [0.05 0.05], [0.01 0.01], [0.1 0.01]);
+    
+    % Do this if you want to plot the stimuli of the same type on the same
+    % figure
+    if strcmp(sameFig,'m')
         goFigure;
+        stimTypeInd = find(stimType == k);
     end
+        
     
     %% Plot for each stim Num
     for i = stimTypeInd
         
+        %% Set figure number appropriately
         if strcmp(sameFig,'y')
             goFigure(1);
         elseif strcmp(sameFig,'n')
             goFigure;
         end
         
+        %% Set colors correctly 
         if strcmp(sameFig,'n')
             colorSet = distinguishable_colors(length(stimTypeInd),'w');
             colorSet = circshift(colorSet,1,1);
             
             stimCount = stimCount + 1;
             currColor = colorSet(stimCount,:);
-            
         else
             colorSet = distinguishable_colors(length(uniqueStim),'w');
             stimCount = stimCount + 1;
             currColor = colorSet(i,:);
         end
         
-        %% Select the trials for this stimulus
-        trialsToIncludeNums = trialNums(trialsToInclude);
-        stimNumIndNotSelected = find(groupedData.stimNum == uniqueStim(i));
-        stimNumInd = intersect(trialsToIncludeNums,stimNumIndNotSelected);
-        pipEndInd = Stim.totalDur - Stim.endPadDur;
+        %% Find the indexes for trials belonging to this stimulus
+        % Find trials belonging to that stimulus 
+        stimSelect = find(groupedData.stimNum == uniqueStim(i));
+
+        % Select the trials that belonging to the stimulus that are fast
+        % enough
+        stimNumInd = intersect(trialsToIncludeIdxs,stimSelect);
         
+        % Randomly select 10 trials for plotting individual trials 
         randInd = randperm(length(stimNumInd));
         stimIndSamp = randInd(1:10);
         
+        
+        %% Set legend text 
         if isfield(StimStruct(i).stimObj,'speakerAngle')
-            legendText{end+1} = ['Angle = ',num2str(StimStruct(i).stimObj.speakerAngle),', ',num2str(StimStruct(i).stimObj.description)];
+            legendText{i} = ['Angle = ',num2str(StimStruct(i).stimObj.speakerAngle),', ',num2str(StimStruct(i).stimObj.description)];
         else
-            legendText{end+1} = '';
+            legendText{i} = '';
         end
         
-        %         checkRotation(groupedData,R,stimNumInd)
-        %         pause
-        %
-        %% Rotate each of these trials
-        count = 0;
-        for j = stimNumInd
-            count = count+1;
-            rotVel(count,:,:) = R*[groupedData.xVel{j}';groupedData.yVel{j}'];
-            rotDisp(count,:,:) = R*[groupedData.xDisp{j}';groupedData.yDisp{j}'];
-        end
-        
-        if isempty(stimNumInd)
-            disp('no trials fast enough for this stim')
-            continue
-        end
-        
-        rotXDisp = squeeze(rotDisp(:,1,:));
-        rotYDisp = squeeze(rotDisp(:,2,:));
-        rotXVel = squeeze(rotVel(:,1,:));
-        rotYVel = squeeze(rotVel(:,2,:));
-        
-        if length(stimNumInd) == 1
-            rotXDisp = rotXDisp';
-            rotYDisp = rotYDisp';
-            rotXVel = rotXVel';
-            rotYVel = rotYVel';
-        end
         
         %% Find the mean and std of these trials
         meanXDisp = mean(rotXDisp);
@@ -193,58 +149,73 @@ for k = uniqueStimTypes
         stdXVel = std(rotXVel);
         stdYVel = std(rotYVel);
         
-        %% Get LED data
-        if isfield('groupedData','led')
-            LEDStim = groupedData.led{i};
-        end
         
         %% Plot stimulus
+        % Subplot settings 
         sph(1) = subplot (numRows, numCols, spIndex(1));
-        mySimplePlot(groupedData.stimTimeVect{i},groupedData.stim{i})
-        set(gca,'XTick',[])
-        ylabel({'Stim';'(V)'})
-        set(get(gca,'YLabel'),'Rotation',0,'HorizontalAlignment','right')
-        set(gca,'XColor','white')
         
-        %% Plot data
+        % Plot 
+        mySimplePlot(groupedData.stimTimeVect{i},groupedData.stim{i})
+        
+        % Axis labels  
+        ylabel({'Stim';'(V)'})
+        
+        % Axis settings 
+        noXAxisSettings; 
+        
+        
+        %% Plot x speed vs. time 
+        % Subplot settings 
         sph(2) = subplot(numRows, numCols, spIndex(2));
         hold on
+        
+        % Plot 
         mySimplePlot(groupedData.dsTime{i},meanXVel,'Color',currColor,'Linewidth',2)
         if strcmp(allTrials,'y')
             mySimplePlot(groupedData.dsTime{i},rotXVel(stimIndSamp,:),'Color',currColor,'Linewidth',0.5)
         end
         %     mySimplePlot(groupedData.dsTime,meanXVel+stdXVel,'Color',colorSet(i,:),'Linewidth',0.5)
         %     mySimplePlot(groupedData.dsTime,meanXVel-stdXVel,'Color',colorSet(i,:),'Linewidth',0.5)
-        set(gca,'XTick',[])
+        
+        % Axis labels 
         ylabel({'Lateral Speed';'(mm/s)'})
-        set(get(gca,'YLabel'),'Rotation',0,'HorizontalAlignment','right')
+        
+        % Axis settings 
+        noXAxisSettings
         moveXAxis(groupedData,i)
         shadestimArea(groupedData,i)
-        if exist('LEDStim','var')
-            shadeLEDArea(LEDStim,Stim)
-        end
         symAxisY
         
+        
+        %% Plot y speed vs. time 
+        % Subplot settings 
         sph(3) = subplot(numRows, numCols, spIndex(3));
         hold on
+        
+        % Plot 
         mySimplePlot(groupedData.dsTime{i},meanYVel,'Color',currColor,'Linewidth',2)
         if strcmp(allTrials,'y')
             mySimplePlot(groupedData.dsTime{i},rotYVel(stimIndSamp,:),'Color',currColor,'Linewidth',0.5)
         end
         %     mySimplePlot(groupedData.dsTime,meanYVel+stdYVel,'Color',colorSet(i,:),'Linewidth',0.5)
         %     mySimplePlot(groupedData.dsTime,meanYVel-stdYVel,'Color',colorSet(i,:),'Linewidth',0.5)
-        set(gca,'XTick',[])
+        
+        % Axis labels 
         ylabel({'Forward Speed';'(mm/s)'})
-        set(get(gca,'YLabel'),'Rotation',0,'HorizontalAlignment','right')
+        
+        % Axis settings 
+        noXAxisSettings; 
         shadestimArea(groupedData,i)
-        if exist('LEDStim','var')
-            shadeLEDArea(LEDStim,Stim)
-        end
         moveXAxis(groupedData,i)
         symAxisY
         
+        
+        %% Plot x displacement vs. time 
+        % Subplot settings 
         sph(4) = subplot(numRows, numCols, spIndex(4));
         hold on
+        
+        % Plot 
         mySimplePlot(groupedData.dsTime{i},meanXDisp,'Color',currColor,'Linewidth',2)
         if strcmp(allTrials,'y')
             mySimplePlot(groupedData.dsTime{i},rotXDisp(stimIndSamp,:),'Color',currColor,'Linewidth',0.5)
@@ -253,57 +224,65 @@ for k = uniqueStimTypes
         %     mySimplePlot(groupedData.dsTime,meanXDisp-stdXDisp,'Color',colorSet(i,:),'Linewidth',0.5)
         %
         %     shadedErrorBar(groupedData.dsTime,mean(groupedData.xDisp(stimNumInd,:)),std(groupedData.xDisp(stimNumInd,:)))
-        set(gca,'XTick',[])
+        
+        % Axis labels 
         ylabel({'X Disp';'(mm)'})
-        set(get(gca,'YLabel'),'Rotation',0,'HorizontalAlignment','right')
+        
+        % Axis settings 
+        noXAxisSettings
         shadestimArea(groupedData,i)
-        if exist('LEDStim','var')
-            shadeLEDArea(LEDStim,Stim)
-        end
         moveXAxis(groupedData,i)
         symAxisY
         
+        
+        %% Plot y displacement vs. time plot 
+        % Subplot settings 
         sph(5) = subplot (numRows, numCols, spIndex(5));
         hold on
+        
+        % Plot 
         mySimplePlot(groupedData.dsTime{i},meanYDisp,'Color',currColor,'Linewidth',2)
         if strcmp(allTrials,'y')
             mySimplePlot(groupedData.dsTime{i},rotYDisp(stimIndSamp,:),'Color',currColor,'Linewidth',0.5)
         end
         %     mySimplePlot(groupedData.dsTime,meanYDisp+stdYDisp,'Color',colorSet(i,:),'Linewidth',0.5)
         %     mySimplePlot(groupedData.dsTime,meanYDisp-stdYDisp,'Color',colorSet(i,:),'Linewidth',0.5)
-        ylabel({'Y Disp';'(mm)'})
-        set(get(gca,'YLabel'),'Rotation',0,'HorizontalAlignment','right')
-        hold on
         line([groupedData.dsTime{i}(1),groupedData.dsTime{i}(end)],[0,0],'Color','k')
-        shadestimArea(groupedData,i)
-        if exist('LEDStim','var')
-            shadeLEDArea(LEDStim,Stim)
-        end
+        
+        % Axis labels 
+        ylabel({'Y Disp';'(mm)'})
         xlabel('Time (s)')
+
+        % Axis settings 
+        bottomAxisSettings
+        shadestimArea(groupedData,i)
         linkaxes(sph(1:5),'x')
         symAxisY
         
+        
+        %% Plot forward speed histogram 
+        % Subplot settings 
         sph(6) = subplot (numRows, numCols, spIndex(6));
         hold on
-        bins = -10:0.5:40;
-%         hist(fvTemp,bins);
-        histogram(rotYVel(:),unique(rotYVel(:)));
-        xlim([-10 40])
+        
+        % Plot 
+        histogramBins = unique(rotYVel(:));
+        histogram(rotYVel(:),histogramBins);
+        
+        % Axis labels 
         xlabel('Forward speed (mm/s)')
         ylabel('Counts')
-        set(get(gca,'YLabel'),'Rotation',0,'HorizontalAlignment','right')
-        box off;
-        set(gca,'TickDir','out')
-        axis tight
         
+        % Axis settings 
+        xlim([min(histogramBins) max(histogramBins)])
+        bottomAxisSettings
+        
+        
+        %% Plot avg. trial speed 
+        % Subplot settings 
         sph(7) = subplot (numRows, numCols, spIndex(7));
         hold on
-        %     bins = -10:0.5:40;
-        %     lvTemp = [lvTemp;rotXVel(:)];
-        %     hist(lvTemp,bins);
-        %     xlim([-10 40])
-        %     xlabel('Lateral speed (mm/s)')
-        %     ylabel('Counts')
+        
         % Plot all trials in gray
         if stimCount == 1
             bh1 = bar(trialNums,groupedData.trialSpeed,'EdgeColor',gray,'FaceColor',gray);
@@ -311,109 +290,92 @@ for k = uniqueStimTypes
         % Plot baseline
         line([0,trialNums(end)],[10,10],'Color','k')
         bw = get(bh1,'BarWidth');
-        bar(stimNumInd,groupedData.trialSpeed(stimNumInd),'EdgeColor',currColor,'FaceColor',currColor,'BarWidth',bw/min(diff(sort(stimNumIndNotSelected))));
+        bar(stimNumInd,groupedData.trialSpeed(stimNumInd),'EdgeColor',currColor,'FaceColor',currColor,'BarWidth',bw/min(diff(sort(stimSelect))));
         %     notIncInd = trialNums(~groupedData.trialsToInclude);
         %     bar(notIncInd,groupedData.trialSpeed(~groupedData.trialsToInclude),'FaceColor','b')
-        plot(stimNumIndNotSelected,max(groupedData.trialSpeed)+1,'*','Color',currColor)
+        plot(stimSelect,max(groupedData.trialSpeed)+1,'*','Color',currColor)
+        
+        % Axis labels 
         ylabel({'Trial avg speed';'(mm/s)'})
         xlabel('Trial number')
-        set(get(gca,'YLabel'),'Rotation',0,'HorizontalAlignment','right')
-        box off;
-        set(gca,'TickDir','out')
-        axis tight
+        
+        % Axis settings 
+        bottomAxisSettings
+        
+        % Title 
         if mod(i,2)
-            t1s = ['Successful left trials = ',num2str(length(stimNumInd)),'/',num2str(length(stimNumIndNotSelected))];
+            t1s = ['Successful left trials = ',num2str(length(stimNumInd)),'/',num2str(length(stimSelect))];
         else
-            t2s = ['Successful right trials = ',num2str(length(stimNumInd)),'/',num2str(length(stimNumIndNotSelected))];
+            t2s = ['Successful right trials = ',num2str(length(stimNumInd)),'/',num2str(length(stimSelect))];
             title([t1s,'   ',t2s])
         end
         
+        
+        %% Plot trial line
+        % Subplot settings 
         sph(8) = subplot(numRows, numCols, spIndex(8:10));
         hold on
+        
+        % Plot 
         line([rotXDisp(:,pipStartInd),rotXDisp(:,indBefore)]',[rotYDisp(:,pipStartInd),rotYDisp(:,indBefore)]','Color','k');
         line([rotXDisp(:,pipStartInd),rotXDisp(:,indAfter)]',[rotYDisp(:,pipStartInd),rotYDisp(:,indAfter)]','Color',currColor);
+        
+        % Axis labels 
+        ylabel('Y displacement (mm)')
+
+        % Axis settings 
         axis square
         xlim([-3 3])
-        ylabel('Y displacement (mm)')
         
         
+        %% Plot mean X vs mean Y displacement 
+        % Subplot settings 
         sph(9) = subplot (numRows, numCols, spIndex(11:14));
         hold on
+        
+        % Plot 
         plot(meanXDisp,meanYDisp,'Color',currColor,'Linewidth',2)
         if strcmp(allTrials,'y')
             plot(rotXDisp(stimIndSamp,:)',rotYDisp(stimIndSamp,:)','Color',currColor,'Linewidth',0.5)
         end
-        %     xEndSubtracted = rotXDisp - rotXDisp(pipEndInd);
-        %     yEndSubtracted = rotYDisp - rotYDisp(pipEndInd);
-        %     plot(mean(xEndSubtracted),mean(yEndSubtracted),'Color',colorSet(i,:))
-        
         %     plot(meanXDisp+stdXDisp,meanYDisp,'Color',colorSet(i,:),'Linewidth',0.5)
         %     plot(meanXDisp-stdXDisp,meanYDisp,'Color',colorSet(i,:),'Linewidth',0.5)
-        xlim([-3 3])
+        
+        % Axis labels 
         xlabel('X displacement (mm)')
         ylabel('Y displacement (mm)')
         
+        % Axis settings 
+        xlim([-3 3])
         
-        clear rotVel rotDisp
         
-        
-        %% Angle histogram
+        %% Plot angle histogram
         beforeDisp = [rotXDisp(:,indBefore),rotYDisp(:,indBefore)];
         afterDisp = [rotXDisp(:,indAfter),rotYDisp(:,indAfter)];
         plotAngleHist(beforeDisp,afterDisp,currColor,numUniqueStim,stimCount);
         
         
-        
+        %% Clear data 
+        clear rotVel rotDisp
         
     end
     
+    %% Add legend and title 
+    % Legend 
     legend(sph(9),legendText,'Location','best')
     legend('boxoff')
     
+    % Title 
     suptitle(sumTitle)
+    
+    %% Save figures and group pdfs 
+    % Save figures 
     saveFileName = [saveFolder,'flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'_stim',num2str(i-1,'%03d'),'_to_',num2str(i,'%03d'),'.pdf'];
     mySave(saveFileName,[5 5]);
-%     close all
     
+    % Group pdfs 
     groupPdfs(saveFolder)
     
-    
 end
 
-end
-
-function shadestimArea(groupedData,stimNum)
-hold on
-gray = [192 192 192]./255;
-pipStarts = groupedData.stimStartPadDur{stimNum};
-pipEnds = pipStarts + groupedData.stimDur{stimNum};
-Y = ylim(gca);
-X = [pipStarts,pipEnds];
-line([X(1) X(1)],[Y(1) Y(2)],'Color',gray);
-line([X(2) X(2)],[Y(1) Y(2)],'Color',gray);
-colormap hsv
-alpha(.1)
-end
-
-function shadeLEDArea(LEDStim,Stim)
-hold on
-LEDStart = strfind(LEDStim',[0,1]);
-if isempty(LEDStart)
-    return
-end
-LEDEnd = strfind(LEDStim',[1,0]);
-LEDStartTime = LEDStart/Stim.sampleRate;
-LEDEndTime = LEDEnd/Stim.sampleRate;
-Y = ylim(gca);
-X = [LEDStartTime,LEDEndTime];
-line([X(1) X(1)],[Y(1) Y(2)],'Color','g','LineWidth',2);
-line([X(2) X(2)],[Y(1) Y(2)],'Color','g','LineWidth',2);
-% colormap hsv
-% alpha(.1)
-end
-
-function moveXAxis(groupedData,stimNum)
-set(gca,'XColor','white')
-hold on
-line([groupedData.dsTime{stimNum}(1),groupedData.dsTime{stimNum}(end)],[0,0],'Color','k')
 end
