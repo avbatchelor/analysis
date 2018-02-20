@@ -24,7 +24,7 @@ for i = 1:length(dirCont)
     disp(['Trial = ',num2str(i)]);
     
     %% Load data 
-    load(dirCont(i).name);
+    load(fullfile(path,dirCont(i).name));
     
     %% Get trial and stim num
     trialNum = trialMeta.trialNum;
@@ -54,19 +54,9 @@ for i = 1:length(dirCont)
 
     %% Meta data 
     groupedData.stimNum(trialNum) = trialMeta.stimNum;
-
-    %% Calculated data 
-    % Take the middle chunk of the trial 
-    timeBefore = 0.3;
-    pipStartInd = Stim.startPadDur*Stim.sampleRate/dsFactor + 1;
-    indBefore = pipStartInd - timeBefore*Stim.sampleRate/dsFactor;
-    indAfter = pipStartInd + timeBefore*Stim.sampleRate/dsFactor;
-    temp.xDisp = groupedData.xDisp{trialNum}; 
-    temp.yDisp = groupedData.yDisp{trialNum};
-    % Saved
-
-    groupedData.startChunk.xDisp{trialNum} = temp.xDisp(1:pipStartInd-2);
-    groupedData.startChunk.yDisp{trialNum} = temp.yDisp(1:pipStartInd-2);
+    groupedData.trialNum(trialNum) = trialMeta.trialNum;
+    groupedData.pipStartInd = Stim.startPadDur*Stim.sampleRate/dsFactor + 1;
+    
     
     %% Calculate mean resultant speed for each trial
     groupedData.trialSpeed(trialNum) = mean(sqrt((groupedData.xVel{trialNum}.^2)+(groupedData.yVel{trialNum}.^2)));
@@ -74,6 +64,9 @@ for i = 1:length(dirCont)
     %% Clear trial data 
     clear procData temp
 end
+
+%% Rotate data 
+groupedData = rotateAllTrials(groupedData);
 
 %% Save data
 pPath = getProcessedDataFileName(exptInfo);
