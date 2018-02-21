@@ -75,7 +75,8 @@ end
 
 %% Data for title
 sumTitle = {[dateAsString,', ',exptInfo.prefixCode,', ExpNum ',num2str(exptInfo.expNum),', FlyNum ',num2str(exptInfo.flyNum),...
-        ', FlyExpNum ',num2str(exptInfo.flyExpNum)];['Aim: ',char(FlyData.aim),', Description: ',StimStruct(stimTypeInd(1)).stimObj.description]};
+        ', FlyExpNum ',num2str(exptInfo.flyExpNum)];['Aim: ',char(FlyData.aim),', Description: ',StimStruct(stimTypeInd(1)).stimObj.description];...
+        ['X Saturation Count = ',num2str(sum(groupedData.xSaturationWarning)),'Y Saturation Count = ',num2str(sum(groupedData.ySaturationWarning))]};
     
 %% Create empty matrices 
 legendText = cell(uniqueStim,1);

@@ -31,8 +31,8 @@ for i = 1:length(dirCont)
     stimNum = trialMeta.stimNum;
     
     %% Process data 
-    [procData.vel(:,1),procData.disp(:,1)] = processDigBallData(data.xVelDig,Stim,'x',exptInfo);
-    [procData.vel(:,2),procData.disp(:,2)] = processDigBallData(data.yVelDig,Stim,'y',exptInfo);
+    [procData.vel(:,1),procData.disp(:,1),groupedData.xSaturationWarning(trialNum)] = processDigBallData(data.xVelDig,Stim,'x',exptInfo);
+    [procData.vel(:,2),procData.disp(:,2),groupedData.ySaturationWarning(trialNum)] = processDigBallData(data.yVelDig,Stim,'y',exptInfo);
     
     %% Downsample velocity, displacement & time data 
     % Velocity
@@ -54,7 +54,7 @@ for i = 1:length(dirCont)
 
     %% Meta data 
     groupedData.stimNum(trialNum) = trialMeta.stimNum;
-    groupedData.trialNum(trialNum) = trialMeta.trialNum;
+    groupedData.trialNum(trialNum) = trialMeta.trialNum;  
     groupedData.pipStartInd = Stim.startPadDur*Stim.sampleRate/dsFactor + 1;
     
     
