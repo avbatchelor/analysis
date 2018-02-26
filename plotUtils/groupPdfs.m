@@ -1,6 +1,6 @@
 function groupPdfs(folder,varargin)
 
-cd('C:\Users\Alex\Documents\ProcessedData\ballData')
+cd('D:\ManuscriptData\processedData\')
 if nargin == 0 
     folder = uigetdir; 
 end
