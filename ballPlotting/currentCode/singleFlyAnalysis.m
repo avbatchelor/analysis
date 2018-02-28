@@ -50,7 +50,7 @@ trialsToIncludeIdxs = groupedData.trialNum(trialsToInclude);
 % Number of unique stimuli - same stimulus at different location considered
 % unique stimulus
 uniqueStim = unique(groupedData.stimNum);
-numUniqueStim = length(uniqueStim);
+plotData.numUniqueStim = length(uniqueStim);
 
 % Number of stim types - stimuli are considered the same 'type' if the
 % sound played by the speaker is identical
