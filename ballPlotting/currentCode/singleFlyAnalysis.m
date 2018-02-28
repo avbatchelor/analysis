@@ -125,7 +125,7 @@ for stimNum = uniqueStim
     
     
     %% Sample trials    
-    plotData.sampleTrialsDisp   = [groupedData.rotXDisp(stimIndSamp,:),groupedData.rotYDisp(stimIndSamp,:)];
+    plotData.sampleTrialsDisp{i}   = [groupedData.rotXDisp(stimIndSamp,:),groupedData.rotYDisp(stimIndSamp,:)];
     plotData.sampleTrialsVel    = [groupedData.rotXVel(stimIndSamp,:),groupedData.rotYVel(stimIndSamp,:)];
 
     
