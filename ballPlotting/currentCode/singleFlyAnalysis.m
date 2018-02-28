@@ -50,7 +50,6 @@ trialsToIncludeIdxs = groupedData.trialNum(trialsToInclude);
 % Number of unique stimuli - same stimulus at different location considered
 % unique stimulus
 uniqueStim = unique(groupedData.stimNum);
-numUniqueStim = length(uniqueStim);
 
 % Number of stim types - stimuli are considered the same 'type' if the
 % sound played by the speaker is identical
@@ -125,7 +124,7 @@ for stimNum = uniqueStim
     
     
     %% Sample trials    
-    plotData.sampleTrialsDisp   = [groupedData.rotXDisp(stimIndSamp,:),groupedData.rotYDisp(stimIndSamp,:)];
+    plotData.sampleTrialsDisp{i}   = [groupedData.rotXDisp(stimIndSamp,:),groupedData.rotYDisp(stimIndSamp,:)];
     plotData.sampleTrialsVel    = [groupedData.rotXVel(stimIndSamp,:),groupedData.rotYVel(stimIndSamp,:)];
 
     
