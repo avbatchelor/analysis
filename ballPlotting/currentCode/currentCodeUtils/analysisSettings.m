@@ -1,10 +1,10 @@
 %% Analysis Settings
 % Load Ball Settings 
-ballSettings; 
+settings = ballSettings; 
 
 % Set analysis settings 
 dsFactor = 400;
 timeBefore = 0.3;
 binSize = settings.mmPerCount.*settings.sensorPollFreq;
-bins = (binSize/2)+(binSize*-255:255);
+bins = (binSize/2)+ binSize.*(-128:128);
 speedThreshold = 3;

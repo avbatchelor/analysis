@@ -1,4 +1,4 @@
-function plotBallDataDiffStimSameFig(prefixCode,expNum,flyNum,flyExpNum,allTrials,sameFig)
+function plotBallData(prefixCode,expNum,flyNum,flyExpNum,allTrials,sameFig)
 
 %% Put exptInfo in a struct
 exptInfo = exptInfoStruct(prefixCode,expNum,flyNum,flyExpNum);

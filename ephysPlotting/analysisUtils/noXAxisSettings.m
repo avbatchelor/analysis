@@ -1,6 +1,11 @@
-function noXAxisSettings
+function noXAxisSettings(color,varargin)
 
-set(gca,'Box','off','TickDir','out','XTickLabel','','xtick',[],'XColor','white')
+if exist('color','var')
+    if strcmp(color,'w')
+        set(gca,'XColor','white')
+    end
+end
+set(gca,'Box','off','TickDir','out','XTickLabel','','xtick',[])
 axis tight
 set(get(gca,'YLabel'),'Rotation',0,'HorizontalAlignment','right')
 

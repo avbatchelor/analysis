@@ -38,13 +38,17 @@ plotData.saveFolder = saveFolder;
 
 %% Hardcoded paramters
 analysisSettings;
-pipStartInd = Stim.startPadDur*Stim.sampleRate/dsFactor + 1;
-indBefore = pipStartInd - timeBefore*Stim.sampleRate/dsFactor;
-indAfter = pipStartInd + timeBefore*Stim.sampleRate/dsFactor;
+plotData.pipStartInd = Stim.startPadDur*Stim.sampleRate/dsFactor + 1;
+plotData.pipEndInd = (Stim.startPadDur+Stim.stimDur)*Stim.sampleRate/dsFactor + 1;
+plotData.pipStartTime = Stim.startPadDur + 1/Stim.sampleRate;
+plotData.pipEndTime = (Stim.startPadDur+Stim.stimDur) + 1/Stim.sampleRate;
+indBefore = plotData.pipStartInd - timeBefore*Stim.sampleRate/dsFactor;
+indAfter = plotData.pipStartInd + timeBefore*Stim.sampleRate/dsFactor;
 
 %% Select trials based on speed
 trialsToInclude = speedThreshold<groupedData.trialSpeed;
 trialsToIncludeIdxs = groupedData.trialNum(trialsToInclude);
+plotData.fastTrials = trialsToIncludeIdxs;
 
 %% Calculate number of stimuli and stim types 
 % Number of unique stimuli - same stimulus at different location considered
@@ -55,6 +59,9 @@ plotData.numUniqueStim = length(uniqueStim);
 % Number of stim types - stimuli are considered the same 'type' if the
 % sound played by the speaker is identical
 stimType = sameStim(StimStruct);
+
+%% Number of trials 
+plotData.numTrials = groupedData.trialNum(end);
 
 %% Assign figure numbers  
 plotData.figureNums.allDiffFigs = uniqueStim; 
@@ -86,6 +93,7 @@ for stimNum = uniqueStim
     % Select the trials that belonging to the stimulus that are fast
     % enough
     stimNumInd = intersect(trialsToIncludeIdxs,stimSelect);
+    plotData.trialsSelectedByStimAndSpeed{stimNum} = stimNumInd;
     
     % Randomly select 10 trials for plotting individual trials
     randInd = randperm(length(stimNumInd));
@@ -125,8 +133,8 @@ for stimNum = uniqueStim
     
     
     %% Sample trials    
-    plotData.sampleTrialsDisp{i}   = [groupedData.rotXDisp(stimIndSamp,:),groupedData.rotYDisp(stimIndSamp,:)];
-    plotData.sampleTrialsVel    = [groupedData.rotXVel(stimIndSamp,:),groupedData.rotYVel(stimIndSamp,:)];
+    plotData.sampleTrialsDisp{stimNum}   = [groupedData.rotXDisp(stimIndSamp,:),groupedData.rotYDisp(stimIndSamp,:)];
+    plotData.sampleTrialsVel{stimNum}    = [groupedData.rotXVel(stimIndSamp,:),groupedData.rotYVel(stimIndSamp,:)];
 
     
     %% Data for plot forward speed histogram
@@ -139,8 +147,8 @@ for stimNum = uniqueStim
     
     %% Data for displacement histogram    
     % Trials x axis x timepoint  
-    plotData.xDispLinePlot{stimNum} = groupedData.rotXDisp(stimNumInd,[indBefore,pipStartInd,indAfter]);    
-    plotData.yDispLinePlot{stimNum} = groupedData.rotYDisp(stimNumInd,[indBefore,pipStartInd,indAfter]);
+    plotData.xDispLinePlot{stimNum} = groupedData.rotXDisp(stimNumInd,[indBefore,plotData.pipStartInd,indAfter]);    
+    plotData.yDispLinePlot{stimNum} = groupedData.rotYDisp(stimNumInd,[indBefore,plotData.pipStartInd,indAfter]);
 
     
     %% Figure filename

@@ -55,8 +55,7 @@ for i = 1:length(dirCont)
     %% Meta data 
     groupedData.stimNum(trialNum) = trialMeta.stimNum;
     groupedData.trialNum(trialNum) = trialMeta.trialNum;  
-    groupedData.pipStartInd = Stim.startPadDur*Stim.sampleRate/dsFactor + 1;
-    
+    groupedData.pipStartInd = Stim.startPadDur*Stim.sampleRate/dsFactor + 1;    
     
     %% Calculate mean resultant speed for each trial
     groupedData.trialSpeed(trialNum) = mean(sqrt((groupedData.xVel{trialNum}.^2)+(groupedData.yVel{trialNum}.^2)));
