@@ -73,7 +73,7 @@ plotData.figureNums.figByType = unique(stimType);
 dateAsString = datestr(datenum(exptInfo.dNum,'yymmdd'),'mm-dd-yy');
 plotData.sumTitle = {[dateAsString,', ',exptInfo.prefixCode,', ExpNum ',num2str(exptInfo.expNum),', FlyNum ',num2str(exptInfo.flyNum),...
     ', FlyExpNum ',num2str(exptInfo.flyExpNum)];['Aim: ',char(FlyData.aim),', Description: ',StimStruct(1).stimObj.description];...
-    ['X Saturation Count = ',num2str(sum(groupedData.xSaturationWarning)),'Y Saturation Count = ',num2str(sum(groupedData.ySaturationWarning))]};
+    ['X Saturation Count = ',num2str(sum(groupedData.xSaturationWarning)),', Y Saturation Count = ',num2str(sum(groupedData.ySaturationWarning))]};
 
 %% Create empty matrices
 plotData.legendText = cell(size(uniqueStim));
@@ -152,7 +152,7 @@ for stimNum = uniqueStim
 
     
     %% Figure filename
-    plotData.saveFileName{stimNum} = [saveFolder,'flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'_stim',num2str(stimNum-1,'%03d'),'_to_',num2str(stimNum,'%03d'),'.pdf'];
+    plotData.saveFileName{stimNum} = [saveFolder,'flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'_stim',num2str(stimNum,'%03d'),'.pdf'];
     
     
 end

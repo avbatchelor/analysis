@@ -1,4 +1,4 @@
-function mySave(filename,figSize,varargin)
+function mySave(filename,figSize,figNum,varargin)
 
 % Save settings 
 % set(gcf, 'PaperType', 'usletter');
@@ -8,12 +8,16 @@ if ~exist('figSize','var')
     figSize = [5 3];
 end
 
+if ~exist('figNum','var')
+    figNum = gcf;
+end
+
 % Save pdf 
 export_fig(filename,'-pdf','-q50')
 
 % Save svg
-set(gcf, 'PaperSize', figSize);
-set(gcf,'PaperUnits','inches','PaperPositionMode','manual','PaperPosition',[0 0,figSize]);
+set(figNum, 'PaperSize', figSize);
+set(figNum,'PaperUnits','inches','PaperPositionMode','manual','PaperPosition',[0 0,figSize]);
 % set(gcf,'PaperPositionMode','auto','Unit','inches','Position',[1 1 4 5]);
 
 fileStem = char(regexp(filename,'.*(?=.pdf)','match'));

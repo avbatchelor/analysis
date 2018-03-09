@@ -1,4 +1,12 @@
-function plotBallData(prefixCode,expNum,flyNum,flyExpNum,allTrials,sameFig)
+function plotProcessedBallData(prefixCode,expNum,flyNum,flyExpNum,allTrials,sameFig)
+
+
+% prefixCode = 'Males';
+% expNum = 1;
+% flyNum =1;
+% flyExpNum = 1;
+% allTrials = 'n';
+% sameFig = 'y';
 
 %% Put exptInfo in a struct
 exptInfo = exptInfoStruct(prefixCode,expNum,flyNum,flyExpNum);
@@ -13,7 +21,7 @@ fileName = [pPath,fileNamePreamble,'plotData.mat'];
 load(fileName);
 
 %% Load analysis settings
-analysisSettings; 
+analysisSettings;
 
 %% Create save folder
 % fileStem = char(regexp(pPath,'.*(?=flyExpNum)','match'));
@@ -33,8 +41,6 @@ numCols = 2;
 numRows = 7;
 spIndex = reshape(1:numCols*numRows, numCols, numRows).';
 
-%% Create empty matrices
-stimCount = 0;
 
 %% Loop through to plot the correct number of figures
 
@@ -52,7 +58,6 @@ end
 %% Plot for each stim Num
 for stimNum = plotData.numUniqueStim
     
-    stimCount = stimCount + 1;
     %% Set figure number appropriately
     figure(figureIdx(stimNum));
     
@@ -94,7 +99,7 @@ for stimNum = plotData.numUniqueStim
     moveXAxis
     symAxisY
     shadestimArea(plotData)
-
+    
     
     %% Plot y speed vs. time
     % Subplot settings
@@ -191,17 +196,17 @@ for stimNum = plotData.numUniqueStim
     sph(7) = subplot (numRows, numCols, spIndex(7));
     hold on
     
-    % Plot all trials in gray 
-        bh1 = bar(1:plotData.numTrials,plotData.trialSpeed,'EdgeColor',gray,'FaceColor',gray);
+    % Plot all trials in gray
+    bh1 = bar(1:plotData.numTrials,plotData.trialSpeed,'EdgeColor',gray,'FaceColor',gray);
     
-    % Get bar width 
+    % Get bar width
     bw = get(bh1,'BarWidth');
-
-    % If plotting all trial in same figure, plot fast trials in red 
+    
+    % If plotting all trial in same figure, plot fast trials in red
     if strcmp(sameFig,'y')
-        % Plot fast trials in red 
+        % Plot fast trials in red
         bar(plotData.fastTrials,plotData.trialSpeed(plotData.fastTrials),'EdgeColor','red','FaceColor','red','BarWidth',bw);
-    else 
+    else
         stimFastTrials = plotData.trialsSelectedByStimAndSpeed{stimNum};
         bar(stimFastTrials,plotData.trialSpeed(stimFastTrials),'EdgeColor',currColor,'FaceColor',currColor,'BarWidth',bw);
     end
@@ -217,12 +222,12 @@ for stimNum = plotData.numUniqueStim
     bottomAxisSettings
     
     % Title
-%     if mod(stimNum,2)
-%         t1s = ['Successful left trials = ',num2str(length(stimNumInd)),'/',num2str(length(stimSelect))];
-%     else
-%         t2s = ['Successful right trials = ',num2str(length(stimNumInd)),'/',num2str(length(stimSelect))];
-%         title([t1s,'   ',t2s])
-%     end
+    %     if mod(stimNum,2)
+    %         t1s = ['Successful left trials = ',num2str(length(stimNumInd)),'/',num2str(length(stimSelect))];
+    %     else
+    %         t2s = ['Successful right trials = ',num2str(length(stimNumInd)),'/',num2str(length(stimSelect))];
+    %         title([t1s,'   ',t2s])
+    %     end
     
     
     %% Plot trial line
@@ -231,9 +236,7 @@ for stimNum = plotData.numUniqueStim
     hold on
     
     % Plot
-    plot(plot.xDispLinePlot{stimNum},plotData.yDispLinePlot{stimNum})
-    line([rotXDisp(:,pipStartInd),rotXDisp(:,indBefore)]',[rotYDisp(:,pipStartInd),rotYDisp(:,indBefore)]','Color','k');
-    line([rotXDisp(:,pipStartInd),rotXDisp(:,indAfter)]',[rotYDisp(:,pipStartInd),rotYDisp(:,indAfter)]','Color',currColor);
+    plot(plotData.xDispLinePlot{stimNum}',plotData.yDispLinePlot{stimNum}','Color',currColor)
     
     % Axis labels
     ylabel('Y displacement (mm)')
@@ -249,7 +252,7 @@ for stimNum = plotData.numUniqueStim
     hold on
     
     % Plot
-    plot(meanXDisp,meanYDisp,'Color',currColor,'Linewidth',2)
+    plot(plotData.meanXDisp(stimNum,:),plotData.meanYDisp(stimNum,:),'Color',currColor,'Linewidth',2)
     if strcmp(allTrials,'y')
         plot(rotXDisp(stimIndSamp,:)',rotYDisp(stimIndSamp,:)','Color',currColor,'Linewidth',0.5)
     end
@@ -265,33 +268,42 @@ for stimNum = plotData.numUniqueStim
     
     
     %% Plot angle histogram
-    beforeDisp = [rotXDisp(:,indBefore),rotYDisp(:,indBefore)];
-    afterDisp = [rotXDisp(:,indAfter),rotYDisp(:,indAfter)];
-    plotAngleHist(beforeDisp,afterDisp,currColor,numUniqueStim,stimCount);
+    
+    beforeDisp = [plotData.xDispLinePlot{stimNum}(:,1),plotData.yDispLinePlot{stimNum}(:,1)];
+    afterDisp = [plotData.xDispLinePlot{stimNum}(:,3),plotData.yDispLinePlot{stimNum}(:,3)];
+    plotAngleHist(beforeDisp,afterDisp,currColor,plotData.numUniqueStim,stimNum);
     
     
     %% Clear data
     clear rotVel rotDisp
     
+    %% Legend and title
+    % Legend
+    if sameFig == 'y'
+        legend(sph(9),plotData.legendText,'Location','best')
+    else
+        legend(sph(9),plotData.legendText{stimNum},'Location','best')
+    end
+    legend('boxoff')
+    
+    % Title
+    suptitle(plotData.sumTitle)
+    
+    
+    
+    %% Save figures and group pdfs
+    % Save figures
+    if sameFig == 'y'
+        allFileName = strrep(plotData.saveFileName{1},'flyExpNum001_stim000_to_001.pdf','all_stim.pdf');
+        mySave(plotData.saveFileName{stimNum},[5 5]);
+    else
+        mySave(plotData.saveFileName{stimNum},[5 5]);
+    end
+    
 end
 
-%% Add legend and title
-% Legend
-legend(sph(9),legendText,'Location','best')
-legend('boxoff')
-
-% Title
-suptitle(sumTitle)
-
-%% Save figures and group pdfs
-% Save figures
-saveFileName = [saveFolder,'flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'_stim',num2str(stimNum-1,'%03d'),'_to_',num2str(stimNum,'%03d'),'.pdf'];
-mySave(saveFileName,[5 5]);
-
-% Group pdfs
-groupPdfs(saveFolder)
-
-
-
+%% Group pdfs
+figurePath = fileparts(plotData.saveFileName{1});
+groupPdfs(figurePath)
 
 end

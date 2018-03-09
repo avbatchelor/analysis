@@ -1,11 +1,11 @@
-function plotBallDataDiffStimSameFig(prefixCode,expNum,flyNum,flyExpNum,allTrials,sameFig)
+function plotProcessedBallData(prefixCode,expNum,flyNum,flyExpNum,allTrials,sameFig)
 
 %% Put exptInfo in a struct
 exptInfo = exptInfoStruct(prefixCode,expNum,flyNum,flyExpNum);
 
 %% Load plot data
 % Get paths
-[~, path, fileNamePreamble, ~] = getDataFileNameBall(exptInfo);
+[~, ~, fileNamePreamble, ~] = getDataFileNameBall(exptInfo);
 pPath = getProcessedDataFileName(exptInfo);
 
 % Plot data
@@ -13,7 +13,7 @@ fileName = [pPath,fileNamePreamble,'plotData.mat'];
 load(fileName);
 
 %% Load analysis settings
-analysisSettings; 
+analysisSettings;
 
 %% Create save folder
 % fileStem = char(regexp(pPath,'.*(?=flyExpNum)','match'));
@@ -33,8 +33,6 @@ numCols = 2;
 numRows = 7;
 spIndex = reshape(1:numCols*numRows, numCols, numRows).';
 
-%% Create empty matrices
-stimCount = 0;
 
 %% Loop through to plot the correct number of figures
 
@@ -42,19 +40,22 @@ stimCount = 0;
 subplot = @(m,n,p) subtightplot (m, n, p, [0.05 0.05], [0.1 0.1], [0.1 0.01]);
 
 if strcmp(sameFig,'y')
-    figureIdx = plotData.figureNums.allDiffFigs;
-elseif strcmp(sameFig,'n')
     figureIdx = plotData.figureNums.allSameFig;
+elseif strcmp(sameFig,'n')
+    figureIdx = plotData.figureNums.allDiffFigs;
 elseif strcmp(sameFig,'m')
     figureIdx = plotData.figureNums.figByType;
 end
 
 %% Plot for each stim Num
-for stimNum = plotData.numUniqueStim
+for stimNum = 1:plotData.numUniqueStim
     
-    stimCount = stimCount + 1;
     %% Set figure number appropriately
-    figure(figureIdx(stimNum));
+    if sameFig == 'y' && stimNum ~= 1
+        figure(figureIdx(stimNum));
+    else
+        goFigure(figureIdx(stimNum));
+    end
     
     %% Set colors correctly
     currColor = colorSet(stimNum,:);
@@ -75,11 +76,12 @@ for stimNum = plotData.numUniqueStim
     
     %% Plot x speed vs. time
     % Subplot settings
-    sph(2) = subplot(numRows, numCols, spIndex(2));
-    hold on
+    if stimNum == 1
+        sph(2) = subplot(numRows, numCols, spIndex(2));
+    end
     
     % Plot
-    mySimplePlot(plotData.dsTime(stimNum,:),plotData.meanXVel(stimNum,:),'Color',currColor,'Linewidth',2)
+    mySimplePlot(sph(2),plotData.dsTime(stimNum,:),plotData.meanXVel(stimNum,:),'Color',currColor,'Linewidth',2)
     if strcmp(allTrials,'y')
         mySimplePlot(groupedData.dsTime{stimNum},sampleTrialsVel(stimIndSamp,:),'Color',currColor,'Linewidth',0.5)
     end
@@ -92,17 +94,19 @@ for stimNum = plotData.numUniqueStim
     % Axis settings
     noXAxisSettings
     moveXAxis
-    symAxisY
+    symAxisY(sph(2))
     shadestimArea(plotData)
-
+    
     
     %% Plot y speed vs. time
     % Subplot settings
-    sph(3) = subplot(numRows, numCols, spIndex(3));
+    if stimNum == 1
+        sph(3) = subplot(numRows, numCols, spIndex(3));
+    end
     hold on
     
     % Plot
-    mySimplePlot(plotData.dsTime(stimNum,:),plotData.meanYVel(stimNum,:),'Color',currColor,'Linewidth',2)
+    mySimplePlot(sph(3),plotData.dsTime(stimNum,:),plotData.meanYVel(stimNum,:),'Color',currColor,'Linewidth',2)
     if strcmp(allTrials,'y')
         mySimplePlot(groupedData.dsTime{stimNum},rotYVel(stimIndSamp,:),'Color',currColor,'Linewidth',0.5)
     end
@@ -115,17 +119,19 @@ for stimNum = plotData.numUniqueStim
     % Axis settings
     noXAxisSettings
     moveXAxis
-    symAxisY
+    symAxisY(sph(3))
     shadestimArea(plotData)
     
     
     %% Plot x displacement vs. time
     % Subplot settings
-    sph(4) = subplot(numRows, numCols, spIndex(4));
+    if stimNum == 1
+        sph(4) = subplot(numRows, numCols, spIndex(4));
+    end
     hold on
     
     % Plot
-    mySimplePlot(plotData.dsTime(stimNum,:),plotData.meanXDisp(stimNum,:),'Color',currColor,'Linewidth',2)
+    mySimplePlot(sph(4),plotData.dsTime(stimNum,:),plotData.meanXDisp(stimNum,:),'Color',currColor,'Linewidth',2)
     if strcmp(allTrials,'y')
         mySimplePlot(groupedData.dsTime{stimNum},rotXDisp(stimIndSamp,:),'Color',currColor,'Linewidth',0.5)
     end
@@ -140,17 +146,19 @@ for stimNum = plotData.numUniqueStim
     % Axis settings
     noXAxisSettings
     moveXAxis
-    symAxisY
+    symAxisY(sph(4))
     shadestimArea(plotData)
     
     
     %% Plot y displacement vs. time plot
     % Subplot settings
-    sph(5) = subplot (numRows, numCols, spIndex(5));
+    if stimNum == 1
+        sph(5) = subplot (numRows, numCols, spIndex(5));
+    end
     hold on
     
     % Plot
-    mySimplePlot(plotData.dsTime(stimNum,:),plotData.meanYDisp(stimNum,:),'Color',currColor,'Linewidth',2)
+    mySimplePlot(sph(5),plotData.dsTime(stimNum,:),plotData.meanYDisp(stimNum,:),'Color',currColor,'Linewidth',2)
     if strcmp(allTrials,'y')
         mySimplePlot(groupedData.dsTime{stimNum},rotYDisp(stimIndSamp,:),'Color',currColor,'Linewidth',0.5)
     end
@@ -164,18 +172,20 @@ for stimNum = plotData.numUniqueStim
     % Axis settings
     bottomAxisSettings
     linkaxes(sph(1:5),'x')
-    symAxisY
+    symAxisY(sph(5))
     shadestimArea(plotData)
     
     
     %% Plot forward speed histogram
     % Subplot settings
-    sph(6) = subplot (numRows, numCols, spIndex(6));
+    if stimNum == 1
+        sph(6) = subplot (numRows, numCols, spIndex(6));
+    end
     hold on
     
     % Plot
     histogramBins = bins;
-    histogram(plotData.velForHistogram,histogramBins);
+    histogram(sph(6),plotData.velForHistogram,histogramBins);
     
     % Axis labels
     xlabel('Forward speed (mm/s)')
@@ -188,26 +198,28 @@ for stimNum = plotData.numUniqueStim
     
     %% Plot avg. trial speed
     % Subplot settings
-    sph(7) = subplot (numRows, numCols, spIndex(7));
+    if stimNum == 1
+        sph(7) = subplot (numRows, numCols, spIndex(7));
+    end
     hold on
     
-    % Plot all trials in gray 
-        bh1 = bar(1:plotData.numTrials,plotData.trialSpeed,'EdgeColor',gray,'FaceColor',gray);
+    % Plot all trials in gray
+    bh1 = bar(sph(7),1:plotData.numTrials,plotData.trialSpeed,'EdgeColor',gray,'FaceColor',gray);
     
-    % Get bar width 
+    % Get bar width
     bw = get(bh1,'BarWidth');
-
-    % If plotting all trial in same figure, plot fast trials in red 
+    
+    % If plotting all trial in same figure, plot fast trials in red
     if strcmp(sameFig,'y')
-        % Plot fast trials in red 
-        bar(plotData.fastTrials,plotData.trialSpeed(plotData.fastTrials),'EdgeColor','red','FaceColor','red','BarWidth',bw);
-    else 
+        % Plot fast trials in red
+        bar(sph(7),plotData.fastTrials,plotData.trialSpeed(plotData.fastTrials),'EdgeColor','red','FaceColor','red','BarWidth',bw);
+    else
         stimFastTrials = plotData.trialsSelectedByStimAndSpeed{stimNum};
-        bar(stimFastTrials,plotData.trialSpeed(stimFastTrials),'EdgeColor',currColor,'FaceColor',currColor,'BarWidth',bw);
+        bar(sph(7),stimFastTrials,plotData.trialSpeed(stimFastTrials),'EdgeColor',currColor,'FaceColor',currColor,'BarWidth',bw);
     end
     
     % Plot baseline
-    line([0,plotData.numTrials],[speedThreshold,speedThreshold],'Color','k')
+    line(sph(7),[0,plotData.numTrials],[speedThreshold,speedThreshold],'Color','k')
     
     % Axis labels
     ylabel({'Trial avg speed';'(mm/s)'})
@@ -217,41 +229,43 @@ for stimNum = plotData.numUniqueStim
     bottomAxisSettings
     
     % Title
-%     if mod(stimNum,2)
-%         t1s = ['Successful left trials = ',num2str(length(stimNumInd)),'/',num2str(length(stimSelect))];
-%     else
-%         t2s = ['Successful right trials = ',num2str(length(stimNumInd)),'/',num2str(length(stimSelect))];
-%         title([t1s,'   ',t2s])
-%     end
+    %     if mod(stimNum,2)
+    %         t1s = ['Successful left trials = ',num2str(length(stimNumInd)),'/',num2str(length(stimSelect))];
+    %     else
+    %         t2s = ['Successful right trials = ',num2str(length(stimNumInd)),'/',num2str(length(stimSelect))];
+    %         title([t1s,'   ',t2s])
+    %     end
     
     
     %% Plot trial line
     % Subplot settings
-    sph(8) = subplot(numRows, numCols, spIndex(8:10));
+    if stimNum == 1
+        sph(8) = subplot(numRows, numCols, spIndex(8:10));
+    end
     hold on
     
     % Plot
-    plot(plot.xDispLinePlot{stimNum},plotData.yDispLinePlot{stimNum})
-    line([rotXDisp(:,pipStartInd),rotXDisp(:,indBefore)]',[rotYDisp(:,pipStartInd),rotYDisp(:,indBefore)]','Color','k');
-    line([rotXDisp(:,pipStartInd),rotXDisp(:,indAfter)]',[rotYDisp(:,pipStartInd),rotYDisp(:,indAfter)]','Color',currColor);
+    plot(sph(8),plotData.xDispLinePlot{stimNum}',plotData.yDispLinePlot{stimNum}','Color',currColor)
     
     % Axis labels
     ylabel('Y displacement (mm)')
     
     % Axis settings
-    axis square
-    xlim([-3 3])
+%     axis(sph(8),'equal')
+    sph(8).XLim = [-3 3];
     
     
     %% Plot mean X vs mean Y displacement
     % Subplot settings
-    sph(9) = subplot (numRows, numCols, spIndex(11:14));
+    if stimNum == 1
+        sph(9) = subplot (numRows, numCols, spIndex(11:14));
+    end
     hold on
     
     % Plot
-    plot(meanXDisp,meanYDisp,'Color',currColor,'Linewidth',2)
+    plot(sph(9),plotData.meanXDisp(stimNum,:),plotData.meanYDisp(stimNum,:),'Color',currColor,'Linewidth',2)
     if strcmp(allTrials,'y')
-        plot(rotXDisp(stimIndSamp,:)',rotYDisp(stimIndSamp,:)','Color',currColor,'Linewidth',0.5)
+        plot(sph(9),rotXDisp(stimIndSamp,:)',rotYDisp(stimIndSamp,:)','Color',currColor,'Linewidth',0.5)
     end
     %     plot(meanXDisp+stdXDisp,meanYDisp,'Color',colorSet(stimNum,:),'Linewidth',0.5)
     %     plot(meanXDisp-stdXDisp,meanYDisp,'Color',colorSet(stimNum,:),'Linewidth',0.5)
@@ -261,37 +275,43 @@ for stimNum = plotData.numUniqueStim
     ylabel('Y displacement (mm)')
     
     % Axis settings
-    xlim([-3 3])
+%     axis(sph(9),'equal')
+    sph(9).XLim = [-3 3];
+    
+    %% Legend and title
+    % Legend
+    if sameFig == 'y'
+        legend(sph(9),plotData.legendText,'Location','best')
+    else
+        legend(sph(9),plotData.legendText{stimNum},'Location','best')
+    end
+    legend('boxoff')
+    
+    % Title
+    suptitle(plotData.sumTitle)
+    
+    %% Plot angle histogram in separate figure
+    beforeDisp = [plotData.xDispLinePlot{stimNum}(:,1),plotData.yDispLinePlot{stimNum}(:,1)];
+    afterDisp = [plotData.xDispLinePlot{stimNum}(:,3),plotData.yDispLinePlot{stimNum}(:,3)];
+    plotAngleHist(beforeDisp,afterDisp,currColor,plotData,stimNum);
     
     
-    %% Plot angle histogram
-    beforeDisp = [rotXDisp(:,indBefore),rotYDisp(:,indBefore)];
-    afterDisp = [rotXDisp(:,indAfter),rotYDisp(:,indAfter)];
-    plotAngleHist(beforeDisp,afterDisp,currColor,numUniqueStim,stimCount);
+    %% Save figures and group pdfs
+    % Save figures
+    figNum = figureIdx(stimNum);
+    figure(figNum)
+    if sameFig == 'y' && stimNum == plotData.numUniqueStim
+        allFileName = strrep(plotData.saveFileName{1},'flyExpNum001_stim000_to_001.pdf','all_stim.pdf');
+        export_fig(allFileName,'-pdf','-q50')
+    elseif sameFig ~= 'y'
+        export_fig(plotData.saveFileName{stimNum},'-pdf','-q50')
+    end
     
-    
-    %% Clear data
-    clear rotVel rotDisp
-    
+%     set(sph(:),'Nextplot','add')
 end
 
-%% Add legend and title
-% Legend
-legend(sph(9),legendText,'Location','best')
-legend('boxoff')
-
-% Title
-suptitle(sumTitle)
-
-%% Save figures and group pdfs
-% Save figures
-saveFileName = [saveFolder,'flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'_stim',num2str(stimNum-1,'%03d'),'_to_',num2str(stimNum,'%03d'),'.pdf'];
-mySave(saveFileName,[5 5]);
-
-% Group pdfs
-groupPdfs(saveFolder)
-
-
-
+%% Group pdfs
+figurePath = fileparts(plotData.saveFileName{1});
+groupPdfs(figurePath)
 
 end

@@ -1,7 +1,7 @@
-function plotAngleHist(beforeDisp,afterDisp,currColor,numUniqueStim,stimCount)
+function plotAngleHist(beforeDisp,afterDisp,currColor,plotData,stimCount)
 
 %% Figure settings
-figure(20);
+goFigure(30);
 
 %% Calculate angles
 beforeStraightVector = [0 -1];
@@ -17,12 +17,12 @@ end
 %% Histogram settings
 gray = [192 192 192]./255;
 bins = -180:5:180;
-numRows = numUniqueStim;
+numRows = plotData.numUniqueStim;
 numCols = 2;
 spIndex = reshape(1:numCols*numRows, numCols, numRows).';
 
 
-%% Plot before angle 
+%% Plot before angle
 % sph(stimCount) = subtightplot (numRows, numCols, spIndex(stimCount),[0.1 0.05], [0.1 0.01], [0.1 0.01]);
 sph(stimCount) = subplot(numRows, numCols, spIndex(stimCount));
 h1 = histogram(beforeAngle,bins,'FaceColor',gray);
@@ -31,13 +31,13 @@ xlim([-50 50])
 xlabel('Angle')
 ylabel('Counts')
 % if stimCount == numRows || stimCount == numUniqueStim
-    bottomAxisSettings;
+bottomAxisSettings;
 % else
 %     noXAxisSettings;
 % end
 title(['Before Angle, Median = ',num2str(median(beforeAngle))])
- 
-%% Plot after angle 
+
+%% Plot after angle
 % sph(stimCount) = subtightplot (numRows, numCols, spIndex(numRows+stimCount),[0.1 0.05], [0.1 0.01], [0.1 0.01]);
 sph(stimCount) = subplot (numRows, numCols, spIndex(numRows+stimCount));
 h2 = histogram(afterAngle,bins,'FaceColor',currColor);
@@ -46,11 +46,19 @@ xlim([-50 50])
 xlabel('Angle')
 ylabel('Counts')
 % if stimCount == numRows || stimCount == numUniqueStim
-    bottomAxisSettings;
+bottomAxisSettings;
 % else
 %     noXAxisSettings;
 % end
 title(['After Angle, Median = ',num2str(median(afterAngle))])
 
+%% Title
+suptitle(plotData.sumTitle)
 
-
+%% Save figure 
+histFileName = strrep(plotData.saveFileName{1},'flyExpNum001_stim001.pdf','hist.pdf');
+figurePath = fileparts(plotData.saveFileName{1});
+mkdir(figurePath);
+if stimCount == plotData.numUniqueStim
+    export_fig(histFileName,'-pdf','-q50')
+end
