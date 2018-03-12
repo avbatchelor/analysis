@@ -41,7 +41,6 @@ analysisSettings;
 plotData.pipStartInd = Stim.startPadDur*Stim.sampleRate/dsFactor + 1;
 plotData.pipEndInd = (Stim.startPadDur+Stim.stimDur)*Stim.sampleRate/dsFactor + 1;
 plotData.pipStartTime = Stim.startPadDur + 1/Stim.sampleRate;
-plotData.pipEndTime = (Stim.startPadDur+Stim.stimDur) + 1/Stim.sampleRate;
 indBefore = plotData.pipStartInd - timeBefore*Stim.sampleRate/dsFactor;
 indAfter = plotData.pipStartInd + timeBefore*Stim.sampleRate/dsFactor;
 
@@ -124,9 +123,15 @@ for stimNum = uniqueStim
     
     
     %% Data for plot stimulus
-    plotData.stimTimeVector(stimNum,:) = StimStruct(stimNum).stimObj.timeVec;
-    plotData.stimulus(stimNum,:) = StimStruct(stimNum).stimObj.stimulus;
+    if stimNum == 1
+        plotData.stimTimeVector(stimNum,:) = StimStruct(stimNum).stimObj.timeVec;
+        plotData.stimulus(stimNum,:) = StimStruct(stimNum).stimObj.stimulus;
+    else
+        plotData.stimTimeVector(stimNum,:) = StimStruct(stimNum).stimObj.timeVec(1,1:length(plotData.stimTimeVector(1,:)));
+        plotData.stimulus(stimNum,:) = StimStruct(stimNum).stimObj.stimulus(1:length(plotData.stimulus(1,:)),1);
+    end
     
+    plotData.pipEndTime(stimNum) = (StimStruct(stimNum).stimObj.startPadDur+StimStruct(stimNum).stimObj.stimDur) + 1/StimStruct(stimNum).stimObj.sampleRate;
     
     %% Downsampled time
     plotData.dsTime(stimNum,:) = groupedData.dsTime{stimNum};
@@ -152,7 +157,7 @@ for stimNum = uniqueStim
 
     
     %% Figure filename
-    plotData.saveFileName{stimNum} = [saveFolder,'flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'_stim',num2str(stimNum,'%03d'),'.pdf'];
+    plotData.saveFileName{stimNum} = [saveFolder,'flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'\','flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'_fig1','_stim',num2str(stimNum,'%03d'),'.pdf'];
     
     
 end

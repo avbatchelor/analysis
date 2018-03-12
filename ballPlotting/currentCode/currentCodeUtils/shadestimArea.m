@@ -1,8 +1,11 @@
-function shadestimArea(plotData)
+function shadestimArea(plotData,stimNum)
+if max(plotData.stimulus(stimNum,:)) == 0
+    return
+end
 hold on
 gray = [192 192 192]./255;
 pipStarts = plotData.pipStartTime;
-pipEnds = plotData.pipEndTime;
+pipEnds = plotData.pipEndTime(stimNum);
 Y = ylim(gca);
 X = [pipStarts,pipEnds];
 line([X(1) X(1)],[Y(1) Y(2)],'Color',gray);
