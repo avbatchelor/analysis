@@ -27,8 +27,8 @@ flyDataPreamble = char(regexp(fileNamePreamble,'.*(?=flyExpNum)','match'));
 flyDataFileName = [flyDataPath,flyDataPreamble,'flyData'];
 load(flyDataFileName);
 
-% Analysis settings 
-analysisSettings; 
+% Analysis settings
+analysisSettings;
 
 %% Create save folder
 fileStem = char(regexp(pPath,'.*(?=flyExpNum)','match'));
@@ -49,7 +49,7 @@ trialsToInclude = speedThreshold<groupedData.trialSpeed;
 trialsToIncludeIdxs = groupedData.trialNum(trialsToInclude);
 plotData.fastTrials = trialsToIncludeIdxs;
 
-%% Calculate number of stimuli and stim types 
+%% Calculate number of stimuli and stim types
 % Number of unique stimuli - same stimulus at different location considered
 % unique stimulus
 uniqueStim = unique(groupedData.stimNum);
@@ -59,11 +59,11 @@ plotData.numUniqueStim = length(uniqueStim);
 % sound played by the speaker is identical
 stimType = sameStim(StimStruct);
 
-%% Number of trials 
+%% Number of trials
 plotData.numTrials = groupedData.trialNum(end);
 
-%% Assign figure numbers  
-plotData.figureNums.allDiffFigs = uniqueStim; 
+%% Assign figure numbers
+plotData.figureNums.allDiffFigs = uniqueStim;
 plotData.figureNums.allSameFig = ones(size(uniqueStim));
 plotData.figureNums.figByType = unique(stimType);
 
@@ -96,9 +96,12 @@ for stimNum = uniqueStim
     
     % Randomly select 10 trials for plotting individual trials
     randInd = randperm(length(stimNumInd));
-    stimIndSamp = randInd(1:10);
-    
-    % Calculate number of good trials for that stimulus 
+    try
+        stimIndSamp = randInd(1:10);
+    catch
+        stimIndSamp = [];
+    end
+    % Calculate number of good trials for that stimulus
     plotData.numGoodTrials(stimNum) = length(stimNumInd);
     plotData.numAllTrials(stimNum) = length(stimSelect);
     
@@ -115,7 +118,7 @@ for stimNum = uniqueStim
     plotData.meanYDisp(stimNum,:)   = mean(groupedData.rotYDisp(stimNumInd,:));
     plotData.meanXVel(stimNum,:)    = mean(groupedData.rotXVel(stimNumInd,:));
     plotData.meanYVel(stimNum,:)    = mean(groupedData.rotYVel(stimNumInd,:));
-
+    
     plotData.stdXDisp(stimNum,:)    = std(groupedData.rotXDisp(stimNumInd,:));
     plotData.stdYDisp(stimNum,:)    = std(groupedData.rotYDisp(stimNumInd,:));
     plotData.stdXVel(stimNum,:)     = std(groupedData.rotXVel(stimNumInd,:));
@@ -137,10 +140,10 @@ for stimNum = uniqueStim
     plotData.dsTime(stimNum,:) = groupedData.dsTime{stimNum};
     
     
-    %% Sample trials    
+    %% Sample trials
     plotData.sampleTrialsDisp{stimNum}   = [groupedData.rotXDisp(stimIndSamp,:),groupedData.rotYDisp(stimIndSamp,:)];
     plotData.sampleTrialsVel{stimNum}    = [groupedData.rotXVel(stimIndSamp,:),groupedData.rotYVel(stimIndSamp,:)];
-
+    
     
     %% Data for plot forward speed histogram
     plotData.velForHistogram = groupedData.rotYVel(:);
@@ -150,11 +153,11 @@ for stimNum = uniqueStim
     % Plot all trials in gray
     plotData.trialSpeed = groupedData.trialSpeed;
     
-    %% Data for displacement histogram    
-    % Trials x axis x timepoint  
-    plotData.xDispLinePlot{stimNum} = groupedData.rotXDisp(stimNumInd,[indBefore,plotData.pipStartInd,indAfter]);    
+    %% Data for displacement histogram
+    % Trials x axis x timepoint
+    plotData.xDispLinePlot{stimNum} = groupedData.rotXDisp(stimNumInd,[indBefore,plotData.pipStartInd,indAfter]);
     plotData.yDispLinePlot{stimNum} = groupedData.rotYDisp(stimNumInd,[indBefore,plotData.pipStartInd,indAfter]);
-
+    
     
     %% Figure filename
     plotData.saveFileName{stimNum} = [saveFolder,'flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'\','flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'_fig1','_stim',num2str(stimNum,'%03d'),'.pdf'];
@@ -162,7 +165,7 @@ for stimNum = uniqueStim
     
 end
 
-%% Save Plot data to file 
+%% Save Plot data to file
 % Grouped data
 fileName = [pPath,fileNamePreamble,'plotData.mat'];
 save(fileName,'plotData')

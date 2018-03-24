@@ -3,13 +3,16 @@ function [velMmFilt,disp,saturationWarning] = processDigBallData(inputMat,stim,a
 %% Convert binary matrix to integer
 asDec = binaryVectorToDecimal(inputMat,'LSBFirst');
 
+%% Mode filter
+% removes errors that occur becuase output bits aren't set simultaneously
+asDec = colfilt(asDec, [11 1], 'sliding', @mode);
+
 %% Check for saturation 
 if any(asDec == 254)  || any(asDec == 0)
     saturationWarning = 1;
 else
     saturationWarning = 0;
 end
-
 
 %% Convert integer to signed integer 
 if strcmp(axis,'x')
@@ -27,13 +30,7 @@ end
 settings = ballSettings;
 
 % Convert counts to mm/s
-velMm = asDec.*settings.mmPerCount.*settings.sensorPollFreq;
- 
-
-%% Mode filter
-% removes errors that occur becuase output bits aren't set simultaneously
-velMmFilt = colfilt(velMm, [11 1], 'sliding', @mode);
-
+velMmFilt = asDec.*settings.mmPerCount.*settings.sensorPollFreq;
 
 %% Calculate displacement 
 if exist('stim','var')
