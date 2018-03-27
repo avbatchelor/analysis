@@ -1,6 +1,5 @@
 % toAnalyze = {'Freq',2,1,1;'Freq',2,2,1;'Freq',2,3,1;'Freq',2,4,2;'Freq',2,5,1;'Freq',2,6,1;'Freq',2,7,1};
-toAnalyze = {'RightGlued',1,8,1;'RightGlued',1,8,3};
-
+toAnalyze = {'Cardinal',4,1,1;'Cardinal',4,2,2;'Cardinal',4,3,1;'Cardinal',4,4,2;'Cardinal',4,5,3};
 
 for i = 1:length(toAnalyze)
     [prefixCode,expNum,flyNum,flyExpNum] = toAnalyze{i,:};
