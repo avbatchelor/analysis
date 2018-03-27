@@ -269,7 +269,7 @@ for stimNum = 1:plotData.numUniqueStim
     %% Plot mean X vs mean Y displacement
     % Subplot settings
     if stimNum == 1
-        sph(9) = subtightplot(numRows, numCols, spIndex(11:14),[0.075 0.1], [0.1 0.1], [0.1 0.01]);
+        sph(9) = subtightplot(numRows, numCols, spIndex(11:14),[0.075 0.15], [0.1 0.1], [0.15 0.15]);
     end
     hold on
     set(gcf, 'currentaxes',sph(9));
@@ -294,7 +294,11 @@ for stimNum = 1:plotData.numUniqueStim
     %% Legend and title
     % Legend
     if sameFig == 'y'
-        legend(sph(9),plotData.legendText,'Location','southwest')
+        if ~strcmp(prefixCode,'Freq')
+            legend(sph(9),plotData.legendText,'Location','southwest')
+        else 
+            legend(sph(9),plotData.legendText,'Location','eastoutside')
+        end
     else
         legend(sph(9),plotData.legendText{stimNum},'Location','best')
     end

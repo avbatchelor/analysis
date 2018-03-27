@@ -28,14 +28,19 @@ sph(stimCount) = subplot(numRows, numCols, spIndex(stimCount));
 h1 = histogram(beforeAngle,bins,'FaceColor',gray);
 line([0,0],[0,max(h1.Values)],'Color','k','Linewidth',3)
 xlim([-50 50])
-xlabel('Angle')
-ylabel('Counts')
-% if stimCount == numRows || stimCount == numUniqueStim
-bottomAxisSettings;
-% else
-%     noXAxisSettings;
-% end
-title(['Before Angle, Median = ',num2str(median(beforeAngle))])
+if stimCount == numRows || stimCount == plotData.numUniqueStim
+    bottomAxisSettings;
+    xlabel('Angle')
+    ylabel('Counts')
+else
+    noXAxisSettings;
+end
+
+txtYPos = max(h1.Values)/2;
+txt1 = ['Median angle = ',num2str(median(beforeAngle))];
+text(100,txtYPos,txt1)
+
+text(-170,txtYPos,plotData.legendText{stimCount})
 
 %% Plot after angle
 % sph(stimCount) = subtightplot (numRows, numCols, spIndex(numRows+stimCount),[0.1 0.05], [0.1 0.01], [0.1 0.01]);
@@ -43,14 +48,19 @@ sph(stimCount) = subplot (numRows, numCols, spIndex(numRows+stimCount));
 h2 = histogram(afterAngle,bins,'FaceColor',currColor);
 line([0,0],[0,max(h2.Values)],'Color','k','Linewidth',3)
 xlim([-50 50])
-xlabel('Angle')
-ylabel('Counts')
-% if stimCount == numRows || stimCount == numUniqueStim
-bottomAxisSettings;
-% else
-%     noXAxisSettings;
-% end
-title(['After Angle, Median = ',num2str(median(afterAngle))])
+if stimCount == numRows || stimCount == plotData.numUniqueStim
+    bottomAxisSettings;
+    xlabel('Angle')
+    ylabel('Counts')
+else
+    noXAxisSettings;
+end
+
+txtYPos = max(h2.Values)/2;
+txt1 = ['Median angle = ',num2str(median(afterAngle))];
+text(100,txtYPos,txt1)
+
+text(-170,txtYPos,plotData.legendText{stimCount})
 
 %% Title
 suptitle(plotData.sumTitle)

@@ -78,6 +78,13 @@ plotData.sumTitle = {[dateAsString,', ',exptInfo.prefixCode,', ExpNum ',num2str(
 plotData.legendText = cell(size(uniqueStim));
 stimCount = 0;
 
+%% Work out length of shortest stimulus 
+stimLength = size(uniqueStim);
+for stimNum = uniqueStim
+    stimLength(stimNum) = length(StimStruct(stimNum).stimObj.timeVec);
+end
+minStimLength = min(stimLength);
+
 %% Loop through each stimulus
 for stimNum = uniqueStim
     
@@ -126,13 +133,8 @@ for stimNum = uniqueStim
     
     
     %% Data for plot stimulus
-    if stimNum == 1
-        plotData.stimTimeVector(stimNum,:) = StimStruct(stimNum).stimObj.timeVec;
-        plotData.stimulus(stimNum,:) = StimStruct(stimNum).stimObj.stimulus;
-    else
-        plotData.stimTimeVector(stimNum,:) = StimStruct(stimNum).stimObj.timeVec(1,1:length(plotData.stimTimeVector(1,:)));
-        plotData.stimulus(stimNum,:) = StimStruct(stimNum).stimObj.stimulus(1:length(plotData.stimulus(1,:)),1);
-    end
+    plotData.stimTimeVector(stimNum,:) = StimStruct(stimNum).stimObj.timeVec(1,1:minStimLength);
+    plotData.stimulus(stimNum,:) = StimStruct(stimNum).stimObj.stimulus(1:minStimLength);
     
     plotData.pipEndTime(stimNum) = (StimStruct(stimNum).stimObj.startPadDur+StimStruct(stimNum).stimObj.stimDur) + 1/StimStruct(stimNum).stimObj.sampleRate;
     
