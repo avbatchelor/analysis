@@ -32,10 +32,10 @@ switch prefixCode
         flies = {'ShamGlued',1,1,1;'ShamGlued',1,2,1;'ShamGlued',1,3,1;'ShamGlued',1,4,1};
         
     % Fig 7 
-%     case 'Diag'
-%         flies = {'Diag',1,1,2;'Diag',1,3,1;'Diag',1,4,1;'Diag',1,5,4;'Diag',1,6,1};
     case 'Diag'
-        flies = {'Diag',1,1,2;'Diag',1,3,1};
+        flies = {'Diag',1,1,2;'Diag',1,3,1;'Diag',1,4,1;'Diag',1,5,4;'Diag',1,6,1};
+%     case 'Diag'
+%         flies = {'Diag',1,1,2;'Diag',1,3,1};
         
     % Fig 8
     case 'Cardinal'
