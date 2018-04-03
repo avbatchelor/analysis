@@ -20,6 +20,8 @@
 
 **loadProcessedData** > loads processed data given expt info 
 
+**maxTrialNum** > calculates the maximum number of trials for which every fly has that many trials for each stimulus above the speed threshold
+
 **multiFlyAnalysis** > makes plotData for multiple flies 
 
 **numAboveThresholdTrials** > outputs number of fast trials for each fly given a prefix code and a threshold
