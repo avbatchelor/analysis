@@ -26,14 +26,16 @@ switch prefixCode
     % Fig 6
     case 'RightGlued'
         flies = {'RightGlued',1,1,1;'RightGlued',1,3,1;'RightGlued',1,6,1;'RightGlued',1,7,1};
-    case 'Left Glued'
-        flies = {'LeftGlued',1,1,1;'LeftGlued',1,2,3;'LeftGlued',1,4,1};
+    case 'LeftGlued'
+        flies = {'LeftGlued',1,1,1;'LeftGlued',1,2,2;'LeftGlued',1,4,1};
     case 'ShamGlued-0'
         flies = {'ShamGlued',1,1,1;'ShamGlued',1,2,1;'ShamGlued',1,3,1;'ShamGlued',1,4,1};
         
     % Fig 7 
     case 'Diag'
         flies = {'Diag',1,1,2;'Diag',1,3,1;'Diag',1,4,1;'Diag',1,5,4;'Diag',1,6,1};
+%     case 'Diag'
+%         flies = {'Diag',1,1,2;'Diag',1,3,1};
         
     % Fig 8
     case 'Cardinal'
