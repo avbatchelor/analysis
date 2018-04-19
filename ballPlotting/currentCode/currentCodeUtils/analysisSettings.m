@@ -16,3 +16,6 @@ prefixCodes = {'Freq','Males','a2Glued','a3Glued','ShamGlued-45','RightGlued','L
 valueSet = [70; 100; 100; 440; ones(6,1)*defaultNumTrials];
 prefixCodeTrialNums = containers.Map(prefixCodes,valueSet);
 clear prefixCodes valueSet
+
+% Size of blocks for looking at adapation
+blockSize = 50;

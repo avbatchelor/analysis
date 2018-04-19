@@ -32,7 +32,7 @@ analysisSettings;
 
 %% Create save folder
 fileStem = char(regexp(pPath,'.*(?=flyExpNum)','match'));
-saveFolder = [fileStem,'Figures\'];
+saveFolder = fileStem;
 mkdir(saveFolder)
 plotData.saveFolder = saveFolder;
 
@@ -88,9 +88,7 @@ minStimLength = min(stimLength);
 %% Loop through each stimulus
 for stimNum = uniqueStim
     
-    
     stimCount = stimCount + 1;
-    
     
     %% Find the indexes for trials belonging to this stimulus
     % Find trials belonging to that stimulus
@@ -131,6 +129,20 @@ for stimNum = uniqueStim
     plotData.stdXVel(stimNum,:)     = std(groupedData.rotXVel(stimNumInd,:));
     plotData.stdYVel(stimNum,:)     = std(groupedData.rotYVel(stimNumInd,:));
     
+    %% Find the block means  (i.e. the mean for each stimulus for every 100 trials or so) 
+    % Number of blocks = minimum number of trials for each stimulus /
+    % blockSize, rounded down to nearest integer
+    trialsPerStim = histc(groupedData.stimNum(trialsToIncludeIdxs),uniqueStim);
+    minNumTrialsAllStim = min(trialsPerStim);
+    numBlocks = floor(minNumTrialsAllStim/blockSize);
+    for i = 1:numBlocks
+        blockStart = (i-1)*blockSize + 1;
+        blockEnd = i*blockSize;
+        plotData.blockMeanXDisp(stimNum,i,:) = mean(groupedData.rotXDisp(stimNumInd(blockStart:blockEnd),:));
+        plotData.blockMeanYDisp(stimNum,i,:) = mean(groupedData.rotYDisp(stimNumInd(blockStart:blockEnd),:));
+        plotData.blockMeanXVel(stimNum,i,:) = mean(groupedData.rotXVel(stimNumInd(blockStart:blockEnd),:));
+        plotData.blockMeanYVel(stimNum,i,:) = mean(groupedData.rotYVel(stimNumInd(blockStart:blockEnd),:));
+    end
     
     %% Data for plot stimulus
     plotData.stimTimeVector(stimNum,:) = StimStruct(stimNum).stimObj.timeVec(1,1:minStimLength);
