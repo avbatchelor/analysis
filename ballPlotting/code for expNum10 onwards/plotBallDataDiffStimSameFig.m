@@ -160,6 +160,7 @@ for i = 1:length(uniqueStim)
         shadeLEDArea(LEDStim,Stim)
     end
     symAxisY
+    xlim([-1 1])
     
     sph(3) = subplot(7,2,5);
     hold on
@@ -291,6 +292,7 @@ for i = 1:length(uniqueStim)
         legend({'Left','Right'},'Location','NorthEastOutside')
         legend('boxoff')
     end
+    xlim([-3 3])
     
     clear rotVel rotDisp
     
