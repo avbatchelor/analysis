@@ -246,30 +246,68 @@ for stimNum = 1:plotData.numUniqueStim
     %     end
     
     
+%     %% Plot trial line
+%     % Subplot settings
+%     if stimNum == 1
+%         sph(8) = subtightplot(numRows, numCols, spIndex(8:10),[0.075 0.1], [0.1 0.1], [0.1 0.01]);
+%     end
+%     hold on
+%     set(gcf, 'currentaxes',sph(8));
+% 
+%     % Plot
+%     plot(sph(8),plotData.xDispLinePlot{stimNum}',plotData.yDispLinePlot{stimNum}','Color',currColor)
+%     
+%     % Axis labels
+%     ylabel({'Y disp';'(mm)'})
+%     
+%     % Axis settings
+% %     axis(sph(8),'equal')
+%     bottomAxisSettings
+%     sph(8).XLim = [-3 3];
+
     %% Plot trial line
     % Subplot settings
     if stimNum == 1
-        sph(8) = subtightplot(numRows, numCols, spIndex(8:10),[0.075 0.1], [0.1 0.1], [0.1 0.01]);
-    end
-    hold on
-    set(gcf, 'currentaxes',sph(8));
+        sph(8) = subtightplot(numRows, numCols, spIndex(8:9),[0.075 0.1], [0.1 0.1], [0.1 0.01]);
+    
+        hold on
+        set(gcf, 'currentaxes',sph(8));
 
-    % Plot
-    plot(sph(8),plotData.xDispLinePlot{stimNum}',plotData.yDispLinePlot{stimNum}','Color',currColor)
+        % Plot
+        plot(sph(8),plotData.xDispLinePlot{stimNum}',plotData.yDispLinePlot{stimNum}','Color',currColor)
+
+        % Axis labels
+        ylabel({'Y disp';'(mm)'})
+
+        % Axis settings
+    %     axis(sph(8),'equal')
+        bottomAxisSettings
+        sph(8).XLim = [-3 3];
+    end
+            %% Plot trial line
+    % Subplot settings
+    if stimNum == 2
+        sph(10) = subtightplot(numRows, numCols, spIndex(10:11),[0.075 0.1], [0.1 0.1], [0.1 0.01]);
     
-    % Axis labels
-    ylabel({'Y disp';'(mm)'})
-    
-    % Axis settings
-%     axis(sph(8),'equal')
-    bottomAxisSettings
-    sph(8).XLim = [-3 3];
-    
+        hold on
+        set(gcf, 'currentaxes',sph(10));
+
+        % Plot
+        plot(sph(10),plotData.xDispLinePlot{stimNum}',plotData.yDispLinePlot{stimNum}','Color',currColor)
+
+        % Axis labels
+        ylabel({'Y disp';'(mm)'})
+
+        % Axis settings
+    %     axis(sph(10),'equal')
+        bottomAxisSettings
+        sph(10).XLim = [-3 3];
+    end
     
     %% Plot mean X vs mean Y displacement
     % Subplot settings
     if stimNum == 1
-        sph(9) = subtightplot(numRows, numCols, spIndex(11:14),[0.075 0.15], [0.1 0.1], [0.15 0.15]);
+        sph(9) = subtightplot(numRows, numCols, spIndex(12:14),[0.075 0.15], [0.1 0.1], [0.15 0.15]);
     end
     hold on
     set(gcf, 'currentaxes',sph(9));
@@ -291,6 +329,7 @@ for stimNum = 1:plotData.numUniqueStim
     bottomAxisSettings
     sph(9).XLim = [-3 3];
     
+
     %% Legend and title
     % Legend
     if sameFig == 'y'

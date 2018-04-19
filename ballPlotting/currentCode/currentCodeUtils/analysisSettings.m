@@ -13,6 +13,6 @@ speedThreshold = 3;
 threshold = 10;
 defaultNumTrials = 100; 
 prefixCodes = {'Freq','Males','a2Glued','a3Glued','ShamGlued-45','RightGlued','LeftGlued','ShamGlued-0','Diag','Cardinal'};
-valueSet = [70; ones(length(prefixCodes)-1,1)*defaultNumTrials];
+valueSet = [70; 100; 100; 440; ones(6,1)*defaultNumTrials];
 prefixCodeTrialNums = containers.Map(prefixCodes,valueSet);
 clear prefixCodes valueSet
