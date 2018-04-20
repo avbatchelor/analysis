@@ -24,7 +24,7 @@ for fly = 1:size(flies,1)
     %% Determine number of trials to use
     if allTrials == 'y'
         for stimNum = unique(groupedData.stimNum)
-            fastTrialsPerStim(stimNum) = sum(groupedData.trialSpeed > threshold & groupedData.stimNum == stimNum);
+            fastTrialsPerStim(stimNum) = sum(groupedData.trialSpeed > speedThreshold & groupedData.stimNum == stimNum);
         end     
         plotData.numTrialsPerFly = min(fastTrialsPerStim);
     else
@@ -44,7 +44,7 @@ for fly = 1:size(flies,1)
         end
 
         % Select first so many trials above threshold
-        allFastTrials = find(groupedData.trialSpeed > threshold & groupedData.stimNum == stimIdx);
+        allFastTrials = find(groupedData.trialSpeed > speedThreshold & groupedData.stimNum == stimIdx);
         selectedTrials = allFastTrials(1:plotData.numTrialsPerFly);
         
         % Make displacement matrix which has dimensions: fly x stim x trials x time x axis
