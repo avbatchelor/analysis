@@ -1,4 +1,4 @@
-function plotData = multiFlyAnalysis(prefixCode,allTrials)
+function plotData = multiFlyAnalysis(prefixCode,allTrials,speedThreshold)
 
 %% Close all
 close all
@@ -31,6 +31,12 @@ for fly = 1:size(flies,1)
         plotData.numTrialsPerFly = prefixCodeTrialNums(prefixCode);
     end
     
+    % Date
+    plotData.date{fly} = lookupDate(exptInfo);
+    
+    % Average forward speed for first second 
+    fastTrialIdxs = groupedData.trialSpeed > speedThreshold;
+    plotData.firstSecondSpeed{fly} = mean(mean(groupedData.rotYVel(fastTrialIdxs,1:100)));
     
     %% Loop through stimuli
     for stimNum = unique(groupedData.stimNum)
@@ -47,6 +53,12 @@ for fly = 1:size(flies,1)
         allFastTrials = find(groupedData.trialSpeed > speedThreshold & groupedData.stimNum == stimIdx);
         selectedTrials = allFastTrials(1:plotData.numTrialsPerFly);
         
+%         % Use only the last 100 trials above threshold
+%         try 
+%             selectedTrials = selectedTrials(end-100:end);
+%         catch 
+%         end
+        
         % Make displacement matrix which has dimensions: fly x stim x trials x time x axis
         plotData.disp{fly}(stimNum,:,:,1) = groupedData.rotXDisp(selectedTrials,:);
         plotData.disp{fly}(stimNum,:,:,2) = groupedData.rotYDisp(selectedTrials,:);
@@ -57,6 +69,8 @@ for fly = 1:size(flies,1)
         
         % Time
         plotData.time = groupedData.dsTime{1};
+        
+        
         
         %% Set legend text
         if fly == 2

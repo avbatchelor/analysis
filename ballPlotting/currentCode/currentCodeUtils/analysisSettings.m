@@ -5,16 +5,21 @@ settings = ballSettings;
 % Downsample factor for downsampling velocity and displacement
 dsFactor = 400;
 
+% Downsampled sample rate
+dsRate = 100; 
+
 % For line plot, amount of time before and after stimulus to measure
 % displacement
-timeBefore = 0.3;
+timeBefore = 0.32;
+stopLatency = 0.12;
+velAvgTime = 0.5;
 
 % Bin size for forward speed histogram
 binSize = settings.mmPerCount.*settings.sensorPollFreq;
 bins = (binSize/2)+ binSize.*(-128:128);
 
 % Threshold for selecting trials based on forward speed 
-speedThreshold = 15;
+%speedThreshold = 10;
 
 % Number of trials to use if using same number across all experiments 
 defaultNumTrials = 100; 

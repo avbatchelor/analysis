@@ -38,11 +38,12 @@ switch prefixCode
 %     case 'Diag'
 %         flies = {'Diag',1,1,2;'Diag',1,3,1};
         
-    % Fig 8
+%     % Fig 8
     case 'Cardinal'
         flies = {'Cardinal',4,1,1;'Cardinal',4,2,2;'Cardinal',4,3,1;'Cardinal',4,4,2;'Cardinal',4,5,3};
     
-    
+%     case 'Cardinal'
+%         flies = {'Cardinal',4,1,1;'Cardinal',4,4,2;'Cardinal',4,5,3};
     
     
 end

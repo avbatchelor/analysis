@@ -1,4 +1,4 @@
-function singleFlyAnalysis(prefixCode,expNum,flyNum,flyExpNum)
+function singleFlyAnalysis(prefixCode,expNum,flyNum,flyExpNum,speedThreshold)
 
 
 %% Put exptInfo in a struct
@@ -202,6 +202,11 @@ for stimNum = uniqueStim
     % Trials x axis x timepoint
     plotData.xDispLinePlot{stimNum} = groupedData.rotXDisp(stimNumInd,[indBefore,plotData.pipStartInd,indAfter]);
     plotData.yDispLinePlot{stimNum} = groupedData.rotYDisp(stimNumInd,[indBefore,plotData.pipStartInd,indAfter]);
+    
+    %% Data for scatter plot
+    plotData.preStimSpeed{stimNum} = mean(groupedData.rotYVel(stimNumInd,plotData.pipStartInd - (velAvgTime*dsRate):plotData.pipStartInd),2);
+    plotData.latDisp{stimNum} = groupedData.rotXDisp(stimNumInd,indAfter);
+    plotData.stopSpeed{stimNum} = groupedData.rotYVel(stimNumInd,plotData.pipStartInd+(stopLatency*dsRate));
     
     
     %% Figure filename

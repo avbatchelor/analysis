@@ -1,4 +1,4 @@
-function plotProcessedBallData(prefixCode,expNum,flyNum,flyExpNum,allTrials,sameFig,saveQ)
+function plotProcessedBallData(prefixCode,expNum,flyNum,flyExpNum,allTrials,sameFig,saveQ,speedThreshold)
 
 %% Put exptInfo in a struct
 exptInfo = exptInfoStruct(prefixCode,expNum,flyNum,flyExpNum);
@@ -352,6 +352,7 @@ for stimNum = 1:plotData.numUniqueStim
     plotAngleHist(beforeDisp,afterDisp,currColor,plotData,stimNum);
     
     
+    
     %% Save figures and group pdfs
     % Save figures
     if saveQ == 'y'
@@ -370,6 +371,9 @@ for stimNum = 1:plotData.numUniqueStim
 %     set(sph(:),'Nextplot','add')
 end
 
+%% Plot scatter plots
+behaviorParamsScatter(plotData)
+    
 %% Group pdfs
 if saveQ == 'y'
     figurePath = fileparts(plotData.saveFileName{1});

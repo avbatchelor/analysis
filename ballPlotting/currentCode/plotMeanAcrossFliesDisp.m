@@ -1,7 +1,7 @@
-function plotMeanAcrossFliesDisp(prefixCode,allFlies,plotSEM,freqSep,saveQ,figName,allTrials,varargin)
+function plotMeanAcrossFliesDisp(prefixCode,allFlies,plotSEM,freqSep,saveQ,figName,allTrials,speedThreshold,varargin)
 
 %% Get plot data
-plotData = multiFlyAnalysis(prefixCode,allTrials);
+plotData = multiFlyAnalysis(prefixCode,allTrials,speedThreshold);
 
 %% Average & SEM across flies
 
@@ -118,6 +118,7 @@ bottomAxisSettings;
 % Axis limits
 symAxisY(gca);
 xlim([-2.5 2.5])
+ylim([-60 60])
 
 % Labels
 xlabel('X Displacement (mm)')
