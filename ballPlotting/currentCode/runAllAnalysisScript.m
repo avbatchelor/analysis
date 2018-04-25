@@ -1,4 +1,4 @@
-toAnalyze = {'Cardinal',4,1,1;'Cardinal',4,2,2;'Cardinal',4,3,1;'Cardinal',4,4,2;'Cardinal',4,5,3};
+toAnalyze = {'Cardinal',5,1,3;'Cardinal',5,2,3};
 
 for i = 1:length(toAnalyze)
     [prefixCode,expNum,flyNum,flyExpNum] = toAnalyze{i,:};

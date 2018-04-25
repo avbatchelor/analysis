@@ -66,17 +66,17 @@ for stimNum = 1:plotData.numUniqueStim
     if max(plotData.stimulus(stimNum,:)) ~= 0
         % Subplot settings
         sph(1) = subplot (numRows, numCols, spIndex(1));
-
+        
         % Plot
-            mySimplePlot(plotData.stimTimeVector(stimNum,:),plotData.stimulus(stimNum,:))
-
-
+        mySimplePlot(plotData.stimTimeVector(stimNum,:),plotData.stimulus(stimNum,:))
+        
+        
         % Axis labels
         ylabel({'Stim';'(V)'})
-
+        
         % Axis settings
         noXAxisSettings('w');
-    
+        
     end
     %% Plot x speed vs. time
     % Subplot settings
@@ -136,7 +136,7 @@ for stimNum = 1:plotData.numUniqueStim
     end
     hold on
     set(gcf, 'currentaxes',sph(4));
-
+    
     % Plot
     mySimplePlot(sph(4),plotData.dsTime(stimNum,:),plotData.meanXDisp(stimNum,:),'Color',currColor,'Linewidth',2)
     if strcmp(allTrials,'y')
@@ -164,7 +164,7 @@ for stimNum = 1:plotData.numUniqueStim
     end
     hold on
     set(gcf, 'currentaxes',sph(5));
-
+    
     % Plot
     mySimplePlot(sph(5),plotData.dsTime(stimNum,:),plotData.meanYDisp(stimNum,:),'Color',currColor,'Linewidth',2)
     if strcmp(allTrials,'y')
@@ -191,7 +191,7 @@ for stimNum = 1:plotData.numUniqueStim
     end
     hold on
     set(gcf, 'currentaxes',sph(6));
-
+    
     % Plot
     histogramBins = bins;
     histogram(sph(6),plotData.velForHistogram,histogramBins,'EdgeColor','k','FaceColor',gray);
@@ -202,16 +202,16 @@ for stimNum = 1:plotData.numUniqueStim
     
     % Axis settings
     bottomAxisSettings
-    xlim([-10 50])
+    xlim([-10 70])
     
     %% Plot avg. trial speed
     % Subplot settings
     if stimNum == 1 || sameFig == 'n'
-        sph(7) = subtightplot(numRows, numCols, spIndex(7),[0.075 0.075], [0.1 0.1], [0.1 0.01]);
+        sph(7) = subtightplot(numRows, numCols, spIndex([7,14]),[0.075 0.075], [0.1 0.1], [0.1 0.01]);
     end
     hold on
     set(gcf, 'currentaxes',sph(7));
-
+    
     % Plot all trials in gray
     bh1 = bar(sph(7),1:plotData.numTrials,plotData.trialSpeed,'EdgeColor',darkGray,'FaceColor',darkGray);
     
@@ -246,72 +246,35 @@ for stimNum = 1:plotData.numUniqueStim
     %     end
     
     
-%     %% Plot trial line
-%     % Subplot settings
-%     if stimNum == 1 || sameFig == 'n'
-%         sph(8) = subtightplot(numRows, numCols, spIndex(8:10),[0.075 0.1], [0.1 0.1], [0.1 0.01]);
-%     end
-%     hold on
-%     set(gcf, 'currentaxes',sph(8));
-% 
-%     % Plot
-%     plot(sph(8),plotData.xDispLinePlot{stimNum}',plotData.yDispLinePlot{stimNum}','Color',currColor)
-%     
-%     % Axis labels
-%     ylabel({'Y disp';'(mm)'})
-%     
-%     % Axis settings
-% %     axis(sph(8),'equal')
-%     bottomAxisSettings
-%     sph(8).XLim = [-3 3];
-
-    %% Plot trial line
-    % Subplot settings
-    if stimNum == 1 || sameFig == 'n'
-        sph(8) = subtightplot(numRows, numCols, spIndex(8:9),[0.075 0.1], [0.1 0.1], [0.1 0.01]);
+    %     %% Plot trial line
+    %     % Subplot settings
+    %     if stimNum == 1 || sameFig == 'n'
+    %         sph(8) = subtightplot(numRows, numCols, spIndex(8:10),[0.075 0.1], [0.1 0.1], [0.1 0.01]);
+    %     end
+    %     hold on
+    %     set(gcf, 'currentaxes',sph(8));
+    %
+    %     % Plot
+    %     plot(sph(8),plotData.xDispLinePlot{stimNum}',plotData.yDispLinePlot{stimNum}','Color',currColor)
+    %
+    %     % Axis labels
+    %     ylabel({'Y disp';'(mm)'})
+    %
+    %     % Axis settings
+    % %     axis(sph(8),'equal')
+    %     bottomAxisSettings
+    %     sph(8).XLim = [-3 3];
     
-        hold on
-        set(gcf, 'currentaxes',sph(8));
-
-        % Plot
-        plot(sph(8),plotData.xDispLinePlot{stimNum}',plotData.yDispLinePlot{stimNum}','Color',currColor)
-
-        % Axis labels
-        ylabel({'Y disp';'(mm)'})
-
-        % Axis settings
-    %     axis(sph(8),'equal')
-        bottomAxisSettings
-        sph(8).XLim = [-3 3];
-    end
-            %% Plot trial line
-    % Subplot settings
-    if stimNum == 2
-        sph(10) = subtightplot(numRows, numCols, spIndex(10:11),[0.075 0.1], [0.1 0.1], [0.1 0.01]);
     
-        hold on
-        set(gcf, 'currentaxes',sph(10));
-
-        % Plot
-        plot(sph(10),plotData.xDispLinePlot{stimNum}',plotData.yDispLinePlot{stimNum}','Color',currColor)
-
-        % Axis labels
-        ylabel({'Y disp';'(mm)'})
-
-        % Axis settings
-    %     axis(sph(10),'equal')
-        bottomAxisSettings
-        sph(10).XLim = [-3 3];
-    end
     
     %% Plot mean X vs mean Y displacement
     % Subplot settings
     if stimNum == 1 || sameFig == 'n'
-        sph(9) = subtightplot(numRows, numCols, spIndex(12:14),[0.075 0.15], [0.1 0.1], [0.15 0.15]);
+        sph(9) = subtightplot(numRows, numCols, spIndex(8:13),[0.075 0.15], [0.1 0.1], [0.15 0.15]);
     end
     hold on
     set(gcf, 'currentaxes',sph(9));
-
+    
     % Plot
     plot(sph(9),plotData.meanXDisp(stimNum,:),plotData.meanYDisp(stimNum,:),'Color',currColor,'Linewidth',2)
     if strcmp(allTrials,'y')
@@ -325,17 +288,17 @@ for stimNum = 1:plotData.numUniqueStim
     ylabel({'Y disp';'(mm)'})
     
     % Axis settings
-%     axis(sph(9),'equal')
+    %     axis(sph(9),'equal')
     bottomAxisSettings
     sph(9).XLim = [-3 3];
     
-
+    
     %% Legend and title
     % Legend
     if sameFig == 'y'
         if ~strcmp(prefixCode,'Freq')
             legend(sph(9),plotData.legendText,'Location','southwest')
-        else 
+        else
             legend(sph(9),plotData.legendText,'Location','eastoutside')
         end
     else
@@ -346,13 +309,14 @@ for stimNum = 1:plotData.numUniqueStim
     % Title
     suptitle(plotData.sumTitle)
     
+    %% Plot trial line in separate figure
+    plotLineHist(plotData,currColor,stimNum)
+    
     %% Plot angle histogram in separate figure
     beforeDisp = [plotData.xDispLinePlot{stimNum}(:,1),plotData.yDispLinePlot{stimNum}(:,1)];
     afterDisp = [plotData.xDispLinePlot{stimNum}(:,3),plotData.yDispLinePlot{stimNum}(:,3)];
     plotAngleHist(beforeDisp,afterDisp,currColor,plotData,stimNum);
-    
-    
-    
+      
     %% Save figures and group pdfs
     % Save figures
     if saveQ == 'y'
@@ -361,19 +325,19 @@ for stimNum = 1:plotData.numUniqueStim
         if sameFig == 'y' && stimNum == plotData.numUniqueStim
             allFileName = strrep(plotData.saveFileName{1},'flyExpNum001_stim000_to_001.pdf','all_stim.pdf');
             export_fig(allFileName,'-pdf','-painters')
-%             export_fig(allFileName,'-pdf','-q50')
+            %             export_fig(allFileName,'-pdf','-q50')
         elseif sameFig ~= 'y'
-%             export_fig(plotData.saveFileName{stimNum},'-pdf','-q50')
+            %             export_fig(plotData.saveFileName{stimNum},'-pdf','-q50')
             export_fig(plotData.saveFileName{stimNum},'-pdf','-painters')
         end
     end
     
-%     set(sph(:),'Nextplot','add')
+    %     set(sph(:),'Nextplot','add')
 end
 
 %% Plot scatter plots
 behaviorParamsScatter(plotData)
-    
+
 %% Group pdfs
 if saveQ == 'y'
     figurePath = fileparts(plotData.saveFileName{1});

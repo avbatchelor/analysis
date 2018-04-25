@@ -16,7 +16,7 @@ velAvgTime = 0.5;
 
 % Bin size for forward speed histogram
 binSize = settings.mmPerCount.*settings.sensorPollFreq;
-bins = (binSize/2)+ binSize.*(-128:128);
+bins = (binSize/2)+ binSize.*(-10:210);
 
 % Threshold for selecting trials based on forward speed 
 %speedThreshold = 10;
