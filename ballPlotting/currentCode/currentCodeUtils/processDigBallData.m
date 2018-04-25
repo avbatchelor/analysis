@@ -15,14 +15,25 @@ else
 end
 
 %% Convert integer to signed integer 
-if strcmp(axis,'x')
+if datenum(exptInfo.dNum,'yymmdd') < datenum('180206','yymmdd')
     asDec = asDec - 127;
-else
-    if datenum(exptInfo.dNum,'yymmdd') >= datenum('180206','yymmdd')
-        asDec = asDec - 50;
-    else 
+    
+elseif (datenum('180206','yymmdd') <= datenum(exptInfo.dNum,'yymmdd')) && (datenum(exptInfo.dNum,'yymmdd') < datenum('180424','yymmdd'))
+    if strcmp(axis,'x')
         asDec = asDec - 127; 
+    elseif strcmp(axis,'y')
+        asDec = asDec - 50;
     end
+    
+elseif datenum('180424','yymmdd') <= datenum(exptInfo.dNum,'yymmdd') 
+    % The new x axis 
+    if strcmp(axis,'x')
+        asDec = asDec - 127; 
+    % The new y axis 
+    elseif strcmp(axis,'y')
+        asDec = -(asDec - 204);
+    end
+    
 end
 
 %% Convert to units of mm/s
