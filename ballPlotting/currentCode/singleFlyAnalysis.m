@@ -1,4 +1,4 @@
-function singleFlyAnalysis(prefixCode,expNum,flyNum,flyExpNum)
+function singleFlyAnalysis(prefixCode,expNum,flyNum,flyExpNum,speedThreshold)
 
 
 %% Put exptInfo in a struct
@@ -32,7 +32,7 @@ analysisSettings;
 
 %% Create save folder
 fileStem = char(regexp(pPath,'.*(?=flyExpNum)','match'));
-saveFolder = [fileStem,'Figures\'];
+saveFolder = fileStem;
 mkdir(saveFolder)
 plotData.saveFolder = saveFolder;
 
@@ -85,12 +85,31 @@ for stimNum = uniqueStim
 end
 minStimLength = min(stimLength);
 
+%% Sort trials by previous trial
+% Find stimuli with speaker at 45 deg 
+rightIdxs = find(groupedData.stimNum == 2);
+
+% Find stimuli that are 1 trial after these stimuli
+oneAfter = rightIdxs + 1; 
+
+% Find stimuli that are 2 trials after these stimuli (and not one trial
+% after)
+twoAfter = setdiff(rightIdxs + 2,oneAfter);
+
+% Find stimuli that are 3 trials after these stimuli (and not one or two
+% trials after)
+oneAndTwoAfter = union(oneAfter,twoAfter);
+threeAfter = setdiff(rightIdxs + 3, oneAndTwoAfter);
+
+stimOrder{1} = oneAfter; 
+stimOrder{2} = twoAfter; 
+stimOrder{3} = threeAfter;
+
+
 %% Loop through each stimulus
 for stimNum = uniqueStim
     
-    
     stimCount = stimCount + 1;
-    
     
     %% Find the indexes for trials belonging to this stimulus
     % Find trials belonging to that stimulus
@@ -131,6 +150,29 @@ for stimNum = uniqueStim
     plotData.stdXVel(stimNum,:)     = std(groupedData.rotXVel(stimNumInd,:));
     plotData.stdYVel(stimNum,:)     = std(groupedData.rotYVel(stimNumInd,:));
     
+    %% Find the block means  (i.e. the mean for each stimulus for every 100 trials or so) 
+    % Number of blocks = minimum number of trials for each stimulus /
+    % blockSize, rounded down to nearest integer
+    trialsPerStim = histc(groupedData.stimNum(trialsToIncludeIdxs),uniqueStim);
+    minNumTrialsAllStim = min(trialsPerStim);
+    numBlocks = floor(minNumTrialsAllStim/blockSize);
+    for i = 1:numBlocks
+        blockStart = (i-1)*blockSize + 1;
+        blockEnd = i*blockSize;
+        plotData.blockMeanXDisp(stimNum,i,:) = mean(groupedData.rotXDisp(stimNumInd(blockStart:blockEnd),:));
+        plotData.blockMeanYDisp(stimNum,i,:) = mean(groupedData.rotYDisp(stimNumInd(blockStart:blockEnd),:));
+        plotData.blockMeanXVel(stimNum,i,:) = mean(groupedData.rotXVel(stimNumInd(blockStart:blockEnd),:));
+        plotData.blockMeanYVel(stimNum,i,:) = mean(groupedData.rotYVel(stimNumInd(blockStart:blockEnd),:));
+    end
+    
+    %% Find means by stim order 
+    for i = 1:3
+        stimOrderSelection = intersect(stimNumInd,stimOrder{i});
+        plotData.stimOrderMeanXDisp(stimNum,i,:) = mean(groupedData.rotXDisp(stimOrderSelection,:));
+        plotData.stimOrderMeanYDisp(stimNum,i,:) = mean(groupedData.rotYDisp(stimOrderSelection,:));
+        plotData.stimOrderMeanXVel(stimNum,i,:) = mean(groupedData.rotXVel(stimOrderSelection,:));
+        plotData.stimOrderMeanYVel(stimNum,i,:) = mean(groupedData.rotYVel(stimOrderSelection,:));
+    end
     
     %% Data for plot stimulus
     plotData.stimTimeVector(stimNum,:) = StimStruct(stimNum).stimObj.timeVec(1,1:minStimLength);
@@ -143,9 +185,10 @@ for stimNum = uniqueStim
     
     
     %% Sample trials
-    plotData.sampleTrialsDisp{stimNum}   = [groupedData.rotXDisp(stimIndSamp,:),groupedData.rotYDisp(stimIndSamp,:)];
-    plotData.sampleTrialsVel{stimNum}    = [groupedData.rotXVel(stimIndSamp,:),groupedData.rotYVel(stimIndSamp,:)];
-    
+    plotData.sampleTrialsXDisp{stimNum} = groupedData.rotXDisp(stimIndSamp,:);
+    plotData.sampleTrialsYDisp{stimNum} = groupedData.rotYDisp(stimIndSamp,:);
+    plotData.sampleTrialsXVel{stimNum}  = groupedData.rotXVel(stimIndSamp,:);
+    plotData.sampleTrialsYVel{stimNum}  = groupedData.rotYVel(stimIndSamp,:);
     
     %% Data for plot forward speed histogram
     plotData.velForHistogram = groupedData.rotYVel(:);
@@ -159,6 +202,11 @@ for stimNum = uniqueStim
     % Trials x axis x timepoint
     plotData.xDispLinePlot{stimNum} = groupedData.rotXDisp(stimNumInd,[indBefore,plotData.pipStartInd,indAfter]);
     plotData.yDispLinePlot{stimNum} = groupedData.rotYDisp(stimNumInd,[indBefore,plotData.pipStartInd,indAfter]);
+    
+    %% Data for scatter plot
+    plotData.preStimSpeed{stimNum} = mean(groupedData.rotYVel(stimNumInd,plotData.pipStartInd - (velAvgTime*dsRate):plotData.pipStartInd),2);
+    plotData.latDisp{stimNum} = groupedData.rotXDisp(stimNumInd,indAfter);
+    plotData.stopSpeed{stimNum} = groupedData.rotYVel(stimNumInd,plotData.pipStartInd+(stopLatency*dsRate));
     
     
     %% Figure filename
