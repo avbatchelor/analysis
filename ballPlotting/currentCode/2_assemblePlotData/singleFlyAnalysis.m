@@ -105,6 +105,8 @@ stimOrder{1} = oneAfter;
 stimOrder{2} = twoAfter; 
 stimOrder{3} = threeAfter;
 
+groupedData.xSaturationWarning(trialNum)
+
 
 %% Loop through each stimulus
 for stimNum = uniqueStim
@@ -139,11 +141,16 @@ for stimNum = uniqueStim
         plotData.legendText{stimNum} = '';
     end
     
-    %% Find the mean and std of these trials
+    %% Find the mean, median and std of these trials
     plotData.meanXDisp(stimNum,:)   = mean(groupedData.rotXDisp(stimNumInd,:));
     plotData.meanYDisp(stimNum,:)   = mean(groupedData.rotYDisp(stimNumInd,:));
     plotData.meanXVel(stimNum,:)    = mean(groupedData.rotXVel(stimNumInd,:));
     plotData.meanYVel(stimNum,:)    = mean(groupedData.rotYVel(stimNumInd,:));
+    
+    plotData.medianXDisp(stimNum,:)   = median(groupedData.rotXDisp(stimNumInd,:));
+    plotData.medianYDisp(stimNum,:)   = median(groupedData.rotYDisp(stimNumInd,:));
+    plotData.medianXVel(stimNum,:)    = median(groupedData.rotXVel(stimNumInd,:));
+    plotData.medianYVel(stimNum,:)    = median(groupedData.rotYVel(stimNumInd,:));
     
     plotData.stdXDisp(stimNum,:)    = std(groupedData.rotXDisp(stimNumInd,:));
     plotData.stdYDisp(stimNum,:)    = std(groupedData.rotYDisp(stimNumInd,:));
@@ -207,7 +214,8 @@ for stimNum = uniqueStim
     plotData.preStimSpeed{stimNum} = mean(groupedData.rotYVel(stimNumInd,plotData.pipStartInd - (velAvgTime*dsRate):plotData.pipStartInd),2);
     plotData.latDisp{stimNum} = groupedData.rotXDisp(stimNumInd,indAfter);
     plotData.stopSpeed{stimNum} = groupedData.rotYVel(stimNumInd,plotData.pipStartInd+(stopLatency*dsRate));
-    
+    plotData.trialSpeedForScatter{stimNum} = plotData.trialSpeed(stimNumInd);
+    plotData.trialNumForScatter{stimNum} = groupedData.trialNum(stimNumInd);
     
     %% Figure filename
     plotData.saveFileName{stimNum} = [saveFolder,'flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'\','flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'_fig1','_stim',num2str(stimNum,'%03d'),'.pdf'];

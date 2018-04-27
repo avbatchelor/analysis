@@ -1,34 +1,37 @@
+function analysisSettings = getAnalysisSettings
+
 %% Analysis Settings
 % Load Ball Settings 
-settings = ballSettings; 
+ballSettings = ballSettings; 
 
 % Downsample factor for downsampling velocity and displacement
-dsFactor = 400;
+analysisSettings.dsFactor = 400;
+analysisSettings.dsPhaseShift = 0;
 
 % Downsampled sample rate
-dsRate = 100; 
+analysisSettings.dsRate = 100; 
 
 % For line plot, amount of time before and after stimulus to measure
 % displacement
-timeBefore = 0.32;
-stopLatency = 0.12;
-velAvgTime = 0.5;
+analysisSettings.timeBefore = 0.32;
+analysisSettings.stopLatency = 0.12;
+analysisSettings.velAvgTime = 0.5;
 
 % Bin size for forward speed histogram
-binSize = settings.mmPerCount.*settings.sensorPollFreq;
-bins = (binSize/2)+ binSize.*(-10:210);
+binSize = ballSettings.mmPerCount.*ballSettings.sensorPollFreq;
+analysisSettings.bins = (binSize/2)+ binSize.*(-10:210);
 
 % Threshold for selecting trials based on forward speed 
 %speedThreshold = 10;
 
 % Number of trials to use if using same number across all experiments 
-defaultNumTrials = 100; 
+analysisSettings.defaultNumTrials = 100; 
 
 % Number of trials to use for each prefix code (if not using all trials)
 prefixCodes = {'Freq','Males','a2Glued','a3Glued','ShamGlued-45','RightGlued','LeftGlued','ShamGlued-0','Diag','Cardinal'};
 valueSet = [70; 100; 100; 440; ones(6,1)*defaultNumTrials];
-prefixCodeTrialNums = containers.Map(prefixCodes,valueSet);
+analysisSettings.prefixCodeTrialNums = containers.Map(prefixCodes,valueSet);
 clear prefixCodes valueSet
 
 % Size of blocks for looking at adapation
-blockSize = 50;
+analysisSettings.blockSize = 50;

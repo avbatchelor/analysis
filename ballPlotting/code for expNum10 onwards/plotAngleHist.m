@@ -37,7 +37,7 @@ else
 end
 
 txtYPos = max(h1.Values)/2;
-txt1 = ['Median angle = ',num2str(median(beforeAngle))];
+txt1 = {['Median angle = ',num2str(median(beforeAngle))];['Mean angle = ',num2str(mean(beforeAngle))]};
 text(100,txtYPos,txt1)
 
 text(-170,txtYPos,plotData.legendText{stimCount})
@@ -57,7 +57,7 @@ else
 end
 
 txtYPos = max(h2.Values)/2;
-txt1 = ['Median angle = ',num2str(median(afterAngle))];
+txt1 = {['Median angle = ',num2str(median(afterAngle))];['Mean angle = ',num2str(mean(afterAngle))]};
 text(100,txtYPos,txt1)
 
 text(-170,txtYPos,plotData.legendText{stimCount})

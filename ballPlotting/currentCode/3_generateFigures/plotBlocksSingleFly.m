@@ -1,4 +1,4 @@
-function plotBlocksSingleFly(prefixCode,expNum,flyNum,flyExpNum,allTrials,sameFig,saveQ)
+function plotBlocksSingleFly(prefixCode,expNum,flyNum,flyExpNum,allTrials,sameFig,saveQ,speedThreshold)
 
 % Plot blocks of trials for a single fly to look for adaptation
 

@@ -53,11 +53,11 @@ for fly = 1:size(flies,1)
         allFastTrials = find(groupedData.trialSpeed > speedThreshold & groupedData.stimNum == stimIdx);
         selectedTrials = allFastTrials(1:plotData.numTrialsPerFly);
         
-%         % Use only the last 100 trials above threshold
-%         try 
-%             selectedTrials = selectedTrials(end-100:end);
-%         catch 
-%         end
+        % Use only the last 100 trials above threshold
+        try 
+            selectedTrials = selectedTrials(end-100:end);
+        catch 
+        end
         
         % Make displacement matrix which has dimensions: fly x stim x trials x time x axis
         plotData.disp{fly}(stimNum,:,:,1) = groupedData.rotXDisp(selectedTrials,:);
