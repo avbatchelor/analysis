@@ -15,7 +15,7 @@ fileName = [pPath,fileNamePreamble,'plotData.mat'];
 load(fileName);
 
 %% Load analysis settings
-analysisSettings;
+analysisSettings = getAnalysisSettings;
 
 %% Calculate number of blocks
 numBlocks = size(plotData.blockMeanXVel,2);
@@ -201,7 +201,7 @@ for stimNum = 1:plotData.numUniqueStim
     set(gcf, 'currentaxes',sph(6));
     
     % Plot
-    histogramBins = bins;
+    histogramBins = analysisSettings.bins;
     histogram(sph(6),plotData.velForHistogram,histogramBins,'EdgeColor','k','FaceColor',gray);
     
     % Axis labels

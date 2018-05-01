@@ -12,9 +12,13 @@ pPath = getProcessedDataFileName(exptInfo);
 fileName = [pPath,fileNamePreamble,'plotData.mat'];
 load(fileName);
 
-%% Load analysis settings
-analysisSettings;
+% Grouped data
+fileName = [pPath,fileNamePreamble,'groupedData.mat'];
+load(fileName);
 
+%% Load analysis settings
+analysisSettings = getAnalysisSettings;
+ 
 %% Create save folder
 % fileStem = char(regexp(pPath,'.*(?=flyExpNum)','match'));
 % saveFolder = [fileStem,'Figures\'];
@@ -193,7 +197,7 @@ for stimNum = 1:plotData.numUniqueStim
     set(gcf, 'currentaxes',sph(6));
     
     % Plot
-    histogramBins = bins;
+    histogramBins = analysisSettings.bins;
     histogram(sph(6),plotData.velForHistogram,histogramBins,'EdgeColor','k','FaceColor',gray);
     
     % Axis labels
@@ -357,7 +361,7 @@ for stimNum = 1:plotData.numUniqueStim
 end
 
 %% Plot scatter plots
-behaviorParamsScatter(plotData)
+behaviorParamsScatter(plotData,groupedData)
 
 %% Group pdfs
 if saveQ == 'y'

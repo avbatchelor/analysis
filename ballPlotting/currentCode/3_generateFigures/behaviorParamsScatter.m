@@ -1,4 +1,7 @@
-function behaviorParamsScatter(plotData)
+function behaviorParamsScatter(plotData,groupedData)
+
+% Define colors 
+darkGray = [110 110 110]./255;
 
 %% Figure settings
 
@@ -7,7 +10,7 @@ for stimNum = 1:plotData.numUniqueStim
     ymax = max(vertcat(plotData.latDisp{:}));
     
     %% Pre stim vs. stop speed
-    subplot(3,2,1)
+    subplot(4,2,1)
     plot(plotData.preStimSpeed{stimNum},plotData.stopSpeed{stimNum},'ro')
     xlabel('Pre stim speed','FontSize',20)
     ylabel({'Stop';'speed'},'FontSize',20)
@@ -16,7 +19,7 @@ for stimNum = 1:plotData.numUniqueStim
     ylim([0,max(ylim)])
     
     %% Pre stim speed vs. lateral displacement 
-    subplot(3,2,2)
+    subplot(4,2,2)
     plot(plotData.preStimSpeed{stimNum},plotData.latDisp{stimNum} ,'o')
     
     % Axis settings 
@@ -28,7 +31,7 @@ for stimNum = 1:plotData.numUniqueStim
     ylim([-ymax,ymax])
     
     %% Stop speed vs. lateral displacement 
-    subplot(3,2,3)
+    subplot(4,2,3)
     plot(plotData.stopSpeed{stimNum},plotData.latDisp{stimNum} ,'o')
     
     % Axis settings 
@@ -40,7 +43,7 @@ for stimNum = 1:plotData.numUniqueStim
     ylim([-ymax,ymax])
     
     %% Trial speed vs. lateral displacement 
-    subplot(3,2,4)
+    subplot(4,2,4)
     plot(plotData.trialSpeedForScatter{stimNum},plotData.latDisp{stimNum} ,'o')
     
     % Axis settings 
@@ -52,7 +55,7 @@ for stimNum = 1:plotData.numUniqueStim
     ylim([-ymax,ymax])
     
     %% Trial number vs. lateral displacement 
-    subplot(3,2,5)
+    subplot(4,2,5)
     plot(plotData.trialNumForScatter{stimNum},plotData.latDisp{stimNum} ,'o')
     
     % Axis settings 
@@ -64,7 +67,7 @@ for stimNum = 1:plotData.numUniqueStim
     ylim([-ymax,ymax])
     
     %% Lateral displacement histogram
-    subplot(3,2,6)
+    subplot(4,2,6)
     h = histogram(plotData.latDisp{stimNum});
     h.BinEdges = [-5.25:0.5:5.25];
     
@@ -77,6 +80,20 @@ for stimNum = 1:plotData.numUniqueStim
     txtYPos = max(h.Values)/2;
     txt1 = {['Median disp = ',num2str(median(plotData.latDisp{stimNum}))];['Mean disp = ',num2str(mean(plotData.latDisp{stimNum}))]};
     text(3,txtYPos,txt1)
+    
+    %% Trial speed vs trial num plot
+    subplot(4,2,7)
+    hold on 
+    plot(1:plotData.numTrials,plotData.trialSpeed,'.','Color',darkGray)
+    bothSaturationWarnings = and(groupedData.xSaturationWarning,groupedData.ySaturationWarning);
+    plot(groupedData.trialNum(logical(groupedData.xSaturationWarning)),plotData.trialSpeed(logical(groupedData.xSaturationWarning)),'b.')
+    plot(groupedData.trialNum(logical(groupedData.ySaturationWarning)),plotData.trialSpeed(logical(groupedData.ySaturationWarning)),'g.')
+    plot(groupedData.trialNum(bothSaturationWarnings),plotData.trialSpeed(bothSaturationWarnings),'r.')
+    
+    % Axis settings 
+    xlabel('Lat disp','FontSize',20)
+    ylabel({'Counts'},'FontSize',20)
+    bottomAxisSettings    
     
     %% Title
     if stimNum == 1    

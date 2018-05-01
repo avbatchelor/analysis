@@ -52,4 +52,4 @@ end
 pPath = getProcessedDataFileName(exptInfo);
 mkdir(pPath);
 fileName = [pPath,fileNamePreamble,'processedAndDownsampledData.mat'];
-save(fileName, 'groupedData');
+save(fileName,'groupedData');

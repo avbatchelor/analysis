@@ -28,7 +28,7 @@ flyDataFileName = [flyDataPath,flyDataPreamble,'flyData'];
 load(flyDataFileName);
 
 % Analysis settings
-analysisSettings;
+analysisSettings = getAnalysisSettings;
 
 %% Create save folder
 fileStem = char(regexp(pPath,'.*(?=flyExpNum)','match'));
@@ -38,11 +38,11 @@ plotData.saveFolder = saveFolder;
 
 %% Hardcoded paramters
 analysisSettings;
-plotData.pipStartInd = Stim.startPadDur*Stim.sampleRate/dsFactor + 1;
-plotData.pipEndInd = (Stim.startPadDur+Stim.stimDur)*Stim.sampleRate/dsFactor + 1;
+plotData.pipStartInd = Stim.startPadDur*Stim.sampleRate/analysisSettings.dsFactor + 1;
+plotData.pipEndInd = (Stim.startPadDur+Stim.stimDur)*Stim.sampleRate/analysisSettings.dsFactor + 1;
 plotData.pipStartTime = Stim.startPadDur + 1/Stim.sampleRate;
-indBefore = plotData.pipStartInd - timeBefore*Stim.sampleRate/dsFactor;
-indAfter = plotData.pipStartInd + timeBefore*Stim.sampleRate/dsFactor;
+indBefore = plotData.pipStartInd - analysisSettings.timeBefore*Stim.sampleRate/analysisSettings.dsFactor;
+indAfter = plotData.pipStartInd + analysisSettings.timeBefore*Stim.sampleRate/analysisSettings.dsFactor;
 
 %% Select trials based on speed
 trialsToInclude = speedThreshold<groupedData.trialSpeed;
@@ -105,7 +105,7 @@ stimOrder{1} = oneAfter;
 stimOrder{2} = twoAfter; 
 stimOrder{3} = threeAfter;
 
-groupedData.xSaturationWarning(trialNum)
+groupedData.xSaturationWarning(groupedData.trialNum);
 
 
 %% Loop through each stimulus
@@ -159,13 +159,13 @@ for stimNum = uniqueStim
     
     %% Find the block means  (i.e. the mean for each stimulus for every 100 trials or so) 
     % Number of blocks = minimum number of trials for each stimulus /
-    % blockSize, rounded down to nearest integer
+    % analysisSettings.blockSize, rounded down to nearest integer
     trialsPerStim = histc(groupedData.stimNum(trialsToIncludeIdxs),uniqueStim);
     minNumTrialsAllStim = min(trialsPerStim);
-    numBlocks = floor(minNumTrialsAllStim/blockSize);
+    numBlocks = floor(minNumTrialsAllStim/analysisSettings.blockSize);
     for i = 1:numBlocks
-        blockStart = (i-1)*blockSize + 1;
-        blockEnd = i*blockSize;
+        blockStart = (i-1)*analysisSettings.blockSize + 1;
+        blockEnd = i*analysisSettings.blockSize;
         plotData.blockMeanXDisp(stimNum,i,:) = mean(groupedData.rotXDisp(stimNumInd(blockStart:blockEnd),:));
         plotData.blockMeanYDisp(stimNum,i,:) = mean(groupedData.rotYDisp(stimNumInd(blockStart:blockEnd),:));
         plotData.blockMeanXVel(stimNum,i,:) = mean(groupedData.rotXVel(stimNumInd(blockStart:blockEnd),:));
@@ -211,9 +211,9 @@ for stimNum = uniqueStim
     plotData.yDispLinePlot{stimNum} = groupedData.rotYDisp(stimNumInd,[indBefore,plotData.pipStartInd,indAfter]);
     
     %% Data for scatter plot
-    plotData.preStimSpeed{stimNum} = mean(groupedData.rotYVel(stimNumInd,plotData.pipStartInd - (velAvgTime*dsRate):plotData.pipStartInd),2);
+    plotData.preStimSpeed{stimNum} = mean(groupedData.rotYVel(stimNumInd,plotData.pipStartInd - (analysisSettings.velAvgTime*analysisSettings.dsRate):plotData.pipStartInd),2);
     plotData.latDisp{stimNum} = groupedData.rotXDisp(stimNumInd,indAfter);
-    plotData.stopSpeed{stimNum} = groupedData.rotYVel(stimNumInd,plotData.pipStartInd+(stopLatency*dsRate));
+    plotData.stopSpeed{stimNum} = groupedData.rotYVel(stimNumInd,plotData.pipStartInd+(analysisSettings.stopLatency*analysisSettings.dsRate));
     plotData.trialSpeedForScatter{stimNum} = plotData.trialSpeed(stimNumInd);
     plotData.trialNumForScatter{stimNum} = groupedData.trialNum(stimNumInd);
     
