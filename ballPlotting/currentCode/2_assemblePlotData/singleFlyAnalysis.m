@@ -34,6 +34,7 @@ analysisSettings = getAnalysisSettings;
 fileStem = char(regexp(pPath,'.*(?=flyExpNum)','match'));
 saveFolder = fileStem;
 mkdir(saveFolder)
+mkdir([saveFolder,'basic\'])
 plotData.saveFolder = saveFolder;
 
 %% Hardcoded paramters
@@ -218,7 +219,7 @@ for stimNum = uniqueStim
     plotData.trialNumForScatter{stimNum} = groupedData.trialNum(stimNumInd);
     
     %% Figure filename
-    plotData.saveFileName{stimNum} = [saveFolder,'flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'\','flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'_fig1','_stim',num2str(stimNum,'%03d'),'.pdf'];
+    plotData.saveFileName{stimNum} = [saveFolder,'basic\','flyExpNum',num2str(exptInfo.flyExpNum,'%03d'),'_fig1','_stim',num2str(stimNum,'%03d'),'.pdf'];
     
     
 end

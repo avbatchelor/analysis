@@ -4,7 +4,7 @@ function plotData = multiFlyAnalysis(prefixCode,allTrials,speedThreshold)
 close all
 
 %% Load analysis settings
-analysisSettings;
+analysisSettings = getAnalysisSettings;
 
 %% Fly data
 flies = getFlyExpts(prefixCode);

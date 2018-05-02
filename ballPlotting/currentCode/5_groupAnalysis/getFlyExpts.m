@@ -40,8 +40,9 @@ switch prefixCode
         
 %     % Fig 8
     case 'Cardinal'
-        flies = {'Cardinal',4,1,1;'Cardinal',4,2,2;'Cardinal',4,3,1;'Cardinal',4,4,2;'Cardinal',4,5,3};
-    
+%         flies = {'Cardinal',4,1,1;'Cardinal',4,2,2;'Cardinal',4,3,1;'Cardinal',4,4,2;'Cardinal',4,5,3};
+        flies = {'Cardinal',5,2,3;'Cardinal',5,3,3;'Cardinal',5,4,4;'Cardinal',5,5,4;'Cardinal',5,6,7};
+
 %     case 'Cardinal'
 %         flies = {'Cardinal',4,1,1;'Cardinal',4,4,2;'Cardinal',4,5,3};
     

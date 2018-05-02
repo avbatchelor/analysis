@@ -25,7 +25,7 @@ analysisSettings.bins = (binSize/2)+ binSize.*(-10:210);
 %speedThreshold = 10;
 
 % Rotation settings
-analysisSettings.rotationSpeedThreshold = 0;
+analysisSettings.rotationSpeedThreshold = 3;
 analysisSettings.blockRotation = 1;
 
 % Number of trials to use if using same number across all experiments 
