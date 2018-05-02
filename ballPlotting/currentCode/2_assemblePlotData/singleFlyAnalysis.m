@@ -126,10 +126,11 @@ for stimNum = uniqueStim
     % Randomly select 10 trials for plotting individual trials
     randInd = randperm(length(stimNumInd));
     try
-        stimIndSamp = randInd(1:10);
+        stimIndSamp = stimNumInd(randInd(1:10));
     catch
         stimIndSamp = [];
     end
+    
     % Calculate number of good trials for that stimulus
     plotData.numGoodTrials(stimNum) = length(stimNumInd);
     plotData.numAllTrials(stimNum) = length(stimSelect);

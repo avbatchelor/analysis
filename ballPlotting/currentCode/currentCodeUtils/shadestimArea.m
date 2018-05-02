@@ -1,15 +1,21 @@
-function shadestimArea(plotData,stimNum)
+function shadestimArea(plotData,stimNum,ymin,ymax,varargin)
 if max(plotData.stimulus(stimNum,:)) == 0
     return
 end
 hold on
-gray = [192 192 192]./255;
+gray = [223 223 223]./255;
 pipStarts = plotData.pipStartTime;
 pipEnds = plotData.pipEndTime(stimNum);
-Y = ylim(gca);
+
+if ~exist('ymin','var')
+    ylims = ylim(gca);  
+    ymin = ylims(1);
+    ymax = ylims(2);
+end
+
 X = [pipStarts,pipEnds];
-line([X(1) X(1)],[Y(1) Y(2)],'Color',gray);
-line([X(2) X(2)],[Y(1) Y(2)],'Color',gray);
-colormap hsv
-alpha(.1)
+
+h = area([X(1) X(2)],[ymax,ymax],ymin,'Linestyle','None');
+h.FaceColor = gray;
+
 end

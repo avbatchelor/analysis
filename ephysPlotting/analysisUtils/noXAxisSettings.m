@@ -5,6 +5,7 @@ if exist('color','var')
         set(gca,'XColor','white')
     end
 end
+
 set(gca,'Box','off','TickDir','out','XTickLabel','','xtick',[])
 axis tight
 set(get(gca,'YLabel'),'Rotation',0,'HorizontalAlignment','right')
