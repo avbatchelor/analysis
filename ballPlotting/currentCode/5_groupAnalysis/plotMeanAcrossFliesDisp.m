@@ -22,6 +22,8 @@ else
     colors = distinguishable_colors(plotData.numStim,'w');
 end
 
+[colorSet1,colorSet2] = colorSetImport;
+
 
 %% Open figure
 goFigure;
@@ -29,7 +31,7 @@ goFigure;
 % Plot each fly separately
 if allFlies == 'y'
     for stim = 1:plotData.numStim
-        plot(squeeze(avgAcrossTrials(:,stim,:,1))',squeeze(avgAcrossTrials(:,stim,:,2))','--','Color',colors(stim,:))
+        plot(squeeze(avgAcrossTrials(:,stim,:,1))',squeeze(avgAcrossTrials(:,stim,:,2))','Color',colorSet1(stim,:),'Linewidth',0.5)
         hold on
     end
 end
@@ -61,10 +63,10 @@ for stim = 1:plotData.numStim
             else
                 colorCount = colorCount + 1;
             end
-            hfl(stim) = plot(mean(squeeze(avgAcrossTrials(:,stim,:,1)),1)',mean(squeeze(avgAcrossTrials(:,stim,:,2)),1)','Color',colors(colorCount,:),'Linewidth',3);
+            hfl(stim) = plot(mean(squeeze(avgAcrossTrials(:,stim,:,1)),1)',mean(squeeze(avgAcrossTrials(:,stim,:,2)),1)','Color',colorSet2(colorCount,:),'Linewidth',3);
         end
     else
-        hfl(stim) = plot(mean(squeeze(avgAcrossTrials(:,stim,:,1)),1)',mean(squeeze(avgAcrossTrials(:,stim,:,2)),1)','Color',colors(stim,:),'Linewidth',3);
+        hfl(stim) = plot(mean(squeeze(avgAcrossTrials(:,stim,:,1)),1)',mean(squeeze(avgAcrossTrials(:,stim,:,2)),1)','Color',colorSet2(stim,:),'Linewidth',3);
     end
     hold on
     
@@ -117,7 +119,7 @@ bottomAxisSettings;
 
 % Axis limits
 symAxisY(gca);
-xlim([-2.5 2.5])
+xlim([-3 3])
 ylim([-60 60])
 
 % Labels

@@ -1,10 +1,9 @@
-function plotMeanAcrossFliesVel(prefixCode,allFlies,plotSEM,freqSep,saveQ,figName,allTrials,dim,varargin)
+function plotMeanAcrossFliesVel(prefixCode,allFlies,plotSEM,freqSep,saveQ,figName,allTrials,speedThreshold,varargin)
 
 %% Get plot data
-plotData = multiFlyAnalysis(prefixCode,allTrials);
+plotData = multiFlyAnalysis(prefixCode,allTrials,speedThreshold);
 
 %% Average & SEM across flies
-
 avgAcrossTrials = cellfun(@(x) squeeze(mean(x,2)),plotData.vel,'UniformOutput',false);
 for i = 1:plotData.numFlies
    temp(i,:,:,:) = avgAcrossTrials{i}; 
@@ -13,6 +12,8 @@ avgAcrossTrials = temp;
 
 semAcrossFlies = squeeze(std(avgAcrossTrials,1) / sqrt(plotData.numFlies));
 
+%% Get single fly data 
+[~,plotDataSingleFly] = getExampleFlies('ShamGlued-45');
 
 %% Color settings
 if freqSep == 'y'
@@ -22,74 +23,97 @@ else
     colors = distinguishable_colors(plotData.numStim,'w');
 end
 
+[colorSet1,colorSet2] = colorSetImport;
 
 %% Open figure
 goFigure;
 
-% Plot each fly separately
-if allFlies == 'y'
-    for stim = 1:plotData.numStim
-        plot(plotData.time,squeeze(avgAcrossTrials(:,stim,:,dim))','--','Color',colors(stim,:))
-        hold on
-    end
-end
+% Make subplots tight
+subplot = @(m,n,p) subtightplot (m, n, p, [0.025 0.025], [0.15 0.01], [0.15 0.01]);
 
-% Plot mean across flies
-pipIdx = [];
-sineIdx = [];
-for stim = 1:plotData.numStim
-    % Plotting different stimuli in freq experiment in different plots
-    if freqSep == 'y'
-        if strcmp(StimStruct(stim).stimObj.class,'SineWave')
-            goFigure(1)
-            sineIdx = [sineIdx,stim];
-        elseif strcmp(StimStruct(stim).stimObj.class,'PipStimulus')
-            goFigure(2)
-            pipIdx = [pipIdx,stim];
-        elseif strcmp(StimStruct(stim).stimObj.class,'No Stimulus')
-            sineIdx = [sineIdx,stim];
-            pipIdx = [pipIdx,stim];
-        end
-        if strcmp(StimStruct(stim).stimObj.class,'noStimulus')
-            figure(1)
-            hfl(stim) = plot(plotData.time,mean(squeeze(avgAcrossTrials(:,stim,:,dim)),1)','Color','k','Linewidth',5);
-            figure(2)
-            hfl(stim) = plot(plotData.time,mean(squeeze(avgAcrossTrials(:,stim,:,dim)),1)','Color','k','Linewidth',5);
-        else
-            if StimStruct(stim).stimObj.carrierFreqHz == 100
-                colorCount = 1;
-            else
-                colorCount = colorCount + 1;
-            end
-            hfl(stim) = plot(plotData.time,mean(squeeze(avgAcrossTrials(:,stim,:,dim)),1)','Color',colors(colorCount,:),'Linewidth',3);
-        end
-    else
-        hfl(stim) = plot(plotData.time,mean(squeeze(avgAcrossTrials(:,stim,:,dim)),1)','Color',colors(stim,:),'Linewidth',3);
-    end
-    hold on
+%% Load single fly data 
+
+subplot(3,1,1)
+stimMax = max(abs(plotDataSingleFly.stimulus(1,:)));
+plot(plotDataSingleFly.stimTimeVector(1,:),plotDataSingleFly.stimulus(1,:)./stimMax,'k')
+ylim([-1,1])
+noXAxisSettings('w'); 
+ylabel({'Stimulus';'a.u.'},'HorizontalAlignment','right','VerticalAlignment','middle');
+
+
+for dim = 1:2
+    subplot(3,1,dim+1)
+    hold on 
     
-    % Plot SEM
-    if plotSEM == 'y'
-        x = mean(squeeze(avgAcrossTrials(:,stim,:,1)),1)';
-        y = mean(squeeze(avgAcrossTrials(:,stim,:,2)),1)';
-        error = semAcrossFlies(stimNum,:,1);
-        hold on
-        eh{stim} = plotError(x,y,error);
-        uistack(eh{stim},'bottom')
+    % Plot shaded area 
+    shadestimArea(plotDataSingleFly,1,-50,50);
+
+    % Plot each fly separately
+    if allFlies == 'y'
+        for stim = 1:plotData.numStim
+            plot(plotData.time,squeeze(avgAcrossTrials(:,stim,:,dim))','Color',colorSet1(stim,:))
+            hold on
+        end
     end
+    
+
+    % Plot mean across flies
+    pipIdx = [];
+    sineIdx = [];
+    for stim = 1:plotData.numStim
+        % Plotting different stimuli in freq experiment in different plots
+        if freqSep == 'y'
+            if strcmp(StimStruct(stim).stimObj.class,'SineWave')
+                goFigure(1)
+                sineIdx = [sineIdx,stim];
+            elseif strcmp(StimStruct(stim).stimObj.class,'PipStimulus')
+                goFigure(2)
+                pipIdx = [pipIdx,stim];
+            elseif strcmp(StimStruct(stim).stimObj.class,'No Stimulus')
+                sineIdx = [sineIdx,stim];
+                pipIdx = [pipIdx,stim];
+            end
+            if strcmp(StimStruct(stim).stimObj.class,'noStimulus')
+                figure(1)
+                hfl(stim) = plot(plotData.time,mean(squeeze(avgAcrossTrials(:,stim,:,dim)),1)','Color','k','Linewidth',5);
+                figure(2)
+                hfl(stim) = plot(plotData.time,mean(squeeze(avgAcrossTrials(:,stim,:,dim)),1)','Color','k','Linewidth',5);
+            else
+                if StimStruct(stim).stimObj.carrierFreqHz == 100
+                    colorCount = 1;
+                else
+                    colorCount = colorCount + 1;
+                end
+                hfl(stim) = plot(plotData.time,mean(squeeze(avgAcrossTrials(:,stim,:,dim)),1)','Color',colorSet2(colorCount,:),'Linewidth',3);
+            end
+        else
+            hfl(stim) = plot(plotData.time,mean(squeeze(avgAcrossTrials(:,stim,:,dim)),1)','Color',colorSet2(stim,:),'Linewidth',3);
+        end
+        hold on
+
+        % Plot SEM
+        if plotSEM == 'y'
+            x = mean(squeeze(avgAcrossTrials(:,stim,:,1)),1)';
+            y = mean(squeeze(avgAcrossTrials(:,stim,:,2)),1)';
+            error = semAcrossFlies(stimNum,:,1);
+            hold on
+            eh{stim} = plotError(x,y,error);
+            uistack(eh{stim},'bottom')
+        end
+    end
+
+
+    %% Apply settings to all figures
+    if freqSep == 'y'
+        figure(1);
+        applyPlotSettings(prefixCode,{plotData.legendText{sineIdx}},plotData.numFlies,hfl(sineIdx),plotData.numTrialsPerFly,dim)
+        figure(2);
+        applyPlotSettings(prefixCode,{plotData.legendText{pipIdx}},plotData.numFlies,hfl(pipIdx),plotData.numTrialsPerFly,dim)
+    else
+        applyPlotSettings(prefixCode,plotData.legendText,plotData.numFlies,hfl,plotData.numTrialsPerFly,dim)
+    end
+
 end
-
-
-%% Apply settings to all figures
-if freqSep == 'y'
-    figure(1);
-    applyPlotSettings(prefixCode,{plotData.legendText{sineIdx}},plotData.numFlies,hfl(sineIdx),plotData.numTrialsPerFly,dim)
-    figure(2);
-    applyPlotSettings(prefixCode,{plotData.legendText{pipIdx}},plotData.numFlies,hfl(pipIdx),plotData.numTrialsPerFly,dim)
-else
-    applyPlotSettings(prefixCode,plotData.legendText,plotData.numFlies,hfl,plotData.numTrialsPerFly,dim)
-end
-
 
 %% Save figures
 % Make figure name
@@ -108,6 +132,10 @@ if saveQ == 'y'
     end
 end
 
+%% Make box plot 
+
+
+
 end
 
 
@@ -118,9 +146,15 @@ bottomAxisSettings;
 % Axis limits
 symAxisY(gca);
 if dim == 1
-    ylim([-7 7])
+    noXAxisSettings('w');
+    ylim([-10 10])
+    set(gca,'Layer','top')
+    set(gca,'XColor','white')
 else 
+    bottomAxisSettings;
     ylim([0 40])
+    xlabel('Time (s)')
+    set(gca,'Layer','top')
 end
 
 % Labels
@@ -129,13 +163,14 @@ if dim == 1
 else 
     direction = 'Forward';
 end
-xlabel('Times (s)')
-ylabel([direction,'Velocity (mm/s)'],'rotation',90,'VerticalAlignment','bottom','HorizontalAlignment','center')
-title({prefixCode;['Number of flies = ',num2str(numFlies),', Number of trials per fly = ',num2str(numTrialsPerFly)]})
+ylabel({direction;'Velocity';'(mm/s)'},'HorizontalAlignment','right','VerticalAlignment','middle')
 
-% Legend
-legend(hfl,legendText,'Location','eastoutside')
-legend('boxoff')
+% ylabel([direction,'Velocity (mm/s)'],'rotation',90,'VerticalAlignment','bottom','HorizontalAlignment','right')
+% title({prefixCode;['Number of flies = ',num2str(numFlies),', Number of trials per fly = ',num2str(numTrialsPerFly)]})
+% 
+% % Legend
+% legend(hfl,legendText,'Location','eastoutside')
+% legend('boxoff')
 
 % Fontsize 
 set(findall(gcf,'-property','FontSize'),'FontSize',30)

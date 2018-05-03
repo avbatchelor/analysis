@@ -57,20 +57,20 @@ for i = 1:plotData.numUniqueStim
             hold on
             shadestimArea(plotData,i,-50,50);
             
-            plot([plotData.dsTime(1,1),plotData.dsTime(1,end)],[0,0],'k')
+            plot([plotData.dsTime(1,1),plotData.dsTime(1,end)],[0,0],'k','Linewidth',1.5)
             
             if k == 1
-                plot(plotData.dsTime(1,:),plotData.sampleTrialsXVel{i}(j,:),'Color',colorSet(colCount,:))
+                plot(plotData.dsTime(1,:),plotData.sampleTrialsXVel{i}(j,:),'Color',colorSet(colCount,:),'Linewidth',1.5)
                 if j == 1
-                    title([angleStr,', Lateral velocity'])
+                    title({angleStr;'Lateral velocity'})
                 end
                 if i == 1
                     ylabel(['Sample trial ',num2str(j)])
                 end
             else
-                plot(plotData.dsTime(1,:),plotData.sampleTrialsYVel{i}(j,:),'k')
+                plot(plotData.dsTime(1,:),plotData.sampleTrialsYVel{i}(j,:),'k','Linewidth',1.5)
                 if j == 1
-                    title([angleStr,', Forward velocity'])
+                    title({angleStr;'Forward velocity'})
                 end
             end
             
@@ -89,6 +89,8 @@ for i = 1:plotData.numUniqueStim
         end
     end
 end
+
+set(findall(gcf,'-property','FontSize'),'FontSize',16)
 
 folder = 'D:\ManuscriptData\summaryFigures\';
 [~, ~, fileNamePreamble, ~] = getDataFileNameBall(exptInfo);
