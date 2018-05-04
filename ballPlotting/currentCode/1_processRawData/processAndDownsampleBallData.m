@@ -1,8 +1,7 @@
 function processAndDownsampleBallData(prefixCode,expNum,flyNum,flyExpNum)
 
 %% Load analysis settings  
-dsFactor = 400;
-dsPhaseShift = 0;
+analysisSettings = getAnalysisSettings;
 
 %% Make exptInfo struct 
 exptInfo = exptInfoStruct(prefixCode,expNum,flyNum,flyExpNum);
@@ -28,7 +27,6 @@ for i = 1:length(dirCont)
     
     %% Get trial and stim num
     trialNum = trialMeta.trialNum;
-    stimNum = trialMeta.stimNum;
     
     %% Process data 
     [procData.vel(:,1),procData.disp(:,1),groupedData.xSaturationWarning(trialNum)] = processDigBallData(data.xVelDig,Stim,'x',exptInfo);
@@ -36,40 +34,22 @@ for i = 1:length(dirCont)
     
     %% Downsample velocity, displacement & time data 
     % Velocity
-    groupedData.xVel{trialNum} = downsample(procData.vel(:,1),dsFactor,dsPhaseShift);
-    groupedData.yVel{trialNum} = downsample(procData.vel(:,2),dsFactor,dsPhaseShift);
+    groupedData.xVel{trialNum} = downsample(procData.vel(:,1),analysisSettings.dsFactor,analysisSettings.dsPhaseShift);
+    groupedData.yVel{trialNum} = downsample(procData.vel(:,2),analysisSettings.dsFactor,analysisSettings.dsPhaseShift);
     
     % Displacement
-    groupedData.xDisp{trialNum} = downsample(procData.disp(:,1),dsFactor,dsPhaseShift);
-    groupedData.yDisp{trialNum} = downsample(procData.disp(:,2),dsFactor,dsPhaseShift);
+    groupedData.xDisp{trialNum} = downsample(procData.disp(:,1),analysisSettings.dsFactor,analysisSettings.dsPhaseShift);
+    groupedData.yDisp{trialNum} = downsample(procData.disp(:,2),analysisSettings.dsFactor,analysisSettings.dsPhaseShift);
     
     % Time
-    groupedData.dsTime{trialMeta.stimNum} = downsample(Stim.timeVec,dsFactor,dsPhaseShift);
+    groupedData.dsTime{trialMeta.stimNum} = downsample(Stim.timeVec,analysisSettings.dsFactor,analysisSettings.dsPhaseShift);
 
-    %% Make stim struct 
-    if any(groupedData.stimNum == stimNum)
-    else
-        StimStruct(stimNum).stimObj = Stim;
-    end
-
-    %% Meta data 
-    groupedData.stimNum(trialNum) = trialMeta.stimNum;
-    groupedData.trialNum(trialNum) = trialMeta.trialNum;  
-    groupedData.pipStartInd = Stim.startPadDur*Stim.sampleRate/dsFactor + 1;    
-    
-    %% Calculate mean resultant speed for each trial
-    groupedData.trialSpeed(trialNum) = mean(sqrt((groupedData.xVel{trialNum}.^2)+(groupedData.yVel{trialNum}.^2)));
-    
     %% Clear trial data 
     clear procData temp
 end
 
-%% Rotate data 
-groupedData = rotateAllTrials(groupedData);
-
 %% Save data
 pPath = getProcessedDataFileName(exptInfo);
 mkdir(pPath);
-fileName = [pPath,fileNamePreamble,'groupedData.mat'];
-save(fileName, 'groupedData','StimStruct');
-
+fileName = [pPath,fileNamePreamble,'processedAndDownsampledData.mat'];
+save(fileName,'groupedData');
