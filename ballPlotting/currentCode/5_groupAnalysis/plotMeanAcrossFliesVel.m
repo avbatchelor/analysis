@@ -39,6 +39,7 @@ subplot(3,1,1)
 stimMax = max(abs(plotDataSingleFly.stimulus(1,:)));
 plot(plotDataSingleFly.stimTimeVector(1,:),plotDataSingleFly.stimulus(1,:)./stimMax,'k')
 ylim([-1,1])
+set(gca,'yTick',[-0.5, 0.5])
 noXAxisSettings('w'); 
 ylabel({'Stimulus';'a.u.'},'HorizontalAlignment','right','VerticalAlignment','middle');
 
@@ -156,8 +157,57 @@ figPos(3) = figPos(3)/2;
 set(gcf,'Position',figPos)
 xlim([0 4])
 
-%% Save figure
+% Save figure
 filename = [figPath,'\',prefixCode,'_','meanLatVelQuant','.pdf'];
+export_fig(filename,'-pdf','-painters')
+
+%% Make histograms 
+goFigure;
+numRows = plotData.numStim;
+numCols = plotData.numFlies;
+spIndex = reshape(1:numCols*numRows, numCols, numRows).';
+
+subplot = @(m,n,p) subtightplot (m, n, p, [0.01 0.01], [0.2 0.05], [0.1 0.01]);
+
+bins = -41:2:41;
+
+plotCount = 0;
+for fly = 1:plotData.numFlies
+    for stim = 1:plotData.numStim
+        plotCount = plotCount + 1;
+        subplot(numRows,numCols,spIndex(plotCount))
+        % PlotData.vel dims = stim x trials x time x dim 
+        histVelData = squeeze(plotData.vel{fly}(stim,:,analysisSettings.velInd,1));
+        h = histogram(histVelData,bins,'FaceColor',colorSet1(stim,:));
+        h.Normalization = 'probability';
+        % Plot settings 
+        if stim == 1
+            title(['Fly ',num2str(fly)])
+        end
+        if fly == 1 && stim ~= plotData.numStim
+            noXAxisSettings('w');
+            set(gca,'XColor','k')
+        elseif fly ~= 1 && stim == plotData.numStim
+            noYAxisSettings('w');
+        elseif fly == 1 && stim == plotData.numStim
+            bottomAxisSettings;
+        else
+            noAxisSettings('w');
+            set(gca,'XColor','k')
+        end
+        xlim([-30 30])
+        ylim([0 0.55])
+        set(gca,'xTick',[-20,0,20])
+        set(gca,'yTick',[0, 0.25])
+    end
+end
+
+suplabel('Lateral velocity (mm/s)','x')
+suplabel('Probability','y')
+set(findall(gcf,'-property','FontSize'),'FontSize',30)
+
+% Save figure
+filename = [figPath,'\',prefixCode,'_','latVelHistograms','.pdf'];
 export_fig(filename,'-pdf','-painters')
 
 end
@@ -171,12 +221,14 @@ bottomAxisSettings;
 symAxisY(gca);
 if dim == 1
     noXAxisSettings('w');
-    ylim([-10 10])
+    ylim([-11 11])
+    set(gca,'yTick',[-5, 5])
     set(gca,'Layer','top')
     set(gca,'XColor','white')
 else 
     bottomAxisSettings;
     ylim([0 40])
+    set(gca,'yTick',[0, 15, 30])
     xlabel('Time (s)')
     set(gca,'Layer','top')
 end

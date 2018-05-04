@@ -28,6 +28,8 @@ load(fileName);
 numCols = plotData.numUniqueStim*2;
 numRows = numSamples;
 spIndex = reshape(1:numCols*numRows, numCols, numRows).';
+subplot = @(m,n,p) subtightplot (m, n, p, [0.01 0.01], [0.1 0.075], [0.1 0.01]);
+
 
 %%
 
@@ -75,21 +77,28 @@ for i = 1:plotData.numUniqueStim
             end
             
             % Axis labels
-            if j == numSamples
-                xlabel('Time (s)')
+            if j == numSamples && i == 1 && k == 1               
                 bottomAxisSettings
-            else 
+            elseif j == numSamples
+                noYAxisSettings('w')
+            elseif i == 1 && k == 1
                 noXAxisSettings('w')
+                set(gca,'XColor','w')
+            else
+                noAxisSettings('w');
             end
             
             ylim([-50 50])
-
+            set(gca,'yTick',[-25 25])
+            xlim([-0.1 4.25])
+            set(gca,'xTick',[0,2,4])
             set(gca,'Layer','top')
             
         end
     end
 end
 
+suplabel('Time (s)','x')
 set(findall(gcf,'-property','FontSize'),'FontSize',16)
 
 folder = 'D:\ManuscriptData\summaryFigures\';
