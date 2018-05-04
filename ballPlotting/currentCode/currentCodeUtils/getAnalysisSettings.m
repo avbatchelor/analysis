@@ -16,6 +16,8 @@ analysisSettings.dsRate = 100;
 analysisSettings.timeBefore = 0.32;
 analysisSettings.stopLatency = 0.12;
 analysisSettings.velAvgTime = 0.5;
+% When to measure velocity
+analysisSettings.velInd = 232;
 
 % Bin size for forward speed histogram
 binSize = settings.mmPerCount.*settings.sensorPollFreq;

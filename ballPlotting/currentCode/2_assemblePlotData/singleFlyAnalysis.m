@@ -38,9 +38,7 @@ mkdir([saveFolder,'basic\'])
 plotData.saveFolder = saveFolder;
 
 %% Hardcoded paramters
-analysisSettings;
 plotData.pipStartInd = Stim.startPadDur*Stim.sampleRate/analysisSettings.dsFactor + 1;
-plotData.pipEndInd = (Stim.startPadDur+Stim.stimDur)*Stim.sampleRate/analysisSettings.dsFactor + 1;
 plotData.pipStartTime = Stim.startPadDur + 1/Stim.sampleRate;
 indBefore = plotData.pipStartInd - analysisSettings.timeBefore*Stim.sampleRate/analysisSettings.dsFactor;
 indAfter = plotData.pipStartInd + analysisSettings.timeBefore*Stim.sampleRate/analysisSettings.dsFactor;
@@ -113,6 +111,9 @@ groupedData.xSaturationWarning(groupedData.trialNum);
 for stimNum = uniqueStim
     
     stimCount = stimCount + 1;
+    
+    %% Find end index 
+    plotData.pipEndInd(stimNum) = (StimStruct(stimNum).stimObj.startPadDur+StimStruct(stimNum).stimObj.stimDur)*StimStruct(stimNum).stimObj.sampleRate/analysisSettings.dsFactor + 1;
     
     %% Find the indexes for trials belonging to this stimulus
     % Find trials belonging to that stimulus

@@ -5,6 +5,8 @@ plotData = multiFlyAnalysis(prefixCode,allTrials,speedThreshold);
 
 %% Average & SEM across flies
 avgAcrossTrials = cellfun(@(x) squeeze(mean(x,2)),plotData.vel,'UniformOutput',false);
+
+% Convert to matrix 
 for i = 1:plotData.numFlies
    temp(i,:,:,:) = avgAcrossTrials{i}; 
 end
@@ -133,8 +135,30 @@ if saveQ == 'y'
 end
 
 %% Make box plot 
+figure;
+hold on 
+analysisSettings = getAnalysisSettings;
 
+% Plot individual flies 
+for stim = 1:plotData.numStim
+    % Third dimension is time
+    plot(stim,squeeze(avgAcrossTrials(:,stim,analysisSettings.velInd,1)),'o','MarkerEdgeColor',colorSet1(stim,:),'MarkerFaceColor',colorSet1(stim,:));
+    % Plot mean 
+    plot([stim-0.2,stim+0.2],repmat(mean(squeeze(avgAcrossTrials(:,stim,analysisSettings.velInd,1)),1),[1,2]),'k');
+    
+    errorbar(stim,mean(squeeze(avgAcrossTrials(:,stim,analysisSettings.velInd,1)),1),semAcrossFlies(stim,analysisSettings.velInd,1),'k')
+end
 
+noXAxisSettings('w')
+ylabel({'Lateral';'velocity';'mm/s'})
+figPos = get(gcf,'Position');
+figPos(3) = figPos(3)/2;
+set(gcf,'Position',figPos)
+xlim([0 4])
+
+%% Save figure
+filename = [figPath,'\',prefixCode,'_','meanLatVelQuant','.pdf'];
+export_fig(filename,'-pdf','-painters')
 
 end
 
