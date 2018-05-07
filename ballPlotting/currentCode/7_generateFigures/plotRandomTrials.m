@@ -25,8 +25,8 @@ fileName = [pPath,fileNamePreamble,'plotData.mat'];
 load(fileName);
 
 %% Subplot settings
-numCols = plotData.numUniqueStim*2;
-numRows = numSamples;
+numCols = numSamples;
+numRows = 4;
 spIndex = reshape(1:numCols*numRows, numCols, numRows).';
 subplot = @(m,n,p) subtightplot (m, n, p, [0.01 0.01], [0.1 0.075], [0.1 0.01]);
 
@@ -41,55 +41,66 @@ goFigure;
 plotCount = 0;
 colCount = 0;
 % Loop through stimuli
-for i = 1:plotData.numUniqueStim
+% Only plot the first two stimuli and not the noStimulus 
+for stimNum = 1:2%plotData.numUniqueStim
     % Stimulus angle
-    angleStr = char(regexp(plotData.legendText{i},'Angle = \d+','match'));
+    angleStr = char(regexp(plotData.legendText{stimNum},'Angle = \d+','match'));
     
     
     
     % Plot lateral and forward velocity
-    for k = 1:2
+    for dim = 1:2
         colCount = colCount + 1;
         
         % Loop through samples
-        for j = 1:numSamples
+        for sampleNum = 1:numSamples
             
             plotCount = plotCount + 1;
-            subplot(numRows,numCols,spIndex(plotCount))
+            subplot(numRows,numCols,plotCount)
             hold on
-            shadestimArea(plotData,i,-50,50);
+            shadestimArea(plotData,stimNum,-50,50);
             
-            plot([plotData.dsTime(1,1),plotData.dsTime(1,end)],[0,0],'k','Linewidth',1.5)
+            plot([-10,plotData.dsTime(1,end)],[0,0],'k','Linewidth',0.5)
             
-            if k == 1
-                plot(plotData.dsTime(1,:),plotData.sampleTrialsXVel{i}(j,:),'Color',colorSet(colCount,:),'Linewidth',1.5)
-                if j == 1
-                    title({angleStr;'Lateral velocity'})
-                end
-                if i == 1
-                    ylabel(['Sample trial ',num2str(j)])
+            if dim == 1
+                plot(plotData.dsTime(1,:),plotData.sampleTrialsXVel{stimNum}(sampleNum,:),'Color',colorSet(colCount,:),'Linewidth',1.5)                
+                if sampleNum == 1
+                    ylabel({'Lateral';'velocity';'(mm/s)'},'HorizontalAlignment','center')
                 end
             else
-                plot(plotData.dsTime(1,:),plotData.sampleTrialsYVel{i}(j,:),'k','Linewidth',1.5)
-                if j == 1
-                    title({angleStr;'Forward velocity'})
+                plot(plotData.dsTime(1,:),plotData.sampleTrialsYVel{stimNum}(sampleNum,:),'k','Linewidth',1.5)
+                if sampleNum == 1
+                    ylabel({'Forward';'velocity';'(mm/s)'},'HorizontalAlignment','center')
                 end
             end
             
-            % Axis labels
-            if j == numSamples && i == 1 && k == 1               
+            if stimNum == 1 && dim == 1
+                    title(['Sample trial ',num2str(sampleNum)])
+            end
+            
+
+            if sampleNum == 1 && stimNum == 2 && dim == 2               
                 bottomAxisSettings
-            elseif j == numSamples
-                noYAxisSettings('w')
-            elseif i == 1 && k == 1
+            elseif sampleNum ~= 1 && stimNum == 2 && dim == 2
+                noYAxisSettings('w') 
+            elseif sampleNum == 1 && stimNum == 1
+                noXAxisSettings('w')
+                set(gca,'XColor','w')
+            elseif sampleNum == 1 && stimNum == 2 && dim == 1   
                 noXAxisSettings('w')
                 set(gca,'XColor','w')
             else
                 noAxisSettings('w');
             end
             
-            ylim([-50 50])
-            set(gca,'yTick',[-25 25])
+            if dim == 1
+                ylim([-30 30])
+                set(gca,'yTick',[-15 15])
+            else
+                ylim([-60 60])
+                set(gca,'yTick',[-25 25])
+            end
+            
             xlim([-0.1 4.25])
             set(gca,'xTick',[0,2,4])
             set(gca,'Layer','top')
@@ -99,6 +110,7 @@ for i = 1:plotData.numUniqueStim
 end
 
 suplabel('Time (s)','x')
+% suplabel('Speed (mm/s)','y')
 set(findall(gcf,'-property','FontSize'),'FontSize',16)
 
 folder = 'D:\ManuscriptData\summaryFigures\';

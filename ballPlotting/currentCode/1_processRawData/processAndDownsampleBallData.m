@@ -28,6 +28,10 @@ for i = 1:length(dirCont)
     %% Get trial and stim num
     trialNum = trialMeta.trialNum;
     
+    if i == 28
+        error('first sat trial')
+    end    
+        
     %% Process data 
     [procData.vel(:,1),procData.disp(:,1),groupedData.xSaturationWarning(trialNum)] = processDigBallData(data.xVelDig,Stim,'x',exptInfo);
     [procData.vel(:,2),procData.disp(:,2),groupedData.ySaturationWarning(trialNum)] = processDigBallData(data.yVelDig,Stim,'y',exptInfo);

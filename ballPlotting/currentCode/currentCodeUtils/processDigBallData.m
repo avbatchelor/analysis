@@ -1,11 +1,15 @@
 function [velMmFilt,disp,saturationWarning] = processDigBallData(inputMat,stim,axis,exptInfo)
 
 %% Convert binary matrix to integer
-asDec = binaryVectorToDecimal(inputMat,'LSBFirst');
+asDecRaw = binaryVectorToDecimal(inputMat,'LSBFirst');
 
 %% Mode filter
 % removes errors that occur becuase output bits aren't set simultaneously
-asDec = colfilt(asDec, [11 1], 'sliding', @mode);
+asDec = colfilt(asDecRaw, [11 1], 'sliding', @mode);
+% Correct for mode filter problem at ends 
+if asDec(1) == 0
+    asDec(1:5) = mode(asDecRaw(1:5));
+end
 
 %% Check for saturation 
 if any(asDec == 254)  || any(asDec == 0)

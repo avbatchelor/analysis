@@ -54,19 +54,24 @@ ySatTimePts = (abs(yVel - ySatVals(1)) < 0.1) | (abs(yVel - ySatVals(2)) < 0.1);
 
 %% Get idxs of saturated trials
 % Find trials where only x is saturated 
-xSatTrials = find(sum(xSatTimePts) > 0);
 xFirstSatTrials = findFirstSampleOnlyTrials(xVel,xSatTimePts);
-xMidSatTrials = setdiff(xSatTrials,xFirstSatTrials);
+xMidSatTrials = find(sum(xSatTimePts) > 1);
+xOneSatTrials = setdiff(find(sum(xSatTimePts) == 1),xFirstSatTrials);
+xLastSatTrials = findLastSampleOnlyTrials(xVel,xSatTimePts);
 
 % Find trials where only y is saturated 
-ySatTrials = find(sum(ySatTimePts) > 0);
 yFirstSatTrials = findFirstSampleOnlyTrials(yVel,ySatTimePts);
-yMidSatTrials = setdiff(ySatTrials,yFirstSatTrials);
+yMidSatTrials = find(sum(ySatTimePts) > 1);
+yOneSatTrials = setdiff(find(sum(ySatTimePts) == 1),yFirstSatTrials);
+yLastSatTrials = findLastSampleOnlyTrials(yVel,ySatTimePts);
+
+% Find trials where only N time points are saturated. 
+
 
 % Find trials where both x and y are saturated 
-bothSatTrials = intersect(xMidSatTrials,yMidSatTrials);
-xMidSatTrials = setdiff(xMidSatTrials,bothSatTrials);
-yMidSatTrials = setdiff(yMidSatTrials,bothSatTrials); 
+% bothSatTrials = intersect(xMidSatTrials,yMidSatTrials);
+% xMidSatTrials = setdiff(xMidSatTrials,bothSatTrials);
+% yMidSatTrials = setdiff(yMidSatTrials,bothSatTrials); 
 
 %% Make figure 
 goFigure(70);
@@ -74,8 +79,14 @@ satSubPlot(1,xMidSatTrials,xSatTimePts,xVel,groupedData,numTrials,'X','mid',brie
 satSubPlot(3,xFirstSatTrials,xSatTimePts,xVel,groupedData,numTrials,'X','first',briefTitle)
 satSubPlot(2,yMidSatTrials,ySatTimePts,yVel,groupedData,numTrials,'Y','mid',briefTitle)
 satSubPlot(4,yFirstSatTrials,ySatTimePts,yVel,groupedData,numTrials,'Y','first',briefTitle)
-satSubPlot(5,bothSatTrials,xSatTimePts,xVel,groupedData,numTrials,'X','both',briefTitle)
-satSubPlot(6,bothSatTrials,ySatTimePts,yVel,groupedData,numTrials,'Y','both',briefTitle)
+satSubPlot(5,xOneSatTrials,xSatTimePts,xVel,groupedData,numTrials,'X','both',briefTitle)
+satSubPlot(6,yOneSatTrials,ySatTimePts,yVel,groupedData,numTrials,'Y','both',briefTitle)
+
+satSubPlot(7,xLastSatTrials,xSatTimePts,xVel,groupedData,numTrials,'X','last',briefTitle)
+satSubPlot(8,yLastSatTrials,ySatTimePts,yVel,groupedData,numTrials,'Y','last',briefTitle)
+
+% satSubPlot(5,bothSatTrials,xSatTimePts,xVel,groupedData,numTrials,'X','both',briefTitle)
+% satSubPlot(6,bothSatTrials,ySatTimePts,yVel,groupedData,numTrials,'Y','both',briefTitle)
 
 %% Save figure 
 folder = [plotData.saveFolder,'\saturation\'];
@@ -98,7 +109,7 @@ numSamples = min([10,length(satTrials)]);
 sampleIdxs = randsample(satTrials,numSamples);
 
 % Subplot
-subplot(3,2,subplotNum)
+subplot(4,2,subplotNum)
 hold on
 
 % Plot traces
@@ -139,5 +150,25 @@ function idxs = findFirstSampleOnlyTrials(vel,satTimePts)
 test_row = zeros(size(vel(:,1)))';
 test_row(1) = 1;
 idxs = find(ismember(satTimePts',test_row,'rows'));
+
+end
+
+function idxs = findLastSampleOnlyTrials(vel,satTimePts)
+
+% Find which trials only have the first sample saturated
+test_row = zeros(size(vel(:,1)))';
+test_row(end) = 1;
+idxs = find(ismember(satTimePts',test_row,'rows'));
+
+end
+
+function idxs = findNSaturatedSamplesOnlyTrials(satTimePts,n)
+
+% Find which trials only have the first sample saturated
+
+idxs = find(sum(satTimePts)>1);
+
+% [b, n, bi] = RunLength(x); 
+% [longestRun, index] = max(n); 
 
 end
