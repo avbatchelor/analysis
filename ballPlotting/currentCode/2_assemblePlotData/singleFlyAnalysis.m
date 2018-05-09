@@ -171,6 +171,15 @@ for stimNum = uniqueStim
         plotData.blockMeanYVel(stimNum,i,:) = mean(groupedData.rotYVel(stimNumInd(blockStart:blockEnd),:));
     end
     
+    for i = 1:numBlocks
+        blockStart = (i-1)*analysisSettings.blockSize + 1;
+        blockEnd = i*analysisSettings.blockSize;
+        plotData.blockMedianXDisp(stimNum,i,:) = median(groupedData.rotXDisp(stimNumInd(blockStart:blockEnd),:));
+        plotData.blockMedianYDisp(stimNum,i,:) = median(groupedData.rotYDisp(stimNumInd(blockStart:blockEnd),:));
+        plotData.blockMedianXVel(stimNum,i,:) = median(groupedData.rotXVel(stimNumInd(blockStart:blockEnd),:));
+        plotData.blockMedianYVel(stimNum,i,:) = median(groupedData.rotYVel(stimNumInd(blockStart:blockEnd),:));
+    end
+    
     %% Find means by stim order 
     for i = 1:3
         stimOrderSelection = intersect(stimNumInd,stimOrder{i});
@@ -221,6 +230,8 @@ for stimNum = uniqueStim
     
     
 end
+
+plotData.singleFlyAnalysisDate = checkRepoStatus;
 
 %% Save Plot data to file
 % Grouped data

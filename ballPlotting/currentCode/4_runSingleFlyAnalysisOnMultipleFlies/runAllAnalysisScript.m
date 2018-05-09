@@ -1,16 +1,19 @@
-toAnalyze = {'Cardinal',5,4,4;'Cardinal',5,5,4;'Cardinal',5,6,7};
+prefixCode = 'ShamGlued-45';
 
-for i = 1:length(toAnalyze)
-    [prefixCode,expNum,flyNum,flyExpNum] = toAnalyze{i,:};
+flies = getFlyExpts(prefixCode);
+
+for i = 1:size(flies,1)
+    [prefixCode,expNum,flyNum,flyExpNum] = flies{i,:};
     allTrials = 'n';
     sameFig = 'y';
     saveQ = 'y';
-    try
-%         groupBallDataDiffStim(prefixCode,expNum,flyNum,flyExpNum)
-        processAndDownsampleBallData(prefixCode,expNum,flyNum,flyExpNum)
-    catch 
-        disp(['Could not analyze',prefixCode,num2str(expNum),num2str(flyNum),num2str(flyExpNum)])
-    end
+%     try
+% %         processAndDownsampleBallData(prefixCode,expNum,flyNum,flyExpNum)
+%     catch 
+%         disp(['Could not analyze',prefixCode,num2str(expNum),num2str(flyNum),num2str(flyExpNum)])
+%     end
+    rotateAndGroupMetaBallData(prefixCode,expNum,flyNum,flyExpNum)
+    singleFlyAnalysis(prefixCode,expNum,flyNum,flyExpNum)
         %     singleFlyAnalysis(prefixCode,expNum,flyNum,flyExpNum)
 %     plotProcessedBallData(prefixCode,expNum,flyNum,flyExpNum,allTrials,sameFig,saveQ)
 end

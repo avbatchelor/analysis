@@ -48,6 +48,8 @@ for i = 1:length(dirCont)
     clear procData temp
 end
 
+groupedData.processedDate = checkRepoStatus;
+
 %% Save data
 pPath = getProcessedDataFileName(exptInfo);
 mkdir(pPath);

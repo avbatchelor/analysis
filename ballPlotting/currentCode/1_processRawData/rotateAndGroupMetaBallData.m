@@ -67,6 +67,9 @@ groupedData = selectTrials(groupedData,exptInfo);
 %% Rotate data 
 groupedData = rotateAllTrials(groupedData);
 
+%% Record repo status
+groupedData.rotateAndGroupDate = checkRepoStatus;
+
 %% Save data
 pPath = getProcessedDataFileName(exptInfo);
 mkdir(pPath);

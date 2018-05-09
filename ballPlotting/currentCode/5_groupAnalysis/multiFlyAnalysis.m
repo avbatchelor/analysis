@@ -24,7 +24,7 @@ for fly = 1:size(flies,1)
     %% Determine number of trials to use
     if allTrials == 'y'
         for stimNum = unique(groupedData.stimNum)
-            fastTrialsPerStim(stimNum) = sum(groupedData.selectedTrials & groupedData.stimNum == stimNum);
+            fastTrialsPerStim(stimNum) = length(intersect(groupedData.selectedTrials,find(groupedData.stimNum == stimNum)));
         end     
         plotData.numTrialsPerFly = min(fastTrialsPerStim);
     else
@@ -49,9 +49,8 @@ for fly = 1:size(flies,1)
         end
 
         % Select first so many trials above threshold
-        allFastTrials = find(groupedData.selectedTrials & groupedData.stimNum == stimIdx);
+        allFastTrials = intersect(groupedData.selectedTrials,find(groupedData.stimNum == stimIdx));
         selectedTrials = allFastTrials(1:plotData.numTrialsPerFly);
-        
         % Use only the last 100 trials above threshold
 %         try 
 %             selectedTrials = selectedTrials(end-100:end);

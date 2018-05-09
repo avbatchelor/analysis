@@ -271,7 +271,7 @@ for stimNum = 1:plotData.numUniqueStim
     
     %% Plot trial line
     % Subplot settings
-    sph(8) = subtightplot(numRows, numCols, spIndex(8:9),[0.075 0.1], [0.1 0.1], [0.1 0.01]);
+    sph(8) = subtightplot(numRows, numCols, spIndex(8),[0.075 0.1], [0.1 0.1], [0.1 0.01]);
     
     hold on
     set(gcf, 'currentaxes',sph(8));
@@ -290,7 +290,7 @@ for stimNum = 1:plotData.numUniqueStim
     %% Plot mean X vs mean Y displacement
     % Subplot settings
     if stimNum == 1 || sameFig == 'n'
-        sph(9) = subtightplot(numRows, numCols, spIndex(10:14),[0.075 0.15], [0.1 0.1], [0.15 0.15]);
+        sph(9) = subtightplot(numRows, numCols, spIndex(9:11),[0.075 0.15], [0.1 0.1], [0.15 0.15]);
     end
     hold on
     set(gcf, 'currentaxes',sph(9));
@@ -311,10 +311,37 @@ for stimNum = 1:plotData.numUniqueStim
     % Axis settings
     %     axis(sph(9),'equal')
     bottomAxisSettings
-    sph(9).XLim = [-5 5];
+    sph(9).XLim = [-3 3];
     
     title(plotData.legendText{stimNum})
     
+    %% Plot median X vs median Y displacement
+    % Subplot settings
+    if stimNum == 1 || sameFig == 'n'
+        sph(10) = subtightplot(numRows, numCols, spIndex(12:14),[0.075 0.15], [0.1 0.1], [0.15 0.15]);
+    end
+    hold on
+    set(gcf, 'currentaxes',sph(10));
+    
+    % Plot
+    %     set(gca,'ColorOrder',blockColorSet)
+    plot(sph(10),squeeze(plotData.blockMedianXDisp(stimNum,:,:))',squeeze(plotData.blockMedianYDisp(stimNum,:,:))','Linewidth',2)
+    if strcmp(allTrials,'y')
+        plot(sph(10),rotXDisp(stimIndSamp,:)',rotYDisp(stimIndSamp,:)','Color',currColor,'Linewidth',0.5)
+    end
+    %     plot(meanXDisp+stdXDisp,meanYDisp,'Color',colorSet(stimNum,:),'Linewidth',0.5)
+    %     plot(meanXDisp-stdXDisp,meanYDisp,'Color',colorSet(stimNum,:),'Linewidth',0.5)
+    
+    % Axis labels
+    xlabel('X displacement (mm)')
+    ylabel({'Y disp';'(mm)'})
+    
+    % Axis settings
+    %     axis(sph(9),'equal')
+    bottomAxisSettings
+    sph(10).XLim = [-3 3];
+    
+    title(plotData.legendText{stimNum})
     
     %% Legend and title
     % Legend
