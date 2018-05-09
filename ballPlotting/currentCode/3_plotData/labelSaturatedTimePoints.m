@@ -18,11 +18,7 @@ load(fileName);
 fileName = [pPath,fileNamePreamble,'groupedData.mat'];
 load(fileName);
 
-%% Get experiment date
-[~, path, fileNamePreamble, ~] = getDataFileNameBall(exptInfo);
 
-% Load exptInfo
-load(fullfile(path,[fileNamePreamble,'exptData']))
 
 
 %% Get number of trials
@@ -33,37 +29,11 @@ briefTitle = plotData.sumTitle{1};
 xVel = cell2mat(groupedData.xVel);
 yVel = cell2mat(groupedData.yVel);
 
-%% Find saturated time points
-settings = ballSettings; 
-
-% X saturation value 
-xSatVals = [-127 127] .* (settings.mmPerCount * settings.sensorPollFreq);
-
-% Y saturation value 
-if datenum(exptInfo.dNum,'yymmdd') < datenum('180206','yymmdd')
-    ySatVals = xSatVals; 
-else
-    ySatVals(1) = -50 * (settings.mmPerCount * settings.sensorPollFreq);
-    ySatVals(2) = 204 * (settings.mmPerCount * settings.sensorPollFreq);
-end 
-
-% Find saturated time points
-xSatTimePts = (abs(xVel - xSatVals(1)) < 0.1) | (abs(xVel - xSatVals(2)) < 0.1);
-ySatTimePts = (abs(yVel - ySatVals(1)) < 0.1) | (abs(yVel - ySatVals(2)) < 0.1);
-
-
 %% Get idxs of saturated trials
-% Find trials where only x is saturated 
-xFirstSatTrials = findFirstSampleOnlyTrials(xVel,xSatTimePts);
-xMidSatTrials = find(sum(xSatTimePts) > 1);
-xOneSatTrials = setdiff(find(sum(xSatTimePts) == 1),xFirstSatTrials);
-xLastSatTrials = findLastSampleOnlyTrials(xVel,xSatTimePts);
+[xMid,xFirst,xOne,yMid,yFirst,yOne,timePts] = findSatIdxs(exptInfo,xVel,yVel);
 
-% Find trials where only y is saturated 
-yFirstSatTrials = findFirstSampleOnlyTrials(yVel,ySatTimePts);
-yMidSatTrials = find(sum(ySatTimePts) > 1);
-yOneSatTrials = setdiff(find(sum(ySatTimePts) == 1),yFirstSatTrials);
-yLastSatTrials = findLastSampleOnlyTrials(yVel,ySatTimePts);
+xSatTimePts = timePts.xSatTimePts; 
+ySatTimePts = timePts.ySatTimePts;
 
 % Find trials where only N time points are saturated. 
 
@@ -75,15 +45,15 @@ yLastSatTrials = findLastSampleOnlyTrials(yVel,ySatTimePts);
 
 %% Make figure 
 goFigure(70);
-satSubPlot(1,xMidSatTrials,xSatTimePts,xVel,groupedData,numTrials,'X','mid',briefTitle)
-satSubPlot(3,xFirstSatTrials,xSatTimePts,xVel,groupedData,numTrials,'X','first',briefTitle)
-satSubPlot(2,yMidSatTrials,ySatTimePts,yVel,groupedData,numTrials,'Y','mid',briefTitle)
-satSubPlot(4,yFirstSatTrials,ySatTimePts,yVel,groupedData,numTrials,'Y','first',briefTitle)
-satSubPlot(5,xOneSatTrials,xSatTimePts,xVel,groupedData,numTrials,'X','both',briefTitle)
-satSubPlot(6,yOneSatTrials,ySatTimePts,yVel,groupedData,numTrials,'Y','both',briefTitle)
+satSubPlot(1,xMid,xSatTimePts,xVel,groupedData,numTrials,'X','mid',briefTitle)
+satSubPlot(3,xFirst,xSatTimePts,xVel,groupedData,numTrials,'X','first',briefTitle)
+satSubPlot(5,xOne,xSatTimePts,xVel,groupedData,numTrials,'X','one',briefTitle)
+% satSubPlot(7,xLastSatTrials,xSatTimePts,xVel,groupedData,numTrials,'X','last',briefTitle)
 
-satSubPlot(7,xLastSatTrials,xSatTimePts,xVel,groupedData,numTrials,'X','last',briefTitle)
-satSubPlot(8,yLastSatTrials,ySatTimePts,yVel,groupedData,numTrials,'Y','last',briefTitle)
+satSubPlot(2,yMid,ySatTimePts,yVel,groupedData,numTrials,'Y','mid',briefTitle)
+satSubPlot(4,yFirst,ySatTimePts,yVel,groupedData,numTrials,'Y','first',briefTitle)
+satSubPlot(6,yOne,ySatTimePts,yVel,groupedData,numTrials,'Y','one',briefTitle)
+% satSubPlot(8,yLastSatTrials,ySatTimePts,yVel,groupedData,numTrials,'Y','last',briefTitle)
 
 % satSubPlot(5,bothSatTrials,xSatTimePts,xVel,groupedData,numTrials,'X','both',briefTitle)
 % satSubPlot(6,bothSatTrials,ySatTimePts,yVel,groupedData,numTrials,'Y','both',briefTitle)
@@ -106,7 +76,11 @@ end
 
 %% Select 10 random trials 
 numSamples = min([10,length(satTrials)]);
-sampleIdxs = randsample(satTrials,numSamples);
+if numSamples == 1
+    sampleIdxs = satTrials;
+else
+    sampleIdxs = randsample(satTrials,numSamples);
+end
 
 % Subplot
 subplot(4,2,subplotNum)
@@ -144,31 +118,3 @@ suptitle({briefTitle;exptDescrip})
 
 end
 
-function idxs = findFirstSampleOnlyTrials(vel,satTimePts)
-
-% Find which trials only have the first sample saturated
-test_row = zeros(size(vel(:,1)))';
-test_row(1) = 1;
-idxs = find(ismember(satTimePts',test_row,'rows'));
-
-end
-
-function idxs = findLastSampleOnlyTrials(vel,satTimePts)
-
-% Find which trials only have the first sample saturated
-test_row = zeros(size(vel(:,1)))';
-test_row(end) = 1;
-idxs = find(ismember(satTimePts',test_row,'rows'));
-
-end
-
-function idxs = findNSaturatedSamplesOnlyTrials(satTimePts,n)
-
-% Find which trials only have the first sample saturated
-
-idxs = find(sum(satTimePts)>1);
-
-% [b, n, bi] = RunLength(x); 
-% [longestRun, index] = max(n); 
-
-end

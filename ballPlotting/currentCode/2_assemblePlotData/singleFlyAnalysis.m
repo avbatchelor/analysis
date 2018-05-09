@@ -1,4 +1,4 @@
-function singleFlyAnalysis(prefixCode,expNum,flyNum,flyExpNum,speedThreshold)
+function singleFlyAnalysis(prefixCode,expNum,flyNum,flyExpNum)
 
 
 %% Put exptInfo in a struct
@@ -44,9 +44,8 @@ indBefore = plotData.pipStartInd - analysisSettings.timeBefore*Stim.sampleRate/a
 indAfter = plotData.pipStartInd + analysisSettings.timeBefore*Stim.sampleRate/analysisSettings.dsFactor;
 
 %% Select trials based on speed
-trialsToInclude = speedThreshold<groupedData.trialSpeed;
-trialsToIncludeIdxs = groupedData.trialNum(trialsToInclude);
-plotData.fastTrials = trialsToIncludeIdxs;
+trialsToIncludeIdxs = groupedData.selectedTrials;
+plotData.fastTrials = groupedData.selectedTrials;
 
 %% Calculate number of stimuli and stim types
 % Number of unique stimuli - same stimulus at different location considered
@@ -71,7 +70,7 @@ plotData.figureNums.figByType = unique(stimType);
 dateAsString = datestr(datenum(exptInfo.dNum,'yymmdd'),'mm-dd-yy');
 plotData.sumTitle = {[dateAsString,', ',exptInfo.prefixCode,', ExpNum ',num2str(exptInfo.expNum),', FlyNum ',num2str(exptInfo.flyNum),...
     ', FlyExpNum ',num2str(exptInfo.flyExpNum)];['Aim: ',char(FlyData.aim),', Description: ',StimStruct(1).stimObj.description];...
-    ['X Saturation Count = ',num2str(sum(groupedData.xSaturationWarning)),', Y Saturation Count = ',num2str(sum(groupedData.ySaturationWarning))]};
+    ['Saturation Count = ',num2str(length(groupedData.saturatedTrials))]};
 
 %% Create empty matrices
 plotData.legendText = cell(size(uniqueStim));
@@ -103,9 +102,6 @@ threeAfter = setdiff(rightIdxs + 3, oneAndTwoAfter);
 stimOrder{1} = oneAfter; 
 stimOrder{2} = twoAfter; 
 stimOrder{3} = threeAfter;
-
-groupedData.xSaturationWarning(groupedData.trialNum);
-
 
 %% Loop through each stimulus
 for stimNum = uniqueStim

@@ -1,22 +1,11 @@
-function [velMmFilt,disp,saturationWarning] = processDigBallData(inputMat,stim,axis,exptInfo)
+function [velMmFilt,disp] = processDigBallData(inputMat,stim,axis,exptInfo)
 
 %% Convert binary matrix to integer
 asDecRaw = binaryVectorToDecimal(inputMat,'LSBFirst');
 
 %% Mode filter
 % removes errors that occur becuase output bits aren't set simultaneously
-asDec = colfilt(asDecRaw, [11 1], 'sliding', @mode);
-% Correct for mode filter problem at ends 
-if asDec(1) == 0
-    asDec(1:5) = mode(asDecRaw(1:5));
-end
-
-%% Check for saturation 
-if any(asDec == 254)  || any(asDec == 0)
-    saturationWarning = 1;
-else
-    saturationWarning = 0;
-end
+asDec = movingMode(asDecRaw);
 
 %% Convert integer to signed integer 
 if datenum(exptInfo.dNum,'yymmdd') < datenum('180206','yymmdd')

@@ -1,7 +1,7 @@
-function plotMeanAcrossFliesVel(prefixCode,allFlies,plotSEM,freqSep,saveQ,figName,allTrials,speedThreshold,varargin)
+function plotMeanAcrossFliesVel(prefixCode,allFlies,plotSEM,freqSep,saveQ,figName,allTrials,varargin)
 
 %% Get plot data
-plotData = multiFlyAnalysis(prefixCode,allTrials,speedThreshold);
+plotData = multiFlyAnalysis(prefixCode,allTrials);
 
 %% Average & SEM across flies
 avgAcrossTrials = cellfun(@(x) squeeze(mean(x,2)),plotData.vel,'UniformOutput',false);
@@ -123,6 +123,7 @@ end
 if ~exist('figName','var')
     figName = '';
 end
+statusStr = checkRepoStatus;
 % Save figures
 if saveQ == 'y'
     figPath = 'D:\ManuscriptData\summaryFigures';
@@ -130,7 +131,7 @@ if saveQ == 'y'
     n = numFigs;
     for i = 1:n
         figure(i)
-        filename = [figPath,'\',prefixCode,'_',num2str(i),'_',figName,'.pdf'];
+        filename = [figPath,'\',prefixCode,'_',num2str(i),'_',figName,'_',statusStr,'.pdf'];
         export_fig(filename,'-pdf','-painters')
     end
 end
@@ -158,7 +159,7 @@ set(gcf,'Position',figPos)
 xlim([0 4])
 
 % Save figure
-filename = [figPath,'\',prefixCode,'_','meanLatVelQuant','.pdf'];
+filename = [figPath,'\',prefixCode,'_','meanLatVelQuant','_',statusStr,'.pdf'];
 export_fig(filename,'-pdf','-painters')
 
 %% Make histograms 
@@ -207,7 +208,7 @@ suplabel('Probability','y')
 set(findall(gcf,'-property','FontSize'),'FontSize',30)
 
 % Save figure
-filename = [figPath,'\',prefixCode,'_','latVelHistograms','.pdf'];
+filename = [figPath,'\',prefixCode,'_','latVelHistograms','_',statusStr,'.pdf'];
 export_fig(filename,'-pdf','-painters')
 
 end

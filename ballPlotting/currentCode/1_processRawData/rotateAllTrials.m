@@ -9,18 +9,12 @@ xDispMat = cell2mat(groupedData.xDisp);
 yDispMat = cell2mat(groupedData.yDisp);
 
 % Select part of displacement vector
-xDispBefore = xDispMat(1:groupedData.pipStartInd-2,:);
-yDispBefore = yDispMat(1:groupedData.pipStartInd-2,:);
+xDispBefore = xDispMat(1:groupedData.pipStartInd-2,groupedData.selectedTrials);
+yDispBefore = yDispMat(1:groupedData.pipStartInd-2,groupedData.selectedTrials);
 
 %% Average rotation
-% Select fast trials
-trialsToInclude = analysisSettings.rotationSpeedThreshold<groupedData.trialSpeed;
-allFastTrials = groupedData.trialNum(trialsToInclude);
-
 % Create displacement vector
-xDispBeforeFastTrials = xDispBefore(:,allFastTrials);
-yDispBeforeFastTrials = yDispBefore(:,allFastTrials);
-trialVect = [mean(mean(xDispBeforeFastTrials,2));mean(mean(yDispBeforeFastTrials,2))];
+trialVect = [mean(mean(xDispBefore,2));mean(mean(yDispBefore,2))];
 
 % Calculate rotation angle to use if not rotating in blocks 
 Ravg = getRotationAngle(trialVect);
@@ -46,7 +40,12 @@ for j = groupedData.trialNum
     if analysisSettings.blockRotation == 0
         R = Ravg;
     else
-        blockTrialVect = [xDispMovMean(j),yDispMovMean(j)];
+        selectedTrialsInd = find(groupedData.selectedTrials == j); 
+        if isempty(selectedTrialsInd)
+            blockTrialVect = [0; -1];
+        else
+            blockTrialVect = [xDispMovMean(selectedTrialsInd),yDispMovMean(selectedTrialsInd)];
+        end
         R = getRotationAngle(blockTrialVect);
         if any(isnan(R))
             R = Ravg;

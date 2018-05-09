@@ -113,9 +113,11 @@ suplabel('Time (s)','x')
 % suplabel('Speed (mm/s)','y')
 set(findall(gcf,'-property','FontSize'),'FontSize',16)
 
+%% Save figure 
+statusStr = checkRepoStatus;
 folder = 'D:\ManuscriptData\summaryFigures\';
 [~, ~, fileNamePreamble, ~] = getDataFileNameBall(exptInfo);
-filename = [folder,fileNamePreamble,'random_trials.pdf'];
+filename = [folder,fileNamePreamble,'random_trials_',statusStr,'.pdf'];
 export_fig(filename,'-pdf','-painters')
 
 end

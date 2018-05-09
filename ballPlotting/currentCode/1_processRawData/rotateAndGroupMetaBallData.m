@@ -61,6 +61,9 @@ for i = 1:length(dirCont)
     clear procData temp
 end
 
+%% Select trials 
+groupedData = selectTrials(groupedData,exptInfo);
+
 %% Rotate data 
 groupedData = rotateAllTrials(groupedData);
 

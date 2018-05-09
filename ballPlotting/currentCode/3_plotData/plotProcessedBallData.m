@@ -1,4 +1,4 @@
-function plotProcessedBallData(prefixCode,expNum,flyNum,flyExpNum,allTrials,sameFig,saveQ,speedThreshold)
+function plotProcessedBallData(prefixCode,expNum,flyNum,flyExpNum,allTrials,sameFig,saveQ)
 
 %% Put exptInfo in a struct
 exptInfo = exptInfoStruct(prefixCode,expNum,flyNum,flyExpNum);
@@ -232,7 +232,7 @@ for stimNum = 1:plotData.numUniqueStim
     end
     
     % Plot baseline
-    line(sph(7),[0,plotData.numTrials],[speedThreshold,speedThreshold],'Color','k')
+    line(sph(7),[0,plotData.numTrials],[analysisSettings.speedThreshold,analysisSettings.speedThreshold],'Color','k')
     
     % Axis labels
     ylabel({'Trial avg speed';'(mm/s)'})

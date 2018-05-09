@@ -1,7 +1,7 @@
-function plotMeanAcrossFliesDisp(prefixCode,allFlies,plotSEM,freqSep,saveQ,figName,allTrials,speedThreshold,varargin)
+function plotMeanAcrossFliesDisp(prefixCode,allFlies,plotSEM,freqSep,saveQ,figName,allTrials,varargin)
 
 %% Get plot data
-plotData = multiFlyAnalysis(prefixCode,allTrials,speedThreshold);
+plotData = multiFlyAnalysis(prefixCode,allTrials);
 
 %% Average & SEM across flies
 
@@ -98,6 +98,7 @@ end
 if ~exist('figName','var')
     figName = '';
 end
+statusStr = checkRepoStatus;
 % Save figures
 if saveQ == 'y'
     figPath = 'D:\ManuscriptData\summaryFigures';
@@ -105,7 +106,7 @@ if saveQ == 'y'
     n = numFigs;
     for i = 1:n
         figure(i)
-        filename = [figPath,'\',prefixCode,'_',num2str(i),'_',figName,'.pdf'];
+        filename = [figPath,'\',prefixCode,'_',num2str(i),'_',figName,'_',statusStr,'.pdf'];
         export_fig(filename,'-pdf','-painters')
     end
 end

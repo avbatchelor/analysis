@@ -1,4 +1,4 @@
-function plotData = multiFlyAnalysis(prefixCode,allTrials,speedThreshold)
+function plotData = multiFlyAnalysis(prefixCode,allTrials)
 
 %% Close all
 close all
@@ -24,7 +24,7 @@ for fly = 1:size(flies,1)
     %% Determine number of trials to use
     if allTrials == 'y'
         for stimNum = unique(groupedData.stimNum)
-            fastTrialsPerStim(stimNum) = sum(groupedData.trialSpeed > speedThreshold & groupedData.stimNum == stimNum);
+            fastTrialsPerStim(stimNum) = sum(groupedData.selectedTrials & groupedData.stimNum == stimNum);
         end     
         plotData.numTrialsPerFly = min(fastTrialsPerStim);
     else
@@ -35,8 +35,7 @@ for fly = 1:size(flies,1)
     plotData.date{fly} = lookupDate(exptInfo);
     
     % Average forward speed for first second 
-    fastTrialIdxs = groupedData.trialSpeed > speedThreshold;
-    plotData.firstSecondSpeed{fly} = mean(mean(groupedData.rotYVel(fastTrialIdxs,1:100)));
+    plotData.firstSecondSpeed{fly} = mean(mean(groupedData.rotYVel(groupedData.selectedTrials,1:100)));
     
     %% Loop through stimuli
     for stimNum = unique(groupedData.stimNum)
@@ -50,7 +49,7 @@ for fly = 1:size(flies,1)
         end
 
         % Select first so many trials above threshold
-        allFastTrials = find(groupedData.trialSpeed > speedThreshold & groupedData.stimNum == stimIdx);
+        allFastTrials = find(groupedData.selectedTrials & groupedData.stimNum == stimIdx);
         selectedTrials = allFastTrials(1:plotData.numTrialsPerFly);
         
         % Use only the last 100 trials above threshold

@@ -1,4 +1,4 @@
-function plotBlocksSingleFly(prefixCode,expNum,flyNum,flyExpNum,allTrials,sameFig,saveQ,speedThreshold)
+function plotBlocksSingleFly(prefixCode,expNum,flyNum,flyExpNum,allTrials,sameFig,saveQ)
 
 % Plot blocks of trials for a single fly to look for adaptation
 
@@ -106,7 +106,6 @@ for stimNum = 1:plotData.numUniqueStim
     noXAxisSettings
     moveXAxis
     symAxisY(sph(2))
-    shadestimArea(plotData,stimNum)
     
     
     %% Plot y speed vs. time
@@ -132,7 +131,6 @@ for stimNum = 1:plotData.numUniqueStim
     % Axis settings
     noXAxisSettings
     moveXAxis
-    shadestimArea(plotData,stimNum)
     
     
     %% Plot x displacement vs. time
@@ -161,7 +159,6 @@ for stimNum = 1:plotData.numUniqueStim
     noXAxisSettings
     moveXAxis
     symAxisY(sph(4))
-    shadestimArea(plotData,stimNum)
     
     
     %% Plot y displacement vs. time plot
@@ -189,7 +186,6 @@ for stimNum = 1:plotData.numUniqueStim
     bottomAxisSettings
     linkaxes(sph(1:5),'x')
     symAxisY(sph(5))
-    shadestimArea(plotData,stimNum)
     
     
     %% Plot forward speed histogram
@@ -236,7 +232,7 @@ for stimNum = 1:plotData.numUniqueStim
     end
     
     % Plot baseline
-    line(sph(7),[0,plotData.numTrials],[speedThreshold,speedThreshold],'Color','k')
+    line(sph(7),[0,plotData.numTrials],[analysisSettings.speedThreshold,analysisSettings.speedThreshold],'Color','k')
     
     % Axis labels
     ylabel({'Trial avg speed';'(mm/s)'})
@@ -315,7 +311,7 @@ for stimNum = 1:plotData.numUniqueStim
     % Axis settings
     %     axis(sph(9),'equal')
     bottomAxisSettings
-    sph(9).XLim = [-3 3];
+    sph(9).XLim = [-5 5];
     
     title(plotData.legendText{stimNum})
     
