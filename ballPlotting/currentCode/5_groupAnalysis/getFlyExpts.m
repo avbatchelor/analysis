@@ -14,10 +14,9 @@ switch prefixCode
     
     % Fig 4
     case 'a2Glued'
-        flies = {'a2Glued',1,1,1;'a2Glued',1,2,1;'a2Glued',1,3,1;'a2Glued',1,4,1};
+        flies = {'a2Glued',1,1,1;'a2Glued',1,2,1;'a2Glued',1,3,1;'a2Glued',1,4,1;'a2Glued',1,4,1};
     case 'a3Glued'
-%         flies = {'a3Glued',1,1,1;'a3Glued',1,2,1;'a3Glued',1,3,1;'a3Glued',1,4,1};
-        flies = {'a3Glued',1,2,1;'a3Glued',1,3,1;'a3Glued',1,4,1};
+        flies = {'a3Glued',1,1,1;'a3Glued',1,2,1;'a3Glued',1,3,1;'a3Glued',1,4,1};
     case 'ShamGlued-45'
         flies = {'ShamGlued',1,1,2;'ShamGlued',1,2,2;'ShamGlued',1,3,2;'ShamGlued',1,4,2};
     

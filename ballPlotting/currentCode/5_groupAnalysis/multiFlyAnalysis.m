@@ -1,8 +1,5 @@
 function plotData = multiFlyAnalysis(prefixCode,allTrials)
 
-%% Close all
-close all
-
 %% Load analysis settings
 analysisSettings = getAnalysisSettings;
 

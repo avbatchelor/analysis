@@ -1,4 +1,4 @@
-function plotMeanAcrossFliesDisp(prefixCode,allFlies,plotSEM,freqSep,saveQ,figName,allTrials,varargin)
+function plotMeanAcrossFliesDisp(prefixCode,allFlies,plotSEM,freqSep,saveQ,figName,allTrials,plotMean,varargin)
 
 %% Get plot data
 plotData = multiFlyAnalysis(prefixCode,allTrials);
@@ -31,44 +31,50 @@ goFigure;
 % Plot each fly separately
 if allFlies == 'y'
     for stim = 1:plotData.numStim
-        plot(squeeze(avgAcrossTrials(:,stim,:,1))',squeeze(avgAcrossTrials(:,stim,:,2))','Color',colorSet1(stim,:),'Linewidth',0.5)
+        if plotMean == 'n'
+            hfl = plot(squeeze(avgAcrossTrials(:,stim,:,1))',squeeze(avgAcrossTrials(:,stim,:,2))','Color',colorSet1(stim,:),'Linewidth',1);
+        else
+            plot(squeeze(avgAcrossTrials(:,stim,:,1))',squeeze(avgAcrossTrials(:,stim,:,2))','Color',colorSet1(stim,:),'Linewidth',1)
+        end
         hold on
     end
 end
 
-% Plot mean across flies
-pipIdx = [];
-sineIdx = [];
-for stim = 1:plotData.numStim
-    % Plotting different stimuli in freq experiment in different plots
-    if freqSep == 'y'
-        if strcmp(StimStruct(stim).stimObj.class,'SineWave')
-            goFigure(1)
-            sineIdx = [sineIdx,stim];
-        elseif strcmp(StimStruct(stim).stimObj.class,'PipStimulus')
-            goFigure(2)
-            pipIdx = [pipIdx,stim];
-        elseif strcmp(StimStruct(stim).stimObj.class,'No Stimulus')
-            sineIdx = [sineIdx,stim];
-            pipIdx = [pipIdx,stim];
-        end
-        if strcmp(StimStruct(stim).stimObj.class,'noStimulus')
-            figure(1)
-            hfl(stim) = plot(mean(squeeze(avgAcrossTrials(:,stim,:,1)),1)',mean(squeeze(avgAcrossTrials(:,stim,:,2)),1)','Color','k','Linewidth',5);
-            figure(2)
-            hfl(stim) = plot(mean(squeeze(avgAcrossTrials(:,stim,:,1)),1)',mean(squeeze(avgAcrossTrials(:,stim,:,2)),1)','Color','k','Linewidth',5);
-        else
-            if StimStruct(stim).stimObj.carrierFreqHz == 100
-                colorCount = 1;
-            else
-                colorCount = colorCount + 1;
+if plotMean == 'y'
+    % Plot mean across flies
+    pipIdx = [];
+    sineIdx = [];
+    for stim = 1:plotData.numStim
+        % Plotting different stimuli in freq experiment in different plots
+        if freqSep == 'y'
+            if strcmp(StimStruct(stim).stimObj.class,'SineWave')
+                goFigure(1)
+                sineIdx = [sineIdx,stim];
+            elseif strcmp(StimStruct(stim).stimObj.class,'PipStimulus')
+                goFigure(2)
+                pipIdx = [pipIdx,stim];
+            elseif strcmp(StimStruct(stim).stimObj.class,'No Stimulus')
+                sineIdx = [sineIdx,stim];
+                pipIdx = [pipIdx,stim];
             end
-            hfl(stim) = plot(mean(squeeze(avgAcrossTrials(:,stim,:,1)),1)',mean(squeeze(avgAcrossTrials(:,stim,:,2)),1)','Color',colorSet2(colorCount,:),'Linewidth',3);
+            if strcmp(StimStruct(stim).stimObj.class,'noStimulus')
+                figure(1)
+                hfl(stim) = plot(mean(squeeze(avgAcrossTrials(:,stim,:,1)),1)',mean(squeeze(avgAcrossTrials(:,stim,:,2)),1)','Color','k','Linewidth',5);
+                figure(2)
+                hfl(stim) = plot(mean(squeeze(avgAcrossTrials(:,stim,:,1)),1)',mean(squeeze(avgAcrossTrials(:,stim,:,2)),1)','Color','k','Linewidth',5);
+            else
+                if StimStruct(stim).stimObj.carrierFreqHz == 100
+                    colorCount = 1;
+                else
+                    colorCount = colorCount + 1;
+                end
+                hfl(stim) = plot(mean(squeeze(avgAcrossTrials(:,stim,:,1)),1)',mean(squeeze(avgAcrossTrials(:,stim,:,2)),1)','Color',colorSet2(colorCount,:),'Linewidth',3);
+            end
+        else
+            hfl(stim) = plot(mean(squeeze(avgAcrossTrials(:,stim,:,1)),1)',mean(squeeze(avgAcrossTrials(:,stim,:,2)),1)','Color',colorSet2(stim,:),'Linewidth',3);
         end
-    else
-        hfl(stim) = plot(mean(squeeze(avgAcrossTrials(:,stim,:,1)),1)',mean(squeeze(avgAcrossTrials(:,stim,:,2)),1)','Color',colorSet2(stim,:),'Linewidth',3);
+        hold on
     end
-    hold on
     
     % Plot SEM
     if plotSEM == 'y'
