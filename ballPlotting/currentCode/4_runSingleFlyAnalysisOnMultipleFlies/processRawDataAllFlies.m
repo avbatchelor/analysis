@@ -1,4 +1,4 @@
-prefixCodes = {'ShamGlued-45'};
+prefixCodes = {'Males';'Freq'};
 
 for j = 1:size(prefixCodes,1)
 

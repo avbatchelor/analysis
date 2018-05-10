@@ -104,7 +104,6 @@ for stimNum = 1:plotData.numUniqueStim
     noXAxisSettings
     moveXAxis
     symAxisY(sph(2))
-    shadestimArea(plotData,stimNum)
     
     
     %% Plot y speed vs. time
@@ -130,7 +129,6 @@ for stimNum = 1:plotData.numUniqueStim
     noXAxisSettings
     moveXAxis
     symAxisY(sph(3))
-    shadestimArea(plotData,stimNum)
     
     
     %% Plot x displacement vs. time
@@ -158,7 +156,6 @@ for stimNum = 1:plotData.numUniqueStim
     noXAxisSettings
     moveXAxis
     symAxisY(sph(4))
-    shadestimArea(plotData,stimNum)
     
     
     %% Plot y displacement vs. time plot
@@ -185,7 +182,6 @@ for stimNum = 1:plotData.numUniqueStim
     bottomAxisSettings
     linkaxes(sph(1:5),'x')
     symAxisY(sph(5))
-    shadestimArea(plotData,stimNum)
     
     
     %% Plot forward speed histogram
