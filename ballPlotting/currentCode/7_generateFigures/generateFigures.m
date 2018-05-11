@@ -41,28 +41,73 @@ plotMeanAcrossFliesVel('RightGlued','y','n','n','y','Fig3_RightGluedVel','y','n'
 plotMeanAcrossFliesVel('LeftGlued','y','n','n','y','Fig3_LeftGluedVel','y','n')
 
 % Lateral velocity quant
-prefixCodes = {'a2Glued',1:2;'a3Glued',1:2;'ShamGlued-45',1:2;'ShamGlued-45',3};
-labels = {'a2 Glued';'a3 Glued';'Sham Glued';'Sham Glued - no stim'};
-figName = 'Fig2_MirroredLatVelQuant';
+prefixCodes = {'RightGlued',1;'LeftGlued',1;'RightGlued',2;'LeftGlued',2};
+labels = {'Stimulus';'No stimulus'};
+figName = 'Fig3_LatVelQuant';
 dim = 1;
-mirroredVelocityPlot(prefixCodes,'y',labels,figName,dim)
-dim = 2; 
-figName = 'Fig2_ForwardVelQuantDiffAvg';
-mirroredVelocityPlot(prefixCodes,'y',labels,figName,dim)
+fig3QuantVel(prefixCodes,'y',labels,figName,dim)
 
 %% Figure 4 analysis 
 prefixCodes = {'Diag'};
 runAllAnalysisScript(prefixCodes)
 
 %% Figure 4 figures 
-plotMeanAcrossFliesDisp('Diag','y','n','n','y','Fig4_DiagDisp','y','n')
-plotMeanAcrossFliesVel('Diag','y','n','n','y','Fig4_DiagVel','y','n')
+for i = 1:5
+    figName = sprintf('Fig4_DiagDisp%d',i);
+    plotMeanAcrossFliesDisp('Diag','y','n','n','y',figName,'y','n',i)
+end
+for i = 1:5
+    figName = sprintf('Fig4_DiagVel%d',i);
+    plotMeanAcrossFliesVel('Diag','y','n','n','y',figName,'y','n',i)
+end
+
+plotMeanAcrossFliesDisp('Diag','n','n','n','y','Fig4_Diag_MeanDisp','y','y',i)
+
+
+plotMeanDispGrid('Diag','n','Fig4_Diag_DispGrid','y')
+
+% Lateral velocity quant
+prefixCodes = {'Diag',1;'Diag',2;'Diag',3;'Diag',4};
+labels = {'45';'135';'225';'315'};
+figName = 'Fig4_LatVelQuant';
+dim = 1;
+fig4QuantVel(prefixCodes,'y',labels,figName,dim)
+dim = 2; 
+figName = 'Fig4_ForwardVelQuant';
+fig4QuantVel(prefixCodes,'y',labels,figName,dim)
 
 %% Figure 5 analysis 
 prefixCodes = {'Cardinal'};
 runAllAnalysisScript(prefixCodes)
 
+% Lateral velocity quant
+prefixCodes = {'Cardinal',1;'Cardinal',2;'Cardinal',3;'Cardinal',4};
+labels = {'45 deg speakers';'90 deg speakers'};
+figName = 'Fig5_LatVelQuant';
+dim = 1;
+fig5QuantVel(prefixCodes,'y',labels,figName,dim)
+figName = 'Fig5_LatVelDiff';
+fig5VelDiff(prefixCodes,'y',labels,figName,dim)
+dim = 2; 
+figName = 'Fig5_ForwardVelQuant';
+fig5QuantVel(prefixCodes,'y',labels,figName,dim)
+
 %% Figure 5 figures
 plotMeanAcrossFliesDisp('Cardinal','y','n','n','y','Fig5_CardinalDisp','y','n')
 plotMeanAcrossFliesVel('Cardinal','y','n','n','y','Fig5_CardinalVel','y','n')
 
+%% Figure 6 analysis 
+prefixCodes = {'Males'};
+runAllAnalysisScript(prefixCodes)
+
+%% Figure 6 figures
+plotMeanAcrossFliesDisp('Males','y','n','n','y','Fig6_Males','y','n')
+plotMeanAcrossFliesVel('Males','y','n','n','y','Fig6_Males','y','n')
+
+%% Figure 7 analysis 
+prefixCodes = {'Freq'};
+runAllAnalysisScript(prefixCodes)
+
+%% Figure 7 figures
+plotMeanAcrossFliesDisp('Freq','y','n','n','y','Fig7_Freq','y','n')
+plotMeanAcrossFliesVel('Freq','y','n','n','y','Fig7_Freq','y','n')

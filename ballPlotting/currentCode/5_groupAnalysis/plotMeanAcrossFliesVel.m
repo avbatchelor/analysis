@@ -10,7 +10,7 @@ avgAcrossTrials = getAvgAcrossTrials(plotData);
 
 semAcrossFlies = squeeze(std(avgAcrossTrials,1) / sqrt(plotData.numFlies));
 
-%% Get single fly data 
+%% Get single fly data
 [~,plotDataSingleFly] = getExampleFlies('ShamGlued-45');
 
 %% Color settings
@@ -21,7 +21,7 @@ else
     colors = distinguishable_colors(plotData.numStim,'w');
 end
 
-if strcmp(prefixCode,'Diag')  
+if strcmp(prefixCode,'Diag')
     colorSet1 = distinguishable_colors(4,'w');
 elseif strcmp(prefixCode,'Cardinal')
     colorSet1 = distinguishable_colors(5,'w');
@@ -35,7 +35,7 @@ goFigure;
 % Make subplots tight
 subplot = @(m,n,p) subtightplot (m, n, p, [0.025 0.025], [0.15 0.01], [0.15 0.01]);
 
-%% Load single fly data 
+%% Load single fly data
 
 if strcmp(prefixCode,'ShamGlued-45')
     subplot(3,1,1)
@@ -43,21 +43,21 @@ if strcmp(prefixCode,'ShamGlued-45')
     plot(plotDataSingleFly.stimTimeVector(1,:),plotDataSingleFly.stimulus(1,:)./stimMax,'k')
     ylim([-1,1])
     set(gca,'yTick',[-0.5, 0.5])
-    noXAxisSettings('w'); 
+    noXAxisSettings('w');
     ylabel({'Stimulus';'a.u.'},'HorizontalAlignment','right','VerticalAlignment','middle');
 end
 
 for dim = 1:2
     if strcmp(prefixCode,'ShamGlued-45')
         subplot(3,1,dim+1)
-    else 
+    else
         subplot(2,1,dim)
     end
-    hold on 
+    hold on
     
-    % Plot shaded area 
+    % Plot shaded area
     shadestimArea(plotDataSingleFly,1,-50,50);
-
+    
     % Plot each fly separately
     if allFlies == 'y'
         for stim = 1:plotData.numStim
@@ -105,7 +105,7 @@ for dim = 1:2
             end
             hold on
         end
-
+        
         % Plot SEM
         if plotSEM == 'y'
             x = mean(squeeze(avgAcrossTrials(:,stim,:,1)),1)';
@@ -116,8 +116,8 @@ for dim = 1:2
             uistack(eh{stim},'bottom')
         end
     end
-
-
+    
+    
     %% Apply settings to all figures
     if freqSep == 'y'
         figure(1);
@@ -127,7 +127,7 @@ for dim = 1:2
     else
         applyPlotSettings(prefixCode,plotData.legendText,plotData.numFlies,hfl,plotData.numTrialsPerFly,dim)
     end
-
+    
 end
 
 %% Save figures
@@ -148,16 +148,16 @@ if saveQ == 'y'
     end
 end
 
-%% Make box plot 
+%% Make box plot
 figure;
-hold on 
+hold on
 analysisSettings = getAnalysisSettings;
 
-% Plot individual flies 
+% Plot individual flies
 for stim = 1:plotData.numStim
     % Third dimension is time
     plot(stim,squeeze(avgAcrossTrials(:,stim,analysisSettings.velInd,1)),'o','MarkerEdgeColor',colorSet1(stim,:),'MarkerFaceColor',colorSet1(stim,:));
-    % Plot mean 
+    % Plot mean
     plot([stim-0.2,stim+0.2],repmat(mean(squeeze(avgAcrossTrials(:,stim,analysisSettings.velInd,1)),1),[1,2]),'k');
     
     errorbar(stim,mean(squeeze(avgAcrossTrials(:,stim,analysisSettings.velInd,1)),1),semAcrossFlies(stim,analysisSettings.velInd,1),'k')
@@ -174,7 +174,7 @@ xlim([0 4])
 filename = [figPath,'\',prefixCode,'_','meanLatVelQuant','_',statusStr,'.pdf'];
 export_fig(filename,'-pdf','-painters')
 
-%% Make histograms 
+%% Make histograms
 goFigure;
 numRows = plotData.numStim;
 numCols = plotData.numFlies;
@@ -189,11 +189,11 @@ for fly = 1:plotData.numFlies
     for stim = 1:plotData.numStim
         plotCount = plotCount + 1;
         subplot(numRows,numCols,spIndex(plotCount))
-        % PlotData.vel dims = stim x trials x time x dim 
+        % PlotData.vel dims = stim x trials x time x dim
         histVelData = squeeze(plotData.vel{fly}(stim,:,analysisSettings.velInd,1));
         h = histogram(histVelData,bins,'FaceColor',colorSet1(stim,:));
         h.Normalization = 'probability';
-        % Plot settings 
+        % Plot settings
         if stim == 1
             title(['Fly ',num2str(fly)])
         end
@@ -238,7 +238,7 @@ if dim == 1
     set(gca,'yTick',[-5, 5])
     set(gca,'Layer','top')
     set(gca,'XColor','white')
-else 
+else
     bottomAxisSettings;
     ylim([0 40])
     set(gca,'yTick',[0, 15, 30])
@@ -247,26 +247,26 @@ else
 end
 
 % Shorter x axis if not figure 1
-if ~strcmp(prefixCode,'ShamGlued-45')  
+if ~strcmp(prefixCode,'ShamGlued-45')
     xlim([0.5 4])
 end
 
 % Labels
 if dim == 1
-    direction = 'Lateral'; 
-else 
+    direction = 'Lateral';
+else
     direction = 'Forward';
 end
 ylabel({direction;'Velocity';'(mm/s)'},'HorizontalAlignment','right','VerticalAlignment','middle')
 
 % ylabel([direction,'Velocity (mm/s)'],'rotation',90,'VerticalAlignment','bottom','HorizontalAlignment','right')
 % title({prefixCode;['Number of flies = ',num2str(numFlies),', Number of trials per fly = ',num2str(numTrialsPerFly)]})
-% 
+%
 % % Legend
 % legend(hfl,legendText,'Location','eastoutside')
 % legend('boxoff')
 
-% Fontsize 
+% Fontsize
 set(findall(gcf,'-property','FontSize'),'FontSize',30)
 
 end

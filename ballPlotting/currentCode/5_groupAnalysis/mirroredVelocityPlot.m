@@ -27,7 +27,6 @@ for i = 1:size(prefixCodes,1)
     
     %% Average & SEM across flies
     avgAcrossTrials = getAvgAcrossTrials(plotData);
-    semAcrossFlies = squeeze(std(avgAcrossTrials,1) / sqrt(plotData.numFlies));
     
     %% Plot individual expts
     % Dimensions: flies x stim x time x dim 

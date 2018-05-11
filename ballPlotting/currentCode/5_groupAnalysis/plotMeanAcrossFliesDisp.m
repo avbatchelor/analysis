@@ -9,7 +9,7 @@ close all
 
 avgAcrossTrials = cellfun(@(x) squeeze(mean(x,2)),plotData.disp,'UniformOutput',false);
 for i = 1:plotData.numFlies
-   temp(i,:,:,:) = avgAcrossTrials{i}; 
+    temp(i,:,:,:) = avgAcrossTrials{i};
 end
 avgAcrossTrials = temp;
 
@@ -24,10 +24,12 @@ else
     colors = distinguishable_colors(plotData.numStim,'w');
 end
 
-if strcmp(prefixCode,'Diag')  
+if strcmp(prefixCode,'Diag')
     colorSet1 = distinguishable_colors(4,'w');
 elseif strcmp(prefixCode,'Cardinal')
     colorSet1 = distinguishable_colors(5,'w');
+elseif strcmp(prefixCode,'Freq')
+    colorSet1 = distinguishable_colors(plotData.numStim,'w');
 else
     [colorSet1,colorSet2] = colorSetImport;
 end
@@ -43,6 +45,7 @@ if allFlies == 'y'
         else
             plot(squeeze(avgAcrossTrials(:,stim,:,1))',squeeze(avgAcrossTrials(:,stim,:,2))','Color',colorSet1(stim,:),'Linewidth',2)
         end
+        
         hold on
     end
 end
@@ -149,7 +152,7 @@ ylabel('Y Displacement (mm)','rotation',90,'VerticalAlignment','bottom','Horizon
 % legend(hfl,legendText,'Location','eastoutside')
 % legend('boxoff')
 
-% Fontsize 
+% Fontsize
 set(findall(gcf,'-property','FontSize'),'FontSize',30)
 
 end
