@@ -49,3 +49,20 @@ mirroredVelocityPlot(prefixCodes,'y',labels,figName,dim)
 dim = 2; 
 figName = 'Fig2_ForwardVelQuantDiffAvg';
 mirroredVelocityPlot(prefixCodes,'y',labels,figName,dim)
+
+%% Figure 4 analysis 
+prefixCodes = {'Diag'};
+runAllAnalysisScript(prefixCodes)
+
+%% Figure 4 figures 
+plotMeanAcrossFliesDisp('Diag','y','n','n','y','Fig4_DiagDisp','y','n')
+plotMeanAcrossFliesVel('Diag','y','n','n','y','Fig4_DiagVel','y','n')
+
+%% Figure 5 analysis 
+prefixCodes = {'Cardinal'};
+runAllAnalysisScript(prefixCodes)
+
+%% Figure 5 figures
+plotMeanAcrossFliesDisp('Cardinal','y','n','n','y','Fig5_CardinalDisp','y','n')
+plotMeanAcrossFliesVel('Cardinal','y','n','n','y','Fig5_CardinalVel','y','n')
+

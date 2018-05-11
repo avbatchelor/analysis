@@ -24,8 +24,13 @@ else
     colors = distinguishable_colors(plotData.numStim,'w');
 end
 
-[colorSet1,colorSet2] = colorSetImport;
-
+if strcmp(prefixCode,'Diag')  
+    colorSet1 = distinguishable_colors(4,'w');
+elseif strcmp(prefixCode,'Cardinal')
+    colorSet1 = distinguishable_colors(5,'w');
+else
+    [colorSet1,colorSet2] = colorSetImport;
+end
 
 %% Open figure
 goFigure;
