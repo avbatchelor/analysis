@@ -1,8 +1,8 @@
-prefixCodes = {'Males';'Freq'};
+prefixCodes = {'Freq';'a2Glued';'a3Glued'};
 
 for j = 1:size(prefixCodes,1)
 
-    prefixCode = prefixCodes{1};
+    prefixCode = prefixCodes{j};
     flies = getFlyExpts(prefixCode);
 
     for i = 1:size(flies,1)

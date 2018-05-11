@@ -3,6 +3,8 @@ function plotMeanAcrossFliesDisp(prefixCode,allFlies,plotSEM,freqSep,saveQ,figNa
 %% Get plot data
 plotData = multiFlyAnalysis(prefixCode,allTrials);
 
+close all
+
 %% Average & SEM across flies
 
 avgAcrossTrials = cellfun(@(x) squeeze(mean(x,2)),plotData.disp,'UniformOutput',false);
@@ -32,9 +34,9 @@ goFigure;
 if allFlies == 'y'
     for stim = 1:plotData.numStim
         if plotMean == 'n'
-            hfl = plot(squeeze(avgAcrossTrials(:,stim,:,1))',squeeze(avgAcrossTrials(:,stim,:,2))','Color',colorSet1(stim,:),'Linewidth',1);
+            hfl = plot(squeeze(avgAcrossTrials(:,stim,:,1))',squeeze(avgAcrossTrials(:,stim,:,2))','Color',colorSet1(stim,:),'Linewidth',2);
         else
-            plot(squeeze(avgAcrossTrials(:,stim,:,1))',squeeze(avgAcrossTrials(:,stim,:,2))','Color',colorSet1(stim,:),'Linewidth',1)
+            plot(squeeze(avgAcrossTrials(:,stim,:,1))',squeeze(avgAcrossTrials(:,stim,:,2))','Color',colorSet1(stim,:),'Linewidth',2)
         end
         hold on
     end
@@ -112,7 +114,7 @@ if saveQ == 'y'
     n = numFigs;
     for i = 1:n
         figure(i)
-        filename = [figPath,'\',prefixCode,'_',num2str(i),'_',figName,'_',statusStr,'.pdf'];
+        filename = [figPath,'\',figName,'_',statusStr,'.pdf'];
         export_fig(filename,'-pdf','-painters')
     end
 end
@@ -132,15 +134,15 @@ ylim([-60 60])
 % Labels
 xlabel('X Displacement (mm)')
 ylabel('Y Displacement (mm)','rotation',90,'VerticalAlignment','bottom','HorizontalAlignment','center')
-title(prefixCode)
+% title(prefixCode)
 
 % Text showing n's
-yTxtPos = min(ylim)+10;
-text(-2,yTxtPos,{['Number of flies = ',num2str(numFlies)];['Number of trials per fly = ',num2str(numTrialsPerFly)]})
+% yTxtPos = min(ylim)+10;
+% text(-2,yTxtPos,{['Number of flies = ',num2str(numFlies)];['Number of trials per fly = ',num2str(numTrialsPerFly)]})
 
 % Legend
-legend(hfl,legendText,'Location','eastoutside')
-legend('boxoff')
+% legend(hfl,legendText,'Location','eastoutside')
+% legend('boxoff')
 
 % Fontsize 
 set(findall(gcf,'-property','FontSize'),'FontSize',30)

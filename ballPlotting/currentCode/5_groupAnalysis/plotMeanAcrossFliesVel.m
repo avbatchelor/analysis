@@ -3,6 +3,8 @@ function plotMeanAcrossFliesVel(prefixCode,allFlies,plotSEM,freqSep,saveQ,figNam
 %% Get plot data
 plotData = multiFlyAnalysis(prefixCode,allTrials);
 
+close all
+
 %% Average & SEM across flies
 avgAcrossTrials = getAvgAcrossTrials(plotData);
 
@@ -29,17 +31,22 @@ subplot = @(m,n,p) subtightplot (m, n, p, [0.025 0.025], [0.15 0.01], [0.15 0.01
 
 %% Load single fly data 
 
-subplot(3,1,1)
-stimMax = max(abs(plotDataSingleFly.stimulus(1,:)));
-plot(plotDataSingleFly.stimTimeVector(1,:),plotDataSingleFly.stimulus(1,:)./stimMax,'k')
-ylim([-1,1])
-set(gca,'yTick',[-0.5, 0.5])
-noXAxisSettings('w'); 
-ylabel({'Stimulus';'a.u.'},'HorizontalAlignment','right','VerticalAlignment','middle');
-
+if strcmp(prefixCode,'ShamGlued-45')
+    subplot(3,1,1)
+    stimMax = max(abs(plotDataSingleFly.stimulus(1,:)));
+    plot(plotDataSingleFly.stimTimeVector(1,:),plotDataSingleFly.stimulus(1,:)./stimMax,'k')
+    ylim([-1,1])
+    set(gca,'yTick',[-0.5, 0.5])
+    noXAxisSettings('w'); 
+    ylabel({'Stimulus';'a.u.'},'HorizontalAlignment','right','VerticalAlignment','middle');
+end
 
 for dim = 1:2
-    subplot(3,1,dim+1)
+    if strcmp(prefixCode,'ShamGlued-45')
+        subplot(3,1,dim+1)
+    else 
+        subplot(2,1,dim)
+    end
     hold on 
     
     % Plot shaded area 
@@ -49,9 +56,9 @@ for dim = 1:2
     if allFlies == 'y'
         for stim = 1:plotData.numStim
             if plotMean == 'n'
-                hfl = plot(plotData.time,squeeze(avgAcrossTrials(:,stim,:,dim))','Color',colorSet1(stim,:),'Linewidth',1);
+                hfl = plot(plotData.time,squeeze(avgAcrossTrials(:,stim,:,dim))','Color',colorSet1(stim,:),'Linewidth',2);
             else
-                plot(plotData.time,squeeze(avgAcrossTrials(:,stim,:,dim))','Color',colorSet1(stim,:),'Linewidth',1)
+                plot(plotData.time,squeeze(avgAcrossTrials(:,stim,:,dim))','Color',colorSet1(stim,:),'Linewidth',2)
             end
             hold on
         end
@@ -235,7 +242,7 @@ end
 
 % Shorter x axis if not figure 1
 if ~strcmp(prefixCode,'ShamGlued-45')  
-    xlim([1.5 4])
+    xlim([0.5 4])
 end
 
 % Labels
