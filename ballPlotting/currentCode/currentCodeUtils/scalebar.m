@@ -6,8 +6,14 @@ plot([xStart xStart],[yStart yEnd],'k','Linewidth',1)
 xLength = xEnd - xStart;
 yLength = yEnd - yStart;
 
-xDelta = xLength/10;
-yDelta = yLength/10;
+d = daspect;
+if xLength == 0
+    yDelta = yLength/10;
+    xDelta = d(1)/d(2) * yDelta;
+else
+    xDelta = xLength/10;
+    yDelta = d(2)/d(1)*xDelta;
+end    
 
 xMid = xStart + (xEnd - xStart)/2;
 yMid = yStart + (yEnd - yStart)/2;

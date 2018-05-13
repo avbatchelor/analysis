@@ -52,19 +52,19 @@ prefixCodes = {'Diag'};
 runAllAnalysisScript(prefixCodes)
 
 %% Figure 4 figures 
-for i = 1:5
-    figName = sprintf('Fig4_DiagDisp%d',i);
-    plotMeanAcrossFliesDisp('Diag','y','n','n','y',figName,'y','n',i)
-end
-for i = 1:5
-    figName = sprintf('Fig4_DiagVel%d',i);
-    plotMeanAcrossFliesVel('Diag','y','n','n','y',figName,'y','n',i)
-end
+% for i = 1:5
+%     figName = sprintf('Fig4_DiagDisp%d',i);
+%     plotMeanAcrossFliesDisp('Diag','y','n','n','y',figName,'y','n',i)
+% end
+% for i = 1:5
+%     figName = sprintf('Fig4_DiagVel%d',i);
+%     plotMeanAcrossFliesVel('Diag','y','n','n','y',figName,'y','n',i)
+% end
+% 
+% plotMeanAcrossFliesDisp('Diag','n','n','n','y','Fig4_Diag_MeanDisp','y','y',i)
 
-plotMeanAcrossFliesDisp('Diag','n','n','n','y','Fig4_Diag_MeanDisp','y','y',i)
 
-
-plotMeanDispGrid('Diag','n','Fig4_Diag_DispGrid','y')
+plotMeanDispGrid('Diag','n','Fig4_Diag_DispGrid','y',1:4)
 
 % Lateral velocity quant
 prefixCodes = {'Diag',1;'Diag',2;'Diag',3;'Diag',4};
@@ -80,6 +80,12 @@ fig4QuantVel(prefixCodes,'y',labels,figName,dim)
 prefixCodes = {'Cardinal'};
 runAllAnalysisScript(prefixCodes)
 
+%% Figure 5 figures
+% plotMeanAcrossFliesDisp('Cardinal','y','n','n','y','Fig5_CardinalDisp','y','n')
+% plotMeanAcrossFliesVel('Cardinal','y','n','n','y','Fig5_CardinalVel','y','n')
+
+plotMeanDispGrid('Cardinal','n','Fig5_Cardinal_DispGrid','y',1:4)
+
 % Lateral velocity quant
 prefixCodes = {'Cardinal',1;'Cardinal',2;'Cardinal',3;'Cardinal',4};
 labels = {'45 deg speakers';'90 deg speakers'};
@@ -92,17 +98,16 @@ dim = 2;
 figName = 'Fig5_ForwardVelQuant';
 fig5QuantVel(prefixCodes,'y',labels,figName,dim)
 
-%% Figure 5 figures
-plotMeanAcrossFliesDisp('Cardinal','y','n','n','y','Fig5_CardinalDisp','y','n')
-plotMeanAcrossFliesVel('Cardinal','y','n','n','y','Fig5_CardinalVel','y','n')
-
 %% Figure 6 analysis 
 prefixCodes = {'Males'};
 runAllAnalysisScript(prefixCodes)
 
 %% Figure 6 figures
-plotMeanAcrossFliesDisp('Males','y','n','n','y','Fig6_Males','y','n')
-plotMeanAcrossFliesVel('Males','y','n','n','y','Fig6_Males','y','n')
+plotMeanAcrossFliesDisp('Males','y','n','n','y','Fig6_MalesDisp','y','n',1:2)
+plotMeanAcrossFliesDisp('Diag','y','n','n','y','Fig6_DiagDisp','y','n',[1,4])
+
+plotMeanAcrossFliesVel('Males','y','n','n','y','Fig6_MalesVel','y','n',1:2)
+plotMeanAcrossFliesVel('Diag','y','n','n','y','Fig6_DiagVel','y','n',[1,4])
 
 %% Figure 7 analysis 
 prefixCodes = {'Freq'};

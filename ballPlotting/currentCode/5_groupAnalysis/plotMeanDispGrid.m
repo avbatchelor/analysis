@@ -1,7 +1,10 @@
-function plotMeanDispGrid(prefixCode,freqSep,figName,allTrials,varargin)
+function plotMeanDispGrid(prefixCode,freqSep,figName,allTrials,stimToPlot,varargin)
 
 %% Get plot data
 plotData = multiFlyAnalysis(prefixCode,allTrials);
+
+%% Get single fly data
+[~,plotDataSingleFly] = getExampleFlies(prefixCode);
 
 close all
 
@@ -12,6 +15,7 @@ for i = 1:plotData.numFlies
 end
 avgAcrossTrials = temp;
 
+avgAcrossTrialsVel = getAvgAcrossTrials(plotData);
 
 %% Color settings
 if freqSep == 'y'
@@ -31,40 +35,111 @@ else
     [colorSet1,colorSet2] = colorSetImport;
 end
 
+%% Subplot settings
 subplot = @(m,n,p) subtightplot (m, n, p, [0.01 0.01], [0.1 0.075], [0.1 0.01]);
 
 %% Open figure
 goFigure;
 
+for  i = 1:10
+    subplot(3,5,i)
+    shadestimArea(plotDataSingleFly,1,-50,50);
+end
+
 % Plot each fly separately
-for fly = 1:plotData.numFlies 
-    subplot(1,5,fly)
-    for stim = 1:plotData.numStim
-            hfl = plot(squeeze(avgAcrossTrials(fly,stim,:,1))',squeeze(avgAcrossTrials(fly,stim,:,2))','Color',colorSet1(stim,:),'Linewidth',2);
+for fly = 1:plotData.numFlies
+    for stim = stimToPlot
+        
+        subplot(3,5,fly)
         hold on
+        plot(plotData.time,squeeze(avgAcrossTrialsVel(fly,stim,:,1))','Color',colorSet1(stim,:),'Linewidth',2);
+        
+        % settings 
+        if strcmp(prefixCode,'Diag')
+            ylim([-6 6])
+        else
+            ylim([-10 10])
+        end
+        xlim([2.1608-1.5,2.1608+1.5])
+%         pbaspect([1,1,1])
+        title(['Fly ',num2str(fly)])
+        if fly == 1
+            noXAxisSettings('w');
+            ylabel({'Lateral','velocity','(mm/s)'})
+            set(gca,'YTick',[-4 0 4])
+        else
+            noAxisSettings('w');
+        end
+
+        subplot(3,5,plotData.numFlies + fly)
+        hold on
+        plot(plotData.time,squeeze(avgAcrossTrialsVel(fly,stim,:,2))','Color',colorSet1(stim,:),'Linewidth',2);
+        
+        % settings 
+        if strcmp(prefixCode,'Diag')
+            ylim([0 26])
+        else
+            ylim([0 32])
+        end
+        xlim([2.1608-1.5,2.1608+1.5])
+%         pbaspect([1,1,1])
+        if fly == 1
+            noXAxisSettings('w');
+            ylabel({'Forward','velocity','(mm/s)'})
+            set(gca,'YTick',[0 10 20])
+        else
+            noAxisSettings('w');
+        end
+        
+        if fly == 1
+            xStart = 3;
+            xEnd = 3.5;
+            yStart = 7.5;
+            yEnd = 7.5;
+            xText = '0.5s';
+            yText = '';
+            scalebar(xStart,xEnd,yStart,yEnd,xText,yText)
+        end
+
+        subplot(3,5,2*plotData.numFlies + fly)
+        hfl = plot(squeeze(avgAcrossTrials(fly,stim,:,1))',squeeze(avgAcrossTrials(fly,stim,:,2))','Color',colorSet1(stim,:),'Linewidth',2);
+        hold on
+        
+        % Axis limits
+        symAxisY(gca);
+        if strcmp(prefixCode,'Diag')
+            ylim([-50 50])
+            xlim([-1.8 1.8])
+        else
+            ylim([-60 60])
+            xlim([-3.1 3.1])
+        end
+%         pbaspect([1,1,1])
+        if fly == 1
+            noXAxisSettings('w');
+            ylabel({'Y Displacement','(mm)'})
+            set(gca,'YTick',[-25 0 25])
+        else 
+            noAxisSettings('w');
+        end
     end
     
     if fly == 1
-        xStart = 1; 
-        xEnd = 2;
-        yStart = -30; 
-        yEnd = -10; 
+        xStart = 0.75;
+        xEnd = 1.75;
+        yStart = -30;
+        yEnd = -30;
         xText = '1 mm';
-        yText = '20 mm';
+        yText = '';
         scalebar(xStart,xEnd,yStart,yEnd,xText,yText)
     end
     
-    % Axis limits
-    symAxisY(gca);
-    xlim([-3 3])
-    ylim([-60 60])
     
-    % Plot size 
-    pbaspect([1,1,1])
     
-    noAxisSettings('w');
-
+    %     noAxisSettings('w');
+    
 end
+
 
 %% Plot settings
 
@@ -73,11 +148,11 @@ end
 % % Labels
 % xlabel('X Displacement (mm)')
 % ylabel('Y Displacement (mm)','rotation',90,'VerticalAlignment','bottom','HorizontalAlignment','center')
-% 
+%
 % % Fontsize
 % set(findall(gcf,'-property','FontSize'),'FontSize',30)
 
-tightfig;
+% tightfig;
 
 %% Save figures
 statusStr = checkRepoStatus;

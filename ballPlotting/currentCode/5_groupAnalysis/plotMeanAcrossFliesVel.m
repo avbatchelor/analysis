@@ -1,17 +1,21 @@
-function plotMeanAcrossFliesVel(prefixCode,allFlies,plotSEM,freqSep,saveQ,figName,allTrials,plotMean,varargin)
+function plotMeanAcrossFliesVel(prefixCode,allFlies,plotSEM,freqSep,saveQ,figName,allTrials,plotMean,stimToPlot,varargin)
 
 %% Get plot data
 plotData = multiFlyAnalysis(prefixCode,allTrials);
 
 close all
 
+if ~exist('stimToPlot','var')
+    stimToPlot = 1:plotData.numStim; 
+end
+
 %% Average & SEM across flies
-avgAcrossTrials = getAvgAcrossTrials(plotData);
+avgAcrossTrials = getAvgAcrossTrials(plotData,stimToPlot);
 
 semAcrossFlies = squeeze(std(avgAcrossTrials,1) / sqrt(plotData.numFlies));
 
 %% Get single fly data
-[~,plotDataSingleFly] = getExampleFlies('ShamGlued-45');
+[~,plotDataSingleFly] = getExampleFlies(prefixCode);
 
 %% Color settings
 if freqSep == 'y'
@@ -60,7 +64,7 @@ for dim = 1:2
     
     % Plot each fly separately
     if allFlies == 'y'
-        for stim = 1:plotData.numStim
+        for stim = 1:length(stimToPlot)
             if plotMean == 'n'
                 hfl = plot(plotData.time,squeeze(avgAcrossTrials(:,stim,:,dim))','Color',colorSet1(stim,:),'Linewidth',2);
             else
@@ -148,13 +152,13 @@ if saveQ == 'y'
     end
 end
 
-%% Make box plot
+%% Make lateral velocity box plot
 figure;
 hold on
 analysisSettings = getAnalysisSettings;
 
 % Plot individual flies
-for stim = 1:plotData.numStim
+for stim = 1:length(stimToPlot)
     % Third dimension is time
     plot(stim,squeeze(avgAcrossTrials(:,stim,analysisSettings.velInd,1)),'o','MarkerEdgeColor',colorSet1(stim,:),'MarkerFaceColor',colorSet1(stim,:));
     % Plot mean
@@ -174,6 +178,35 @@ xlim([0 4])
 filename = [figPath,'\',prefixCode,'_','meanLatVelQuant','_',statusStr,'.pdf'];
 export_fig(filename,'-pdf','-painters')
 
+%% Make forward velocity change box plot
+figure;
+hold on
+analysisSettings = getAnalysisSettings;
+
+
+% Plot individual flies
+for stim = 1:length(stimToPlot)
+    velChange = -(avgAcrossTrials(:,stim,analysisSettings.forwardVelIndAfter,2)-avgAcrossTrials(:,stim,analysisSettings.forwardVelIndBefore,2));
+
+    % Third dimension is time
+    plot(stim,velChange,'o','MarkerEdgeColor',colorSet1(stim,:),'MarkerFaceColor',colorSet1(stim,:));
+    % Plot mean
+    plot([stim-0.2,stim+0.2],repmat(mean(velChange),[1,2]),'k');
+    sem = squeeze(std(velChange,1) / sqrt(plotData.numFlies));
+    errorbar(stim,mean(velChange),sem,'k')
+end
+
+noXAxisSettings('w')
+ylabel({'Decrease in';'forward';'velocity';'(mm/s)'})
+figPos = get(gcf,'Position');
+figPos(3) = figPos(3)/2;
+set(gcf,'Position',figPos)
+xlim([0 4])
+
+% Save figure
+filename = [figPath,'\',prefixCode,'_','meanForwardVelQuant','_',statusStr,'.pdf'];
+export_fig(filename,'-pdf','-painters')
+
 %% Make histograms
 goFigure;
 numRows = plotData.numStim;
@@ -186,7 +219,7 @@ bins = -41:2:41;
 
 plotCount = 0;
 for fly = 1:plotData.numFlies
-    for stim = 1:plotData.numStim
+    for stim = stimToPlot
         plotCount = plotCount + 1;
         subplot(numRows,numCols,spIndex(plotCount))
         % PlotData.vel dims = stim x trials x time x dim

@@ -1,15 +1,19 @@
-function plotMeanAcrossFliesDisp(prefixCode,allFlies,plotSEM,freqSep,saveQ,figName,allTrials,plotMean,varargin)
+function plotMeanAcrossFliesDisp(prefixCode,allFlies,plotSEM,freqSep,saveQ,figName,allTrials,plotMean,stimToPlot,varargin)
 
 %% Get plot data
 plotData = multiFlyAnalysis(prefixCode,allTrials);
 
 close all
 
+if ~exist('stimToPlot','var')
+    stimToPlot = 1:plotData.numStim; 
+end
+
 %% Average & SEM across flies
 
 avgAcrossTrials = cellfun(@(x) squeeze(mean(x,2)),plotData.disp,'UniformOutput',false);
 for i = 1:plotData.numFlies
-    temp(i,:,:,:) = avgAcrossTrials{i};
+    temp(i,:,:,:) = avgAcrossTrials{i}(stimToPlot,:,:);
 end
 avgAcrossTrials = temp;
 
@@ -39,7 +43,7 @@ goFigure;
 
 % Plot each fly separately
 if allFlies == 'y'
-    for stim = 1:plotData.numStim
+    for stim = 1:length(stimToPlot)
         if plotMean == 'n'
             hfl = plot(squeeze(avgAcrossTrials(:,stim,:,1))',squeeze(avgAcrossTrials(:,stim,:,2))','Color',colorSet1(stim,:),'Linewidth',2);
         else
@@ -50,11 +54,12 @@ if allFlies == 'y'
     end
 end
 
+
 if plotMean == 'y'
     % Plot mean across flies
     pipIdx = [];
     sineIdx = [];
-    for stim = 1:plotData.numStim
+    for stim = stimToPlot
         % Plotting different stimuli in freq experiment in different plots
         if freqSep == 'y'
             if strcmp(StimStruct(stim).stimObj.class,'SineWave')

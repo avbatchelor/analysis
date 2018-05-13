@@ -8,8 +8,8 @@ if exist('color','var')
 end
 
 set(gca,'Box','off','TickDir','out','YTickLabel','','ytick',[],'XTickLabel','','xtick',[])
-axis tight
-set(get(gca,'XLabel'),'Rotation',0,'HorizontalAlignment','right')
-set(get(gca,'YLabel'),'Rotation',0,'HorizontalAlignment','right')
+% axis tight
+% set(get(gca,'XLabel'),'Rotation',0,'HorizontalAlignment','right')
+% set(get(gca,'YLabel'),'Rotation',0,'HorizontalAlignment','right')
 
 end
