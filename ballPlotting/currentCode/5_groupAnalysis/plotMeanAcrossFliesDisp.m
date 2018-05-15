@@ -3,6 +3,9 @@ function plotMeanAcrossFliesDisp(prefixCode,allFlies,plotSEM,freqSep,saveQ,figNa
 %% Get plot data
 plotData = multiFlyAnalysis(prefixCode,allTrials);
 
+%% Get single fly data
+[~,plotDataSingleFly,StimStruct] = getExampleFlies(prefixCode);
+
 close all
 
 if ~exist('stimToPlot','var')
@@ -23,9 +26,9 @@ semAcrossFlies = squeeze(std(avgAcrossTrials,1) / sqrt(plotData.numFlies));
 %% Color settings
 if freqSep == 'y'
     numColors = ceil(plotData.numStim/2);
-    colors = linspecer(numColors);
+    colorSet2 = linspecer(numColors);
 else
-    colors = distinguishable_colors(plotData.numStim,'w');
+    colorSet2 = distinguishable_colors(plotData.numStim,'w');
 end
 
 if strcmp(prefixCode,'Diag')
@@ -35,8 +38,11 @@ elseif strcmp(prefixCode,'Cardinal')
 elseif strcmp(prefixCode,'Freq')
     colorSet1 = distinguishable_colors(plotData.numStim,'w');
 else
-    [colorSet1,colorSet2] = colorSetImport;
+    [colorSet1,~] = colorSetImport;
 end
+
+% [~,colorSet2] = colorSetImport;
+
 
 %% Open figure
 goFigure;
@@ -127,8 +133,16 @@ if saveQ == 'y'
     n = numFigs;
     for i = 1:n
         figure(i)
-        filename = [figPath,'\',figName,'_',statusStr,'.pdf'];
-        export_fig(filename,'-pdf','-painters')
+        if prefixCode == 'Freq'
+            if i == 1
+                filename = [figPath,'\',figName,'_','Tones','_',statusStr,'.pdf'];
+            elseif i == 2
+                filename = [figPath,'\',figName,'_','Pips','_',statusStr,'.pdf'];
+            end
+        else
+            filename = [figPath,'\',figName,'_',statusStr,'.pdf'];
+        end
+            export_fig(filename,'-pdf','-painters')
     end
 end
 

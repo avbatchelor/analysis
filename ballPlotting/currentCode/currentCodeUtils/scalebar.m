@@ -1,5 +1,7 @@
 function scalebar(xStart,xEnd,yStart,yEnd,xText,yText)
 
+hold on 
+
 plot([xStart xEnd],[yStart yStart],'k','Linewidth',1)
 plot([xStart xStart],[yStart yEnd],'k','Linewidth',1)
 

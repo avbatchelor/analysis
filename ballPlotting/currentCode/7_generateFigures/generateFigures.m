@@ -114,5 +114,9 @@ prefixCodes = {'Freq'};
 runAllAnalysisScript(prefixCodes)
 
 %% Figure 7 figures
-plotMeanAcrossFliesDisp('Freq','y','n','n','y','Fig7_Freq','y','n')
-plotMeanAcrossFliesVel('Freq','y','n','n','y','Fig7_Freq','y','n')
+stimulusExamples;
+plotMeanAcrossFliesDisp('Freq','n','n','y','y','Fig7_Freq','y','y')
+plotMeanAcrossFliesVel('Freq','n','n','y','y','Fig7_Freq','y','y')
+fig7QuantVel('Freq','y','Freq_latVelQuant',1)
+fig7QuantVel('Freq','y','Freq_forVelQuant',2)
+

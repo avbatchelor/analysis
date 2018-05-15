@@ -1,4 +1,4 @@
-function [groupedData,plotData] = getExampleFlies(prefixCode)
+function [groupedData,plotData,StimStruct] = getExampleFlies(prefixCode)
 
 switch prefixCode
     % Fig 1
