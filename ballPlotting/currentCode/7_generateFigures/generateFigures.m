@@ -1,19 +1,22 @@
+%% Run all analysis 
+runAllAnalysisScript;
 
 %% Figure 1 
-% Need to go back and do block rotation for this figure 
+figNum = 1;
+prefixCodes = {'ShamGlued-45';'Diag';'Cardinal';'Freq'};
+stimToPlot = {1:3;[1,4];2:3;[8,18]};
+plotMeanAcrossFliesDisp(prefixCodes,'y','n','n','y','Fig1_disp_alldata','y','n',stimToPlot,figNum)
+plotMeanAcrossFliesDisp('ShamGlued-45','y','n','n','y','Fig1_disp','y','n')
 
-% Process the data 
+stimToPlot = {1:2;[1,4];2:3;[8,18]};
+plotMeanAcrossFliesVel('ShamGlued-45','y','n','n','y','Fig1_vel','y','n')
+plotMeanAcrossFliesVel(prefixCodes,'y','n','n','y','Fig1_vel','y','n',stimToPlot,figNum)
 
-% Mean displacement 
-plotMeanAcrossFliesDisp('ShamGlued-45','y','n','n','y','forFig1_withBlockRotation','y','n')
-plotMeanAcrossFliesVel('ShamGlued-45','y','n','n','y','VelforFig1_withBlockRotation','y','n')
+fig1QuantVel(prefixCodes,'y',stimToPlot)
 
 % Example trials 
 plotRandomTrials('ShamGlued',1,1,2)
 
-%% Figure 2 Analysis
-prefixCodes = {'a2Glued';'a3Glued'};
-runAllAnalysisScript(prefixCodes)
 
 %% Figure 2 Figures 
 plotMeanAcrossFliesDisp('a2Glued','y','n','n','y','Fig2_a2Glued','y','n')
@@ -32,9 +35,6 @@ figName = 'Fig2_ForwardVelQuantDiffAvg';
 mirroredVelocityPlot(prefixCodes,'y',labels,figName,dim)
 
 %% Figure 3 Figures 
-prefixCodes = {'LeftGlued';'RightGlued'};
-runAllAnalysisScript(prefixCodes)
-
 plotMeanAcrossFliesDisp('RightGlued','y','n','n','y','Fig3_RightGluedDisp','y','n')
 plotMeanAcrossFliesDisp('LeftGlued','y','n','n','y','Fig3_LeftGluedDisp','y','n')
 plotMeanAcrossFliesVel('RightGlued','y','n','n','y','Fig3_RightGluedVel','y','n')
@@ -47,23 +47,7 @@ figName = 'Fig3_LatVelQuant';
 dim = 1;
 fig3QuantVel(prefixCodes,'y',labels,figName,dim)
 
-%% Figure 4 analysis 
-prefixCodes = {'Diag'};
-runAllAnalysisScript(prefixCodes)
-
 %% Figure 4 figures 
-% for i = 1:5
-%     figName = sprintf('Fig4_DiagDisp%d',i);
-%     plotMeanAcrossFliesDisp('Diag','y','n','n','y',figName,'y','n',i)
-% end
-% for i = 1:5
-%     figName = sprintf('Fig4_DiagVel%d',i);
-%     plotMeanAcrossFliesVel('Diag','y','n','n','y',figName,'y','n',i)
-% end
-% 
-% plotMeanAcrossFliesDisp('Diag','n','n','n','y','Fig4_Diag_MeanDisp','y','y',i)
-
-
 plotMeanDispGrid('Diag','n','Fig4_Diag_DispGrid','y',1:4)
 
 % Lateral velocity quant
@@ -76,14 +60,7 @@ dim = 2;
 figName = 'Fig4_ForwardVelQuant';
 fig4QuantVel(prefixCodes,'y',labels,figName,dim)
 
-%% Figure 5 analysis 
-prefixCodes = {'Cardinal'};
-runAllAnalysisScript(prefixCodes)
-
 %% Figure 5 figures
-% plotMeanAcrossFliesDisp('Cardinal','y','n','n','y','Fig5_CardinalDisp','y','n')
-% plotMeanAcrossFliesVel('Cardinal','y','n','n','y','Fig5_CardinalVel','y','n')
-
 plotMeanDispGrid('Cardinal','n','Fig5_Cardinal_DispGrid','y',1:4)
 
 % Lateral velocity quant
@@ -98,9 +75,6 @@ dim = 2;
 figName = 'Fig5_ForwardVelQuant';
 fig5QuantVel(prefixCodes,'y',labels,figName,dim)
 
-%% Figure 6 analysis 
-prefixCodes = {'Males'};
-runAllAnalysisScript(prefixCodes)
 
 %% Figure 6 figures
 plotMeanAcrossFliesDisp('Males','y','n','n','y','Fig6_MalesDisp','y','n',1:2)
@@ -109,14 +83,11 @@ plotMeanAcrossFliesDisp('Diag','y','n','n','y','Fig6_DiagDisp','y','n',[1,4])
 plotMeanAcrossFliesVel('Males','y','n','n','y','Fig6_MalesVel','y','n',1:2)
 plotMeanAcrossFliesVel('Diag','y','n','n','y','Fig6_DiagVel','y','n',[1,4])
 
-%% Figure 7 analysis 
-prefixCodes = {'Freq'};
-runAllAnalysisScript(prefixCodes)
 
 %% Figure 7 figures
 stimulusExamples;
 plotMeanAcrossFliesDisp('Freq','n','n','y','y','Fig7_Freq','y','y')
 plotMeanAcrossFliesVel('Freq','n','n','y','y','Fig7_Freq','y','y')
-fig7QuantVel('Freq','y','Freq_latVelQuant',1)
-fig7QuantVel('Freq','y','Freq_forVelQuant',2)
+fig7QuantVel('Freq','y','Fig7_Freq_latVelQuant',1)
+fig7QuantVel('Freq','y','Fig7_Freq_forVelQuant',2)
 

@@ -40,7 +40,7 @@ end
 
 % Plot settings
 if dim == 1
-    ylabel({'Lateral velocity';'towards speaker';'(mm/s)'})
+    ylabel({'Lateral velocity';'(mm/s)'})
 else
     ylabel({'Decrease in';'forward';'velocity';'(mm/s)'})
     ylim([-1 30])

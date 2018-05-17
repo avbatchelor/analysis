@@ -9,4 +9,4 @@ else
     commitStr = '';
 end
 
-statusStr = [datestr(now,'mmddyy_HHMM'),'_',shortHash,'_',commitStr];
+statusStr = [datestr(now,'mmddyy'),'_',shortHash,'_',commitStr];

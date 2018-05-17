@@ -97,7 +97,7 @@ else
     set(gca,'YTick',[0 10 20])
 end
 xlim([0.5 5+0.5])
-labels = {'100','140','200','225','300','800'};
+labels = {'100','140','225','300','800'};
 set(gca,'XTick',1:5,'XTickLabel',labels);
 set(gca,'Box','off','TickDir','out')
 set(get(gca,'YLabel'),'Rotation',0,'HorizontalAlignment','right')

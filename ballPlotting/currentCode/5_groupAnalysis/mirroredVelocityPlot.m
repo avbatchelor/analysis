@@ -65,7 +65,7 @@ for i = 1:size(prefixCodes,1)
 end
 
 if dim == 1
-    ylabel({'Lateral';'velocity';'mm/s'})
+    ylabel({'Lateral velocity';'towards speaker';'mm/s'})
 else
     ylabel({'Decrease in';'forward';'velocity';'mm/s'})
     ylim([-1 30])

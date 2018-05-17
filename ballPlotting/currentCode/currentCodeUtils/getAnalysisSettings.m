@@ -29,10 +29,11 @@ binSize = settings.mmPerCount.*settings.sensorPollFreq;
 analysisSettings.bins = (binSize/2)+ binSize.*(-10:210);
 
 % Threshold for selecting trials based on forward speed 
-analysisSettings.speedThreshold = 1;
+analysisSettings.speedThreshold = 10;
 
 % Rotation settings
 analysisSettings.blockRotation = 1;
+analysisSettings.blockSize = 50;
 
 % Number of trials to use if using same number across all experiments 
 analysisSettings.defaultNumTrials = 100; 
@@ -42,6 +43,3 @@ prefixCodes = {'Freq','Males','a2Glued','a3Glued','ShamGlued-45','RightGlued','L
 valueSet = [70; 100; 100; 440; ones(6,1)*analysisSettings.defaultNumTrials];
 analysisSettings.prefixCodeTrialNums = containers.Map(prefixCodes,valueSet);
 clear prefixCodes valueSet
-
-% Size of blocks for looking at adapation
-analysisSettings.blockSize = 50;
