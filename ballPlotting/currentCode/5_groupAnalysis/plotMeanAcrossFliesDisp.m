@@ -8,6 +8,9 @@ if exist('stimToPlotAllExpts','var')
         stimToPlotAllExpts = {stimToPlotAllExpts};
     end
 end
+if ~exist('figNum','var')
+    figNum = 0;
+end
 
 close all
 goFigure(1)
@@ -34,8 +37,9 @@ for exptNum = 1:length(prefixCodes)
         stimToPlot = 1:plotData.numStim; 
     end
     % Reverse the order of the stimuli to plot so no stimulus is first 
-    stimToPlot = fliplr(stimToPlot);
-    
+    if figNum == 1
+        stimToPlot = fliplr(stimToPlot);
+    end
     %% Average & SEM across flies
 
     avgAcrossTrials = cellfun(@(x) squeeze(mean(x,2)),plotData.disp,'UniformOutput',false);
@@ -137,11 +141,11 @@ for exptNum = 1:length(prefixCodes)
     %% Apply settings to all figures
     if freqSep == 'y'
         figure(1);
-        applyPlotSettings(prefixCode,{plotData.legendText{sineIdx}},plotData.numFlies,hfl(sineIdx),plotData.numTrialsPerFly)
+        applyPlotSettings(prefixCode,{plotData.legendText{sineIdx}},plotData.numFlies,hfl(sineIdx),plotData.numTrialsPerFly,figNum)
         figure(2);
-        applyPlotSettings(prefixCode,{plotData.legendText{pipIdx}},plotData.numFlies,hfl(pipIdx),plotData.numTrialsPerFly)
+        applyPlotSettings(prefixCode,{plotData.legendText{pipIdx}},plotData.numFlies,hfl(pipIdx),plotData.numTrialsPerFly,figNum)
     else
-        applyPlotSettings(prefixCode,plotData.legendText,plotData.numFlies,hfl,plotData.numTrialsPerFly)
+        applyPlotSettings(prefixCode,plotData.legendText,plotData.numFlies,hfl,plotData.numTrialsPerFly,figNum)
     end
 end
 
@@ -175,13 +179,20 @@ end
 end
 
 
-function applyPlotSettings(prefixCode,legendText,numFlies,hfl,numTrialsPerFly)
+function applyPlotSettings(prefixCode,legendText,numFlies,hfl,numTrialsPerFly,figNum)
 % Plot settings
 bottomAxisSettings;
 
 % Axis limits
 symAxisY(gca);
-xlim([-3.2 3.2])
+if figNum == 1
+    xlim([-3.3 3.3])
+else 
+    xlim([-3 3])
+end
+if strcmp(prefixCode,'Freq') && figNum ~= 1
+    xlim([-1.5 1.5])
+end
 ylim([-60 60])
 
 % Labels

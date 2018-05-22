@@ -14,8 +14,7 @@ for i = 1:plotData.numFlies
     temp(i,:,:,:) = avgAcrossTrials{i};
 end
 avgAcrossTrials = temp;
-
-avgAcrossTrialsVel = getAvgAcrossTrials(plotData);
+avgAcrossTrialsVel = getAvgAcrossTrials(plotData,stimToPlot);
 
 %% Color settings
 if freqSep == 'y'
@@ -58,7 +57,7 @@ for fly = 1:plotData.numFlies
         if strcmp(prefixCode,'Diag')
             ylim([-6 6])
         else
-            ylim([-10 10])
+            ylim([-12 12])
         end
         xlim([2.1608-1.5,2.1608+1.5])
 %         pbaspect([1,1,1])
@@ -112,7 +111,7 @@ for fly = 1:plotData.numFlies
             xlim([-1.8 1.8])
         else
             ylim([-60 60])
-            xlim([-3.1 3.1])
+            xlim([-3.3 3.3])
         end
 %         pbaspect([1,1,1])
         if fly == 1

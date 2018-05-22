@@ -23,9 +23,10 @@ for i = 1:size(prefixCodes,1)
     
     %% Get plot data
     plotData = multiFlyAnalysis(prefixCode,allTrials);
+    stimToPlot = 1:plotData.numStim;
     
     %% Average & SEM across flies
-    avgAcrossTrials = getAvgAcrossTrials(plotData);
+    avgAcrossTrials = getAvgAcrossTrials(plotData,stimToPlot);
     
     %% Plot expts
     flyMeans = avgAcrossTrials(:,stim,analysisSettings.velInd,dim);
