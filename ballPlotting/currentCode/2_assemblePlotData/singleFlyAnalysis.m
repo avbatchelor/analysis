@@ -121,6 +121,7 @@ for stimNum = uniqueStim
     plotData.trialsSelectedByStimAndSpeed{stimNum} = stimNumInd;
     
     % Randomly select 10 trials for plotting individual trials
+    rng(1);
     randInd = randperm(length(stimNumInd));
     try
         stimIndSamp = stimNumInd(randInd(1:10));

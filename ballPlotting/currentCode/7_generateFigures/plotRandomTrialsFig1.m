@@ -1,32 +1,31 @@
-function plotRandomTrials(prefixCode,expNum,flyNum,flyExpNum)
+function plotRandomTrialsFig1(prefixCode,expNum,flyNum,flyExpNum)
 
 close all
 
 %% Plot settings
-numSamples = 5;
+numSamples = 4;
 
 %% Colors 
 black = [0,0,0];
 green = [91,209,82]./255;
 purple = [178,102,255]./255;
 orange = [255,178,102]./255;
-colorSet = [green;black;purple;black;orange;black];
+colorSet = [purple;black];
 
 %% Put exptInfo in a struct
 exptInfo = exptInfoStruct(prefixCode,expNum,flyNum,flyExpNum);
 
 %% Load plot data
 % Get paths
-[~, ~, fileNamePreamble, ~] = getDataFileNameBall(exptInfo);
 pPath = getProcessedDataFileName(exptInfo);
 
 % Plot data
-fileName = [pPath,fileNamePreamble,'plotData.mat'];
+fileName = [pPath,'ShamGlued_expNum001_flyNum001_flyExpNum002_plotData_labMeeting.mat'];
 load(fileName);
 
 %% Subplot settings
 numCols = numSamples;
-numRows = 4;
+numRows = 2;
 spIndex = reshape(1:numCols*numRows, numCols, numRows).';
 subplot = @(m,n,p) subtightplot (m, n, p, [0.01 0.01], [0.1 0.075], [0.1 0.01]);
 
@@ -42,7 +41,7 @@ plotCount = 0;
 colCount = 0;
 % Loop through stimuli
 % Only plot the first two stimuli and not the noStimulus 
-for stimNum = 1:2%plotData.numUniqueStim
+for stimNum = 2%plotData.numUniqueStim
     % Stimulus angle
     angleStr = char(regexp(plotData.legendText{stimNum},'Angle = \d+','match'));
     
@@ -53,7 +52,7 @@ for stimNum = 1:2%plotData.numUniqueStim
         colCount = colCount + 1;
         
         % Loop through samples
-        for sampleNum = 1:numSamples
+        for sampleNum = 2:5
             
             plotCount = plotCount + 1;
             subplot(numRows,numCols,plotCount)
@@ -70,15 +69,15 @@ for stimNum = 1:2%plotData.numUniqueStim
                 plot(plotData.dsTime(1,:),plotData.sampleTrialsXVel{stimNum}(sampleNum,:),'Color',colorSet(colCount,:),'Linewidth',1.5)                
                 hold on 
                 plot(plotData.dsTime(1,:),plotData.meanXVel(stimNum,:),'Color',colorSet(colCount,:),'Linewidth',0.5)
-                if sampleNum == 1
-                    ylabel({'Lateral';'velocity';'(mm/s)'},'HorizontalAlignment','center')
+                if sampleNum == 2
+                    ylabel({'lateral';'velocity';'(mm/s)'},'HorizontalAlignment','center')
                 end
             else
                 plot(plotData.dsTime(1,:),plotData.sampleTrialsYVel{stimNum}(sampleNum,:),'k','Linewidth',1.5)
                 hold on 
                 plot(plotData.dsTime(1,:),plotData.meanYVel(stimNum,:),'Color',colorSet(colCount,:),'Linewidth',0.5)
-                if sampleNum == 1
-                    ylabel({'Forward';'velocity';'(mm/s)'},'HorizontalAlignment','center')
+                if sampleNum == 2
+                    ylabel({'forward';'velocity';'(mm/s)'},'HorizontalAlignment','center')
                 end
             end
             
@@ -87,7 +86,7 @@ for stimNum = 1:2%plotData.numUniqueStim
             end
             
 
-            if sampleNum == 1             
+            if sampleNum == 2             
                 noXAxisSettings('w')
             else
                 noAxisSettings('w');
@@ -109,7 +108,6 @@ for stimNum = 1:2%plotData.numUniqueStim
     end
 end
 
-suplabel('Time (s)','x')
 % suplabel('Speed (mm/s)','y')
 set(findall(gcf,'-property','FontSize'),'FontSize',16)
 

@@ -11,6 +11,7 @@ avgAcrossTrials = getAvgAcrossTrials(plotData,stimToPlot);
 % [colorSet1,colorSet2] = colorSetImport;
 numColors = ceil(plotData.numStim/2);
 colorSet1 = linspecer(numColors);
+gray = [217,217,217]./255;
 
 %% Make box plot
 analysisSettings = getAnalysisSettings;
@@ -63,9 +64,12 @@ for plotNum = 1:2
         idxs = 6:10;
     end
     plotCount = 0;
+    plot(1:5,mirroredMeans(idxs,:),'-','Color',gray);
+
     for j = idxs
         plotCount = plotCount +1 ; 
-        plot(plotCount,mirroredMeans(j,:),'o','MarkerEdgeColor',colorSet1(plotCount,:),'MarkerFaceColor',colorSet1(plotCount,:));
+        plot(plotCount,mirroredMeans(j,:),'-o','MarkerEdgeColor',colorSet1(plotCount,:),'Linewidth',2);
+
         
         % Calculate mean and sem 
         meanAcrossFlies = mean(mirroredMeans(j,:));

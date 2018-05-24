@@ -14,24 +14,31 @@ for i = 1:plotData.numFlies
     temp(i,:,:,:) = avgAcrossTrials{i};
 end
 avgAcrossTrials = temp;
-avgAcrossTrialsVel = getAvgAcrossTrials(plotData,stimToPlot);
-
-%% Color settings
-if freqSep == 'y'
-    numColors = ceil(plotData.numStim/2);
-    colors = linspecer(numColors);
-else
-    colors = distinguishable_colors(plotData.numStim,'w');
+if ~exist('stimToPlot','var')
+    stimToPlot = 1:plotData.numStim;
 end
+if strcmp(prefixCode,'Freq')
+    avgAcrossTrialsVel = getAvgAcrossTrials(plotData,1:plotData.numStim);
+else
+    avgAcrossTrialsVel = getAvgAcrossTrials(plotData,stimToPlot);
+end
+%% Color settings
+
 
 if strcmp(prefixCode,'Diag')
     colorSet1 = distinguishable_colors(4,'w');
-elseif strcmp(prefixCode,'Cardinal')
+elseif strcmp(prefixCode,'Cardinal') || strcmp(prefixCode,'Cardinal-0')
     colorSet1 = distinguishable_colors(5,'w');
 elseif strcmp(prefixCode,'Freq')
-    colorSet1 = distinguishable_colors(plotData.numStim,'w');
+    if freqSep == 'y'
+        numColors = ceil(plotData.numStim/2);
+        colors = linspecer(numColors);
+        colorSet1 = [colors(1:5,:);colors(1:5,:);colors(1:5,:);colors(1:5,:)];
+    else
+        colorSet1 = distinguishable_colors(plotData.numStim,'w');
+    end
 else
-    [colorSet1,colorSet2] = colorSetImport;
+    [colorSet1,~] = colorSetImport;
 end
 
 %% Subplot settings
@@ -56,6 +63,8 @@ for fly = 1:plotData.numFlies
         % settings 
         if strcmp(prefixCode,'Diag')
             ylim([-6 6])
+        elseif strcmp(prefixCode,'Cardinal-0') || strcmp(prefixCode,'Freq')
+            ylim([-5 5])
         else
             ylim([-12 12])
         end
@@ -114,23 +123,23 @@ for fly = 1:plotData.numFlies
             xlim([-3.3 3.3])
         end
 %         pbaspect([1,1,1])
-        if fly == 1
-            noXAxisSettings('w');
-            ylabel({'Y Displacement','(mm)'})
-            set(gca,'YTick',[-25 0 25])
-        else 
-            noAxisSettings('w');
-        end
+
+        noAxisSettings('w');
+
     end
     
     if fly == 1
-        xStart = 0.75;
-        xEnd = 1.75;
+        xStart = 1.5;
+        xEnd = 2.5;
         yStart = -30;
-        yEnd = -30;
+        yEnd = -10;
         xText = '1 mm';
-        yText = '';
+        yText = '20 mm';
         scalebar(xStart,xEnd,yStart,yEnd,xText,yText)
+        
+        if strcmp(prefixCode,'Cardinal-0')
+            legend({'90';'45';'0';'180'})
+        end
     end
     
     

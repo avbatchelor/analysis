@@ -12,11 +12,13 @@ plotMeanAcrossFliesVel(prefixCodes,'y','n','n','y','Fig1_vel_alldata','y','n',st
 % plotMeanAcrossFliesDisp('ShamGlued-45','y','n','n','y','Fig1_disp','y','n')
 plotMeanAcrossFliesVel('ShamGlued-45','y','n','n','y','Fig1_vel','y','n')
 
+stimToPlot = {1:3;[1,4];[2,3,5];[8,18,21]};
 fig1QuantVel(prefixCodes,'y',stimToPlot)
 
 % Example trials 
-plotRandomTrials('ShamGlued',1,1,2)
+plotRandomTrialsFig1('ShamGlued',1,1,2)
 
+velCorr(prefixCodes,'y',stimToPlot)
 
 %% Figure 2 Figures 
 stimToPlot = 1:2;
@@ -62,18 +64,19 @@ fig5QuantVel(prefixCodes,'y',labels,figName,dim)
 dim = 2; figName = 'Fig4_ForwardVelQuant';
 fig5QuantVel(prefixCodes,'y',labels,figName,dim)
 
-% Cardinal with 0 degere stimulus 
+% Cardinal with 0 degree stimulus 
 plotMeanDispGrid('Cardinal-0','n','Fig4_CardinalWithZero_DispGrid','y',1:4)
 
 % Quantification 
-prefixCodes = {'Cardinal',1;'Cardinal',2;'Cardinal',3;'Cardinal',4};
-labels = {'45 deg speakers';'90 deg speakers'};
+prefixCodes = {'Cardinal-0',3;'Cardinal-0',2;'Cardinal-0',1;'Cardinal-0',4};
+labels = {'0';'45';'90';'180'};
 % Lateral velocity 
-dim = 1; figName = 'Fig4_LatVelQuant';
-fig5QuantVel(prefixCodes,'y',labels,figName,dim)
+dim = 1; figName = 'Fig4_CardinalZero_LatVelQuant';
+fig4QuantVel(prefixCodes,'y',labels,figName,dim)
 % Forward velocity 
-dim = 2; figName = 'Fig4_ForwardVelQuant';
-fig5QuantVel(prefixCodes,'y',labels,figName,dim)
+dim = 2; figName = 'Fig4_CardinalZero_ForwardVelQuant';
+fig4QuantVel(prefixCodes,'y',labels,figName,dim)
+
 
 
 %% Figure 5 figures 
@@ -97,6 +100,12 @@ plotMeanAcrossFliesVel('Freq','n','n','y','y','Fig6_Freq','y','y')
 fig7QuantVel('Freq','y','Fig6_Freq_latVelQuant',1)
 fig7QuantVel('Freq','y','Fig6_Freq_forVelQuant',2)
 
+sineIdxs = [1:5,11:15];
+pipIdxs = [6:10,16:20];
+plotMeanDispGrid('Freq','y','Fig6_Freq_DispGrid','y',pipIdxs)
+
+integrationCheck('Freq','y',pipIdxs)
+
 %% Figure 7 figures
 figNum = 7;
 plotMeanAcrossFliesDisp('Males','y','n','n','y','Fig7_MalesDisp','y','n',1:2,figNum)
@@ -104,3 +113,6 @@ plotMeanAcrossFliesDisp('Diag','y','n','n','y','Fig7_DiagDisp','y','n',[1,4],fig
 
 plotMeanAcrossFliesVel('Males','y','n','n','y','Fig7_MalesVel','y','n',1:2,figNum)
 plotMeanAcrossFliesVel('Diag','y','n','n','y','Fig7_DiagVel','y','n',[1,4],figNum)
+
+%% Supplementary figures
+plotRandomTrialsSupp('ShamGlued',1,1,2)

@@ -1,9 +1,9 @@
-function plotRandomTrials(prefixCode,expNum,flyNum,flyExpNum)
+function plotRandomTrialsSupp(prefixCode,expNum,flyNum,flyExpNum)
 
 close all
 
 %% Plot settings
-numSamples = 5;
+numSamples = 10;
 
 %% Colors 
 black = [0,0,0];
@@ -101,7 +101,7 @@ for stimNum = 1:2%plotData.numUniqueStim
                 set(gca,'yTick',[0,25,50])
             end
             
-            xlim([-0.1 4.25])
+            xlim([1.5 3])
             set(gca,'xTick',[0,2,4])
             set(gca,'Layer','top')
             
@@ -117,7 +117,7 @@ set(findall(gcf,'-property','FontSize'),'FontSize',16)
 statusStr = checkRepoStatus;
 folder = 'D:\ManuscriptData\summaryFigures\';
 [~, ~, fileNamePreamble, ~] = getDataFileNameBall(exptInfo);
-filename = [folder,fileNamePreamble,'random_trials_',statusStr,'.pdf'];
+filename = [folder,fileNamePreamble,'random_trials_supp',statusStr,'.pdf'];
 export_fig(filename,'-pdf','-painters')
 
 end

@@ -123,14 +123,14 @@ for exptNum = 1:length(prefixCodes)
                 % Plotting different stimuli in freq experiment in different plots
                 if freqSep == 'y'
                     if strcmp(StimStruct(stim).stimObj.class,'SineWave')
-                        goFigure(2)
+                        goFigure(1)
                         subplot(2,1,dim)
                         sineIdx = [sineIdx,stim];
                         if stim == 1 && exptNum == 1
                             shadestimArea(plotDataSingleFly,1,-50,50);
                         end
                     elseif strcmp(StimStruct(stim).stimObj.class,'PipStimulus')
-                        goFigure(1)
+                        goFigure(2)
                         subplot(2,1,dim)
                         pipIdx = [pipIdx,stim];
                         if stim == 6 && exptNum == 1
@@ -172,9 +172,9 @@ for exptNum = 1:length(prefixCodes)
         
         %% Apply settings to all figures
         if freqSep == 'y' && figNum ~= 1
-            figure(2);
-            applyPlotSettings(prefixCode,{plotData.legendText{sineIdx}},plotData.numFlies,hfl(sineIdx),plotData.numTrialsPerFly,dim,figNum)
             figure(1);
+            applyPlotSettings(prefixCode,{plotData.legendText{sineIdx}},plotData.numFlies,hfl(sineIdx),plotData.numTrialsPerFly,dim,figNum)
+            figure(2);
             applyPlotSettings(prefixCode,{plotData.legendText{pipIdx}},plotData.numFlies,hfl(pipIdx),plotData.numTrialsPerFly,dim,figNum)
         else
             applyPlotSettings(prefixCode,plotData.legendText,plotData.numFlies,hfl,plotData.numTrialsPerFly,dim,figNum)

@@ -1,4 +1,4 @@
-function fig1QuantVel(prefixCodes,allTrials,stimToPlotAllExpts,varargin)
+function velCorr(prefixCodes,allTrials,stimToPlotAllExpts,varargin)
 
 close all
 
@@ -32,18 +32,28 @@ for exptNum = 1:length(prefixCodes)
         stimToPlot = 1:plotData.numStim;
     end
     
-    %% Average & SEM across flies
-    avgAcrossTrials = getAvgAcrossTrials(plotData,stimToPlot);
-    semAcrossFlies = squeeze(std(avgAcrossTrials,1) / sqrt(plotData.numFlies));
-    
     %% Color settings
     
     [colorSet1] = colorSetImport;
     
     
     for stim = 1:length(stimToPlot)
-        flyMeans{stim} = [flyMeans{stim};squeeze(avgAcrossTrials(:,stim,analysisSettings.velInd,1))];
+        % Dimensions are: stim x trials x time x dimensions
+        velocities = plotData.vel{stim};
+        latVel = velocities(stim,:,analysisSettings.velInd,1);
+        forwardChange = -(velocities(stim,:,analysisSettings.forwardVelIndAfter,2)-velocities(stim,:,analysisSettings.forwardVelIndBefore,2));
+        subplot(3,1,stim)
+        plot(forwardChange,latVel,'.')
+        xlim([-50 50])
+        ylim([-50 50])
+        pbaspect([1,1,1])
+        set(gca,'Box','off')
+        ax = gca; 
+        ax.XAxisLocation = 'origin';
+        ax.YAxisLocation = 'origin';
     end
+    
+    %
 end
 
 
