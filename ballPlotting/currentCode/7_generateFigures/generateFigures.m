@@ -18,7 +18,7 @@ fig1QuantVel(prefixCodes,'y',stimToPlot)
 % Example trials 
 plotRandomTrialsFig1('ShamGlued',1,1,2)
 
-velCorr(prefixCodes,'y',stimToPlot)
+
 
 %% Figure 2 Figures 
 stimToPlot = 1:2;
@@ -116,3 +116,11 @@ plotMeanAcrossFliesVel('Diag','y','n','n','y','Fig7_DiagVel','y','n',[1,4],figNu
 
 %% Supplementary figures
 plotRandomTrialsSupp('ShamGlued',1,1,2)
+
+prefixCodes = {'ShamGlued-45'};
+stimToPlot = {1:2};
+velCorr(prefixCodes,'y',stimToPlot)
+
+prefixCodes = {'ShamGlued-45'};
+stimToPlot = {1:3};
+forwardSpeedHistogram(prefixCodes,'y',stimToPlot)

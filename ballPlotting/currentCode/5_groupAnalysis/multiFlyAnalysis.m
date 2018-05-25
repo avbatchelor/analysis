@@ -65,6 +65,17 @@ for fly = 1:size(flies,1)
         % Time
         plotData.time = groupedData.dsTime{1};
         
+        %% Data for forward velocity histograms
+        fastOrSaturatedTrials = union(groupedData.fastEnoughTrials,groupedData.saturatedTrials);
+        slowTrials = setdiff(find(groupedData.stimNum == stimIdx),fastOrSaturatedTrials);
+        allNonSatTrials = setdiff(find(groupedData.stimNum == stimIdx),groupedData.saturatedTrials);
+        if stimNum == 1
+            plotData.velSlowTrials{fly} = groupedData.rotYVel(slowTrials,:);
+            plotData.velAllNonSatTrials{fly} = groupedData.rotYVel(allNonSatTrials,:);
+        else
+            plotData.velSlowTrials{fly} = [plotData.velSlowTrials{fly};groupedData.rotYVel(slowTrials,:)];
+            plotData.velAllNonSatTrials{fly} = [plotData.velAllNonSatTrials{fly};groupedData.rotYVel(allNonSatTrials,:)];
+        end
         
         
         %% Set legend text

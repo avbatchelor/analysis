@@ -11,14 +11,18 @@ if exist('stimToPlotAllExpts','var')
     end
 end
 
-goFigure(1);
-flyMeans = cell([3,1]);
+subplot = @(m,n,p) subtightplot (m, n, p, [0.05 0.05], [0.15 0.01], [0.15 0.01]);
+
+
 analysisSettings = getAnalysisSettings;
+
+stimOrder = {'45';'- 45';'no stim'};
 
 %% Loop through experiments
 for exptNum = 1:length(prefixCodes)
     
-    clear temp
+    goFigure;
+
     prefixCode = prefixCodes{exptNum};
     if exist('stimToPlotAllExpts','var')
         stimToPlot = stimToPlotAllExpts{exptNum};
@@ -33,61 +37,59 @@ for exptNum = 1:length(prefixCodes)
     end
     
     %% Color settings
+    numRows = length(stimToPlot);
+    numCols = plotData.numFlies;
+    plotCount = 0;
     
-    [colorSet1] = colorSetImport;
-    
-    
-    for stim = 1:length(stimToPlot)
-        % Dimensions are: stim x trials x time x dimensions
-        velocities = plotData.vel{stim};
-        latVel = velocities(stim,:,analysisSettings.velInd,1);
-        forwardChange = -(velocities(stim,:,analysisSettings.forwardVelIndAfter,2)-velocities(stim,:,analysisSettings.forwardVelIndBefore,2));
-        subplot(3,1,stim)
-        plot(forwardChange,latVel,'.')
-        xlim([-50 50])
-        ylim([-50 50])
-        pbaspect([1,1,1])
-        set(gca,'Box','off')
-        ax = gca; 
-        ax.XAxisLocation = 'origin';
-        ax.YAxisLocation = 'origin';
+    for stim = stimToPlot
+        for fly = 1:plotData.numFlies
+
+            % Process data. Dimensions are: stim x trials x time x dimensions
+            velocities = plotData.vel{fly};
+            latVel = velocities(stim,:,analysisSettings.velInd,1);
+            forwardChange = -(velocities(stim,:,analysisSettings.forwardVelIndAfter,2)-velocities(stim,:,analysisSettings.forwardVelIndBefore,2));
+            
+            % Plot data
+            plotCount = plotCount + 1;
+            ax(plotCount) = subplot(numRows,numCols,plotCount);
+            plot(forwardChange,latVel,'.')
+            hold on 
+            
+            % Plot settings
+            xlim([-50 50])
+            ylim([-50 50])
+            pbaspect([1,1,1])
+%             ax.XAxisLocation = 'origin';
+%             ax.YAxisLocation = 'origin';
+            plot([0 0],[-50 50],'k')
+            plot([-50 50],[0 0],'k')
+            set(gca,'Box','off','TickDir','out')
+            set(gca,'YTick',[-25,0,25],'XTick',[-25,0,25])
+            
+            if fly == 1
+                ylabel(['Stim: ',stimOrder{find(stimToPlot == stim)}])
+            end
+            if fly == plotData.numFlies && stim == stimToPlot(end)
+                suplabel('Decrease in forward velocity (mm/s)','x')
+                suplabel('Lateral velocity (mm/s)','y')
+                suptitle(prefixCode)
+                for i = 1:plotData.numFlies
+                    title(ax(i),['Fly ',num2str(i)])
+                end
+            end
+            
+            
+        end
     end
     
-    %
+    linkaxes(ax(:))
+    
+    %% Save figure
+    statusStr = checkRepoStatus;
+    figPath = 'D:\ManuscriptData\summaryFigures';
+    filename = [figPath,'\','suppForwardLatCorrelation','_',prefixCode,'_',statusStr,'.pdf'];
+    export_fig(filename,'-pdf','-painters')
 end
-
-
-%% Make lateral velocity box plot
-figure(1);
-hold on
-
-% Plot individual flies
-% Third dimension is time
-for stim = 1:length(stimToPlot)
-    plot(stim,flyMeans{stim},'o','MarkerEdgeColor',colorSet1(stim,:),'Linewidth',2);
-    % Plot mean
-    meanAcrossFlies = mean(flyMeans{stim});
-    semAcrossFlies = std(flyMeans{stim}) / sqrt(19);
-    plot([stim-0.2,stim+0.2],repmat(meanAcrossFlies,[1,2]),'k');
-    errorbar(stim,meanAcrossFlies,semAcrossFlies,'k')
-end
-
-%% Plot settings
-noXAxisSettings('w')
-ylabel({'Lateral';'velocity';'mm/s'})
-figPos = get(gcf,'Position');
-figPos(3) = figPos(3)/2;
-set(gcf,'Position',figPos)
-xlim([0 4])
-ylim([-11 11])
-
-%% Save figure
-statusStr = checkRepoStatus;
-figPath = 'D:\ManuscriptData\summaryFigures';
-filename = [figPath,'\','fig1VelQuant','_',statusStr,'.pdf'];
-export_fig(filename,'-pdf','-painters')
-
-
 
 end
 
