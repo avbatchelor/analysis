@@ -14,13 +14,13 @@ switch prefixCode
         flies = {'a3Glued',1,1,1;'a3Glued',1,2,1;'a3Glued',1,3,1;'a3Glued',1,4,1};
     
     case 'ShamGlued-45'
-        flies = {'ShamGlued',1,1,2;'ShamGlued',1,2,2;'ShamGlued',1,3,2;'ShamGlued',1,4,2};
+        flies = {'ShamGlued',1,1,2;'ShamGlued',1,2,2;'ShamGlued',1,3,2;'ShamGlued',1,4,2;'ShamGlued',1,6,2};
     
     case 'RightGlued'
         flies = {'RightGlued',1,1,1;'RightGlued',1,3,1;'RightGlued',1,6,1;'RightGlued',1,7,1;'RightGlued',1,9,1};
     
     case 'LeftGlued'
-        flies = {'LeftGlued',1,1,1;'LeftGlued',1,2,2;'LeftGlued',1,4,1;'LeftGlued',1,7,1};
+        flies = {'LeftGlued',1,1,1;'LeftGlued',1,2,2;'LeftGlued',1,4,1;'LeftGlued',1,7,1;'LeftGlued',1,8,2};
     
     case 'ShamGlued-0'
         flies = {'ShamGlued',1,1,1;'ShamGlued',1,2,1;'ShamGlued',1,3,1;'ShamGlued',1,4,1;'ShamGlued',1,5,1};

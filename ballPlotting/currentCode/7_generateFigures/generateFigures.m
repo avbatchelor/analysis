@@ -8,7 +8,6 @@ stimToPlot = {1:2;[1,4];2:3;[8,18]};
 plotMeanAcrossFliesDisp(prefixCodes,'y','n','n','y','Fig1_disp_alldata','y','n',stimToPlot,figNum)
 plotMeanAcrossFliesVel(prefixCodes,'y','n','n','y','Fig1_vel_alldata','y','n',stimToPlot,figNum)
 
-
 % plotMeanAcrossFliesDisp('ShamGlued-45','y','n','n','y','Fig1_disp','y','n')
 plotMeanAcrossFliesVel('ShamGlued-45','y','n','n','y','Fig1_vel','y','n')
 
