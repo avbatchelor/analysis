@@ -52,20 +52,22 @@ for exptNum = 1:length(prefixCodes)
 
 
     %% Color settings
-    if freqSep == 'y'
-        numColors = ceil(plotData.numStim/2);
-        colorSet2 = linspecer(numColors);
-    else
-        colorSet2 = distinguishable_colors(plotData.numStim,'w');
-    end
+    
     if figNum == 1
-        [colorSet1,~] = colorSetImport;
+        green = [91,209,82]./255;
+        purple = [178,102,255]./255;
+        colorSet1 = [purple;green];
     elseif strcmp(prefixCode,'Diag')
         colorSet1 = distinguishable_colors(4,'w');
     elseif strcmp(prefixCode,'Cardinal')
         colorSet1 = distinguishable_colors(5,'w');
     elseif strcmp(prefixCode,'Freq')
-        colorSet1 = distinguishable_colors(plotData.numStim,'w');
+        if freqSep == 'y'
+            numColors = ceil(plotData.numStim/2);
+            colorSet2 = linspecer(numColors);
+        else
+            colorSet2 = distinguishable_colors(plotData.numStim,'w');
+        end
     else
         [colorSet1,~] = colorSetImport;
     end
@@ -187,6 +189,8 @@ bottomAxisSettings;
 symAxisY(gca);
 if figNum == 1
     xlim([-3.3 3.3])
+elseif strcmp(prefixCode,'LeftGlued') || strcmp(prefixCode,'RightGlued')
+    xlim([-3.5 3.5])
 else 
     xlim([-3 3])
 end

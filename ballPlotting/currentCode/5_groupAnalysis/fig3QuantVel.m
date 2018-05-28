@@ -50,13 +50,13 @@ for i = 1:size(prefixCodes,1)
 end
 
 % Plot 1
-plot(1,flyMeans1,'o','MarkerEdgeColor',colorSet1(1,:),'MarkerFaceColor',colorSet1(1,:));
+plot(1,flyMeans1,'o','MarkerEdgeColor',colorSet1(1,:));
 plot([1-0.2,1+0.2],repmat(mean(flyMeans1),[1,2]),'k');
 mirroredSEM = std(flyMeans1) / sqrt(length(flyMeans1));
 errorbar(1,mean(flyMeans1),mirroredSEM,'k')
 
 % Plot 2
-plot(2,flyMeans2,'o','MarkerEdgeColor',colorSet1(2,:),'MarkerFaceColor',colorSet1(2,:));
+plot(2,flyMeans2,'o','MarkerEdgeColor',colorSet1(2,:));
 plot([2-0.2,2+0.2],repmat(mean(flyMeans2),[1,2]),'k');
 mirroredSEM = std(flyMeans2) / sqrt(length(flyMeans2));
 errorbar(2,mean(flyMeans2),mirroredSEM,'k')

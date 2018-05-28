@@ -13,6 +13,9 @@ end
 if ~exist('figNum','var')
     figNum = 0;
 end
+
+analysisSettings = getAnalysisSettings;
+
 goFigure(1);
 
 %% Loop through experiments
@@ -81,8 +84,8 @@ for exptNum = 1:length(prefixCodes)
         % Figure settings
         ylim([-1,1])
         set(gca,'yTick',[-0.5, 0.5])
-        noXAxisSettings('w');
-        ylabel({'Stimulus';'a.u.'},'HorizontalAlignment','right','VerticalAlignment','middle');
+        noAxisSettings('w');
+%         ylabel({'Stimulus';'a.u.'},'HorizontalAlignment','right','VerticalAlignment','middle');
     end
     
     %% Plot forward and lateral velocity
@@ -390,8 +393,8 @@ if figNum == 1
         end
     end
     
-    suplabel('Lateral velocity (mm/s)','x')
-    suplabel('Probability','y')
+    suplabel('lateral velocity (mm/s)','x')
+    suplabel('probability','y')
     set(findall(gcf,'-property','FontSize'),'FontSize',30)
     
     % Save figure
@@ -413,6 +416,8 @@ if dim == 1
     ylim([-12 12])
     if strcmp(prefixCode,'Freq') && figNum ~= 1
         ylim([-5 5])
+    elseif strcmp(prefixCode,'LeftGlued') || strcmp(prefixCode,'RightGlued')
+        ylim([-7.5 7.5])
     end
     set(gca,'yTick',[-5, 5])
     set(gca,'Layer','top')
@@ -434,9 +439,9 @@ xlim([1 3.5])
 
 % Labels
 if dim == 1
-    direction = 'Lateral';
+    direction = 'lateral';
 else
-    direction = 'Forward';
+    direction = 'forward';
 end
 ylabel({direction;'Velocity';'(mm/s)'},'HorizontalAlignment','right','VerticalAlignment','middle')
 

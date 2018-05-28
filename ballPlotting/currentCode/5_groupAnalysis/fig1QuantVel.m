@@ -57,7 +57,7 @@ for stim = 1:length(stimToPlot)
     plot(stim,flyMeans{stim},'o','MarkerEdgeColor',colorSet1(stim,:),'Linewidth',2);
     % Plot mean
     meanAcrossFlies = mean(flyMeans{stim});
-    semAcrossFlies = std(flyMeans{stim}) / sqrt(19);
+    semAcrossFlies = std(flyMeans{stim}) / sqrt(length(flyMeans{stim}));
     plot([stim-0.2,stim+0.2],repmat(meanAcrossFlies,[1,2]),'k');
     errorbar(stim,meanAcrossFlies,semAcrossFlies,'k')
 end

@@ -55,7 +55,7 @@ for i = 1:size(prefixCodes,1)
         end
     end
         
-    plot(plotCount,mirroredMean,'o','MarkerEdgeColor',colorSet1(plotCount,:),'MarkerFaceColor',colorSet1(plotCount,:));
+    plot(plotCount,mirroredMean,'o','MarkerEdgeColor',colorSet1(plotCount,:));
     
     % Plot mean
     plot([plotCount-0.2,plotCount+0.2],repmat(mean(mirroredMean),[1,2]),'k');

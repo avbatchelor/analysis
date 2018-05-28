@@ -11,16 +11,22 @@ speaker6 = [1.2808,1.2979,1.3236,1.2651,1.2343,1.257,1.3051];
 colorSet = distinguishable_colors(4,'w');
 
 %% Figure
-figure;
+goFigure;
 hold on 
 plot(freq,speaker1,'Marker','*','Color',colorSet(1,:),'Linewidth',2)
 plot(freq,speaker2,'Marker','*','Color',colorSet(2,:),'Linewidth',2)
 plot(freq,speaker3,'Marker','*','Color',colorSet(3,:),'Linewidth',2)
 plot(freq,speaker6,'Marker','*','Color',colorSet(4,:),'Linewidth',2)
 
-ylabel('Particle velocity (mm/s)')
-xlabel('Frequency')
+ylabel('particle velocity (mm/s)')
+xlabel('frequency')
 ylim([0 1.5])
 
 legend({'speaker 1','speaker 2','speaker 3','speaker 6'},'Location','best')
 set(findall(gcf,'-property','FontSize'),'FontSize',30)
+legend Boxoff
+
+statusStr = checkRepoStatus;
+figPath = 'D:\ManuscriptData\summaryFigures';
+filename = [figPath,'\pvResults','_',statusStr,'.pdf'];
+export_fig(filename,'-pdf','-painters')

@@ -9,7 +9,7 @@ plotMeanAcrossFliesDisp(prefixCodes,'y','n','n','y','Fig1_disp_alldata','y','n',
 plotMeanAcrossFliesVel(prefixCodes,'y','n','n','y','Fig1_vel_alldata','y','n',stimToPlot,figNum)
 
 % plotMeanAcrossFliesDisp('ShamGlued-45','y','n','n','y','Fig1_disp','y','n')
-plotMeanAcrossFliesVel('ShamGlued-45','y','n','n','y','Fig1_vel','y','n')
+plotMeanAcrossFliesVel('ShamGlued-45','y','n','n','y','Fig1_vel','y','n',1:3,1)
 
 stimToPlot = {1:3;[1,4];[2,3,5];[8,18,21]};
 fig1QuantVel(prefixCodes,'y',stimToPlot)
