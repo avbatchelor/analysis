@@ -22,9 +22,9 @@ switch prefixCode
     case 'LeftGlued'
         flies = {'LeftGlued',1,1,1;'LeftGlued',1,2,2;'LeftGlued',1,4,1;'LeftGlued',1,7,1;'LeftGlued',1,8,2};
     
-    case 'ShamGlued-0'
-        flies = {'ShamGlued',1,1,1;'ShamGlued',1,2,1;'ShamGlued',1,3,1;'ShamGlued',1,4,1;'ShamGlued',1,5,1};
-        
+%     case 'ShamGlued-0'
+%         flies = {'ShamGlued',1,1,1;'ShamGlued',1,2,1;'ShamGlued',1,3,1;'ShamGlued',1,4,1;'ShamGlued',1,5,1};
+%         
     case 'Diag'
         flies = {'Diag',1,1,2;'Diag',1,3,1;'Diag',1,4,1;'Diag',1,5,4;'Diag',1,6,1};
 
