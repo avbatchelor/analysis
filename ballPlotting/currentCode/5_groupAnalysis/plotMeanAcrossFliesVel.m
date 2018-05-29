@@ -387,9 +387,9 @@ if figNum == 1
                 set(gca,'XColor','k')
             end
             xlim([-30 30])
-            ylim([0 0.55])
+            ylim([0 0.8])
             set(gca,'xTick',[-20,0,20])
-            set(gca,'yTick',[0, 0.25])
+            set(gca,'yTick',[0, 0.3, 0.6])
         end
     end
     
