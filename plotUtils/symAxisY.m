@@ -1,6 +1,11 @@
-function symAxisY(axisHandle)
+function symAxisY(axisHandle,varargin)
 
-axis(axisHandle,'tight')
+if exist('axisHandle','var')
+    axis(axisHandle,'tight')
+else
+    axis('tight')
+end
+    
 ylimits = ylim; 
 yMax = max(abs(ylimits)); 
 ylim([-yMax,yMax])

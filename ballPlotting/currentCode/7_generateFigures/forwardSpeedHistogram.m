@@ -41,7 +41,7 @@ for plotNum = 1:3
         numRows = 1;
         numCols = 3;
         
-        bins = -65.5:1:65.5;
+        bins = -65:2:65;
         subplot(numRows,numCols,plotNum)
         
         % Process data

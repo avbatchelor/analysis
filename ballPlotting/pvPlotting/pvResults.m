@@ -25,6 +25,7 @@ ylim([0 1.5])
 legend({'speaker 1','speaker 2','speaker 3','speaker 6'},'Location','best')
 set(findall(gcf,'-property','FontSize'),'FontSize',30)
 legend Boxoff
+set(gca,'TickDir','out')
 
 statusStr = checkRepoStatus;
 figPath = 'D:\ManuscriptData\summaryFigures';

@@ -123,3 +123,5 @@ velCorr(prefixCodes,'y',stimToPlot)
 prefixCodes = {'ShamGlued-45'};
 stimToPlot = {1:3};
 forwardSpeedHistogram(prefixCodes,'y',stimToPlot)
+
+pvSuppPlot
