@@ -14,6 +14,7 @@ end
 
 close all
 goFigure(1)
+styles = {'-','--'};
 
 %% Loop through experiments
 for exptNum = 1:length(prefixCodes)
@@ -97,6 +98,12 @@ for exptNum = 1:length(prefixCodes)
         pipIdx = [];
         sineIdx = [];
         for stim = stimToPlot
+            if stim <= 10
+                styleCount = 1;
+            else
+                styleCount = 2;
+            end
+            
             % Plotting different stimuli in freq experiment in different plots
             if freqSep == 'y'
                 if strcmp(StimStruct(stim).stimObj.class,'SineWave')
@@ -120,7 +127,7 @@ for exptNum = 1:length(prefixCodes)
                     else
                         colorCount = colorCount + 1;
                     end
-                    hfl(stim) = plot(mean(squeeze(avgAcrossTrials(:,stim,:,1)),1)',mean(squeeze(avgAcrossTrials(:,stim,:,2)),1)','Color',colorSet2(colorCount,:),'Linewidth',3);
+                    hfl(stim) = plot(mean(squeeze(avgAcrossTrials(:,stim,:,1)),1)',mean(squeeze(avgAcrossTrials(:,stim,:,2)),1)','Color',colorSet2(colorCount,:),'Linewidth',3,'Linestyle',styles{styleCount});
                 end
             else
                 hfl(stim) = plot(mean(squeeze(avgAcrossTrials(:,stim,:,1)),1)',mean(squeeze(avgAcrossTrials(:,stim,:,2)),1)','Color',colorSet2(stim,:),'Linewidth',3);

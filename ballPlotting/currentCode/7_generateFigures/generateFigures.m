@@ -17,6 +17,10 @@ fig1QuantVel(prefixCodes,'y',stimToPlot)
 % Example trials 
 plotRandomTrialsFig1('ShamGlued',1,1,2)
 
+% Counter turn example 
+plotCounterTurnExample('Diag','n','Fig2_Counter_Turn_Example','y',[1,4])
+
+
 
 
 %% Figure 2 Figures 

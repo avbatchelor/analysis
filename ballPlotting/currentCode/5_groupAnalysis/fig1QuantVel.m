@@ -77,6 +77,14 @@ figPath = 'D:\ManuscriptData\summaryFigures';
 filename = [figPath,'\','fig1VelQuant','_',statusStr,'.pdf'];
 export_fig(filename,'-pdf','-painters')
 
+%% Statistical testing 
+differences = flyMeans{1} - flyMeans{2};
+goFigure;
+bins = [-10:1:30];
+histogram(differences,bins);
+
+[h,p] = jbtest(differences);
+[h,p] = ttest(differences,0,'Tail','right');
 
 
 end
