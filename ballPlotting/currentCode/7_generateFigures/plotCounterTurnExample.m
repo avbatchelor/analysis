@@ -57,7 +57,6 @@ for fly = 1
         plot(squeeze(avgAcrossTrials(fly,stim,201,1))',squeeze(avgAcrossTrials(fly,stim,201,2))','ko','Linewidth',3);
         % Plot stim offset
         plot(squeeze(avgAcrossTrials(fly,stim,analysisSettings.velInd,1))',squeeze(avgAcrossTrials(fly,stim,analysisSettings.velInd,2))','ko','Linewidth',3);
-        plot(squeeze(avgAcrossTrials(fly,stim,analysisSettings.velInd+1,1))',squeeze(avgAcrossTrials(fly,stim,analysisSettings.velInd+1,2))','ko','Linewidth',3);
 
         % Axis limits
         symAxisY(gca);
