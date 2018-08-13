@@ -33,7 +33,7 @@ plotMeanAcrossFliesVel('a3Glued','y','n','n','y','Fig2_a3GluedVel','y','n',stimT
 % Lateral velocity quant
 prefixCodes = {'a2Glued',1:2;'a3Glued',1:2;'ShamGlued-45',1:2;'ShamGlued-45',3};
 labels = {'a2 Glued';'a3 Glued';'Sham Glued';'Sham Glued - no stim'};
-figName = 'Fig2_MirroredLatVelQuant';
+figName = 'Fig2_MirroredLatVelQuant';c
 dim = 1;
 mirroredVelocityPlot(prefixCodes,'y',labels,figName,dim)
 dim = 2; 
@@ -114,8 +114,11 @@ figNum = 7;
 plotMeanAcrossFliesDisp('Males','y','n','n','y','Fig7_MalesDisp','y','n',1:2,figNum)
 plotMeanAcrossFliesDisp('Diag','y','n','n','y','Fig7_DiagDisp','y','n',[1,4],figNum)
 
-plotMeanAcrossFliesVel('Males','y','n','n','y','Fig7_MalesVel','y','n',1:2,figNum)
-plotMeanAcrossFliesVel('Diag','y','n','n','y','Fig7_DiagVel','y','n',[1,4],figNum)
+[maleMeanLatVel, maleMeanVelChange] = plotMeanAcrossFliesVel('Males','y','n','n','y','Fig7_MalesVel','y','n',1:2,figNum);
+[femaleMeanLatVel, femaleMeanVelChange] = plotMeanAcrossFliesVel('Diag','y','n','n','y','Fig7_DiagVel','y','n',[1,4],figNum);
+
+fig8QuantVel(maleMeanLatVel, maleMeanVelChange, femaleMeanLatVel, femaleMeanVelChange)
+
 
 %% Supplementary figures
 plotRandomTrialsSupp('ShamGlued',1,1,2)

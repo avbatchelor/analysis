@@ -84,3 +84,16 @@ statusStr = checkRepoStatus;
 figPath = 'D:\ManuscriptData\summaryFigures';
 filename = [figPath,'\',figName,'_',statusStr,'.pdf'];
 export_fig(filename,'-pdf','-painters')
+
+%% Statistical testing 
+differences = flyMeans1 - flyMeans2;
+goFigure;
+bins = [-10:1:30];
+histogram(differences,bins);
+
+[h,p] = jbtest(differences);
+disp('Jarque-Bera test')
+disp(['h = ',num2str(h),', p = ',num2str(p)])
+[h,p] = ttest(differences,0,'Tail','right');
+disp('t-test')
+disp(['h = ',num2str(h),', p = ',num2str(p)])

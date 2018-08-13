@@ -40,9 +40,29 @@ for i = 1:size(prefixCodes,1)
     mirroredSEM = std(flyMeans) / sqrt(length(flyMeans));
     errorbar(plotCount,mean(flyMeans),mirroredSEM,'k')
     
+    %% Make table for stats
+    
+    if i == 1
+        angle = repmat([str2double(labels{i})],5,1);
+        vel = flyMeans;
+    else
+        angle = [angle;repmat(str2double(labels{i}),5,1)];
+        vel = [vel;flyMeans];
+    end
 end
 
-% Plot settings
+%% Generate table 
+fly = repmat(1:5,1,4)';
+T = table(fly, angle, vel);
+if dim == 1
+    stats_filename = 'D:\ManuscriptData\processedData\stats\diag_lat_vel.csv';
+else
+    stats_filename = 'D:\ManuscriptData\processedData\stats\diag_forward_vel.csv';
+end
+writetable(T,stats_filename)
+
+
+%% Plot settings
 if dim == 1
     ylabel({'Lateral velocity';'(mm/s)'})
 else

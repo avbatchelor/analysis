@@ -1,4 +1,4 @@
-function plotMeanAcrossFliesVel(prefixCodes,allFlies,plotSEM,freqSep,saveQ,figName,allTrials,plotMean,stimToPlotAllExpts,figNum,varargin)
+function [meanLatVel, meanVelChange] = plotMeanAcrossFliesVel(prefixCodes,allFlies,plotSEM,freqSep,saveQ,figName,allTrials,plotMean,stimToPlotAllExpts,figNum,varargin)
 
 close all
 
