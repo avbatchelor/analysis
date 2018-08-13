@@ -33,7 +33,7 @@ plotMeanAcrossFliesVel('a3Glued','y','n','n','y','Fig2_a3GluedVel','y','n',stimT
 % Lateral velocity quant
 prefixCodes = {'a2Glued',1:2;'a3Glued',1:2;'ShamGlued-45',1:2;'ShamGlued-45',3};
 labels = {'a2 Glued';'a3 Glued';'Sham Glued';'Sham Glued - no stim'};
-figName = 'Fig2_MirroredLatVelQuant';c
+figName = 'Fig2_MirroredLatVelQuant';
 dim = 1;
 mirroredVelocityPlot(prefixCodes,'y',labels,figName,dim)
 dim = 2; 

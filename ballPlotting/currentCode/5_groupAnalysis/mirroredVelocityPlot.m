@@ -63,8 +63,30 @@ for i = 1:size(prefixCodes,1)
     mirroredSEM = std(mirroredMean) / sqrt(plotData.numFlies);
     errorbar(plotCount,mean(mirroredMean),mirroredSEM,'k')
     
+    %% Make table for stats
+    if i < 4
+        short_labels = {'a2','a3','sh'};
+        if i == 1
+            glueStatus = repmat(short_labels{i},length(mirroredMean),1);
+            vel = mirroredMean;
+        else
+            glueStatus = [glueStatus;repmat(short_labels{i},length(mirroredMean),1)];
+            vel = [vel;mirroredMean];
+        end
+    end
+    
 end
 
+%% Generate table 
+T = table(glueStatus, vel);
+if dim == 1
+    stats_filename = 'D:\ManuscriptData\processedData\stats\bilat_gluing_lat_vel.csv';
+else
+    stats_filename = 'D:\ManuscriptData\processedData\stats\bilat_gluing_forward_vel.csv';
+end
+writetable(T,stats_filename)
+
+%%
 if dim == 1
     ylabel({'Lateral velocity';'towards speaker';'mm/s'})
 else
