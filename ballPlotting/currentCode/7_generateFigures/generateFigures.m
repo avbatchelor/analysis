@@ -75,10 +75,12 @@ prefixCodes = {'Cardinal-0',3;'Cardinal-0',2;'Cardinal-0',1;'Cardinal-0',4};
 labels = {'0';'45';'90';'180'};
 % Lateral velocity 
 dim = 1; figName = 'Fig4_CardinalZero_LatVelQuant';
-fig4QuantVel(prefixCodes,'y',labels,figName,dim)
+stats_filename = 'D:\ManuscriptData\processedData\stats\cardinal_lat_vel.csv';
+fig4QuantVel(prefixCodes,'y',labels,figName,dim,stats_filename)
 % Forward velocity 
 dim = 2; figName = 'Fig4_CardinalZero_ForwardVelQuant';
-fig4QuantVel(prefixCodes,'y',labels,figName,dim)
+stats_filename = 'D:\ManuscriptData\processedData\stats\cardinal_forward_vel.csv';
+fig4QuantVel(prefixCodes,'y',labels,figName,dim,stats_filename)
 
 
 
@@ -90,11 +92,12 @@ prefixCodes = {'Diag',1;'Diag',2;'Diag',3;'Diag',4};
 labels = {'45';'135';'225';'315'};
 figName = 'Fig5_LatVelQuant';
 dim = 1;
-fig4QuantVel(prefixCodes,'y',labels,figName,dim)
+stats_filename = 'D:\ManuscriptData\processedData\stats\diag_lat_vel.csv';
+fig4QuantVel(prefixCodes,'y',labels,figName,dim,stats_filename)
 dim = 2; 
 figName = 'Fig5_ForwardVelQuant';
-fig4QuantVel(prefixCodes,'y',labels,figName,dim)
-
+stats_filename = 'D:\ManuscriptData\processedData\stats\diag_forward_vel.csv';
+fig4QuantVel(prefixCodes,'y',labels,figName,dim,stats_filename)
 
 %% Figure 6 figures
 stimulusExamples;

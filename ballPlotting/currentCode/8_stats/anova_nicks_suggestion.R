@@ -6,9 +6,9 @@ install.packages('multcomp')
 library(nlme)
 
 # Load the data 
-filename = 'D:/ManuscriptData/processedData/stats/diag_lat_vel.csv'
+#filename = 'D:/ManuscriptData/processedData/stats/diag_lat_vel.csv'
 #filename = 'D:/ManuscriptData/processedData/stats/diag_forward_vel.csv'
-# filename = 'D:/ManuscriptData/processedData/stats/cardinal_forward_vel.csv'
+filename = 'D:/ManuscriptData/processedData/stats/cardinal_forward_vel.csv'
 
 mydata <- read.table(filename, header=TRUE, sep=",")
 
@@ -16,19 +16,17 @@ mydata <- read.table(filename, header=TRUE, sep=",")
 mydata$angle = as.factor(mydata$angle)
 
 # Compact Model
-#baseline <- lme(vel ~ 1, random = ~1 | fly/angle, data = mydata, method = "ML")
-
 baseline <- lme(vel ~ 1, random = ~1 | fly, data = mydata, method = "ML")
 
 # Augmented Model
-# angleModel <- lme(vel ~ angle, random = ~1 | fly/angle, data = mydata, method = "ML")
-# These are equivalent ways of writing the same model
-angleModel <- lme(vel ~ angle, random = ~1 | fly, data = mydata, method = "ML")
-# angleModel <- lme(vel ~ angle + (1 | fly), data = mydata, method = "ML")
+# ML is used rather than REML - have to do this for the likelihood ratio test
+# The following two are equivalent 
+# angleModel <- lme(vel ~ angle, random = ~1 | fly, data = mydata, method = "ML")
+angleModel <- lme(vel ~ angle + (1 | fly), data = mydata, method = "ML")
 
 
 # Compare the models 
-anova(baseline, angleModel, test="Chisq")
+anova(baseline, angleModel)
 
 ####################
 # Multiple comparisons

@@ -94,6 +94,6 @@ histogram(differences,bins);
 [h,p] = jbtest(differences);
 disp('Jarque-Bera test')
 disp(['h = ',num2str(h),', p = ',num2str(p)])
-[h,p] = ttest(differences,0,'Tail','right');
+[h,p] = ttest(differences,0,'Tail','both');
 disp('t-test')
 disp(['h = ',num2str(h),', p = ',num2str(p)])

@@ -1,4 +1,4 @@
-function fig4QuantVel(prefixCodes,allTrials,labels,figName,dim)
+function fig4QuantVel(prefixCodes,allTrials,labels,figName,dim,stats_filename)
 
 %% Import colors
 % [colorSet1,colorSet2] = colorSetImport;
@@ -54,11 +54,6 @@ end
 %% Generate table 
 fly = repmat(1:5,1,4)';
 T = table(fly, angle, vel);
-if dim == 1
-    stats_filename = 'D:\ManuscriptData\processedData\stats\diag_lat_vel.csv';
-else
-    stats_filename = 'D:\ManuscriptData\processedData\stats\diag_forward_vel.csv';
-end
 writetable(T,stats_filename)
 
 

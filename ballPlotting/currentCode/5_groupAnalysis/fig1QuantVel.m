@@ -83,10 +83,10 @@ goFigure;
 bins = [-10:1:30];
 histogram(differences,bins);
 
-[h,p] = jbtest(differences);
-disp('Jargue-Bera test')
-disp(['h = ',num2str(h),', p = ',num2str(p)])
-[h,p] = ttest(differences,0,'Tail','right');
+%[h,p] = jbtest(differences);
+%disp('Jargue-Bera test')
+%disp(['h = ',num2str(h),', p = ',num2str(p)])
+[h,p] = ttest(differences,0,'Tail','both');
 disp('t-test')
 disp(['h = ',num2str(h),', p = ',num2str(p)])
 

@@ -79,6 +79,31 @@ for plotNum = 1:2
         plot([plotCount-0.2,plotCount+0.2],repmat(meanAcrossFlies,[1,2]),'k');
         % Plot error bar
         errorbar(plotCount,meanAcrossFlies,semAcrossFlies,'k')
+        
+            
+        %% Make table for stats
+        labels = {'100','140','225','300','800','100','140','225','300','800'};
+        if plotNum == 1
+            if j == 1
+                tone_freq = repmat([str2double(labels{j})],5,1);
+                tone_vel = mirroredMeans(j,:)';
+                fly = [1:5]';
+            else
+                tone_freq = [tone_freq;repmat(str2double(labels{j}),5,1)];
+                tone_vel = [tone_vel;mirroredMeans(j,:)'];
+                fly = [fly;[1:5]'];
+            end
+        else
+            if j == 6
+                pip_freq = repmat([str2double(labels{j})],5,1);
+                pip_vel = mirroredMeans(j,:)';
+                fly = [1:5]';
+            else
+                pip_freq = [pip_freq;repmat(str2double(labels{j}),5,1)];
+                pip_vel = [pip_vel;mirroredMeans(j,:)'];
+                fly = [fly;[1:5]'];
+            end
+        end
     end
     
     if plotNum == 1
@@ -86,8 +111,21 @@ for plotNum = 1:2
     else 
         applySettingsAndSave('Pips',dim,figName)
     end
-    
+
 end
+
+%% Generate table 
+T_tones = table(fly, tone_freq, tone_vel);
+T_pips = table(fly, pip_freq, pip_vel);
+fileStem = 'D:\ManuscriptData\processedData\stats\';
+if dim == 1
+    fileStem = [fileStem,'freq_lat_vel'];
+else
+    fileStem = [fileStem,'freq_forward_vel'];
+end    
+
+writetable(T_tones,[fileStem,'tones.csv'])
+writetable(T_pips,[fileStem,'pips.csv'])
 
 end
 
