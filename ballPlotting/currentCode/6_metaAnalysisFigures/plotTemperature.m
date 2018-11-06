@@ -19,5 +19,6 @@ for j = 1:length(uniquePathList)
 end
 
 plot(temp)
+disp(mean(temp))
 disp(min(temp))
 disp(max(temp))
