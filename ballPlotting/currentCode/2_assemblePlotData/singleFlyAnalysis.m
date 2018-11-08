@@ -157,6 +157,9 @@ for stimNum = uniqueStim
     plotData.stdXVel(stimNum,:)     = std(groupedData.rotXVel(stimNumInd,:));
     plotData.stdYVel(stimNum,:)     = std(groupedData.rotYVel(stimNumInd,:));
     
+    %% Collate stationary trials 
+    groupedData = collateStatTrials(groupedData,stimNumInd,stimNum);
+    
     %% Find the block means  (i.e. the mean for each stimulus for every 100 trials or so) 
     % Number of blocks = minimum number of trials for each stimulus /
     % analysisSettings.blockSize, rounded down to nearest integer

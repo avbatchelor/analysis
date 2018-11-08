@@ -55,6 +55,7 @@ for stimNum = 1:2%plotData.numUniqueStim
         % Loop through samples
         for sampleNum = 1:numSamples
             
+            %% Plot data 
             plotCount = plotCount + 1;
             subplot(numRows,numCols,plotCount)
             hold on
@@ -82,6 +83,10 @@ for stimNum = 1:2%plotData.numUniqueStim
                 end
             end
             
+            %% Check speed thresholding 
+            checkAvgSpeed(exptInfo,plotData.sampleTrialsXVel{stimNum}(sampleNum,:),plotData.sampleTrialsYVel{stimNum}(sampleNum,:))
+            
+            %% Plot formatting 
             if stimNum == 1 && dim == 1
                     title(['Sample trial ',num2str(sampleNum)])
             end
