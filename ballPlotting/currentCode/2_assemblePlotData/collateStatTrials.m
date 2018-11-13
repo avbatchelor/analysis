@@ -1,4 +1,4 @@
-function groupedData = collateStatTrials(groupedData,stimNumInd,stimNum)
+function plotData = collateStatTrials(groupedData,plotData,stimNumInd,stimNum)
 
 % Time points to assess speed before stim onset 
 startInd = 176; 
@@ -12,5 +12,5 @@ xVelMat = groupedData.rotXVel(stimNumInd,:);
 meanAbsVel = abs(mean(yVelMat(:,startInd:endInd)'));
 belowThresholdTrials = find(meanAbsVel < 10); 
 
-groupedData.statTrialsX{stimNum} = xVelMat(belowThresholdTrials,:);  
-groupedData.statTrialsY{stimNum} = yVelMat(belowThresholdTrials,:);
+plotData.statTrialsX{stimNum} = xVelMat(belowThresholdTrials,:);  
+plotData.statTrialsY{stimNum} = yVelMat(belowThresholdTrials,:);
